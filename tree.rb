@@ -1,24 +1,41 @@
 require 'node'
-#TODO It's still just a damn list! Have to make it into a tree!
+
 class SGFTree
+  include Enumerable
 
   attr_accessor :root, :sgf
 
-  def initialize string = ""
+  def initialize filename = ""
     @root = SGFNode.new :number => -1, :previous => nil
     @sgf = ""
-    File.open(string, 'r') { |f| @sgf = f.read }
+    File.open(filename, 'r') { |f| @sgf = f.read }
     parse unless @sgf.empty?
   end
   
-  def each
-    node_list = []
+  def load_string string
+  	@sgf = string
+		parse unless  @sgf.empty?
+  end
+  
+  def load_file filename
+    @sgf = ""
+    File.open(filename, 'r') { |f| @sgf = f.read }
+    parse unless @sgf.empty?
+  end
+  
+  def each # Currently only returns the main branch. What else can I do?
+    current = @root
+    node_list = [current]
+    unless current.next[0].nil?
+    	current = current.next[0]
+			node_list << current
+    end
   end
 
   private
 
   def parse
-    # Getting rid of newlines.
+    # Getting rid of newlines. This may not be ideal. Time will tell.
     @sgf.gsub! "\\\\n\\\\r", ""
     @sgf.gsub! "\\\\r\\\\n", ""
     @sgf.gsub! "\\\\r", ""
@@ -27,10 +44,11 @@ class SGFTree
     #previous = @root # Initialize : first is the root, then...
     branches = [] # This stores where new branches are open
     current = @root
-    node_number = 0 # Clearly the next node's depth is 0...
+    node_number = 0 # Clearly the first real node's number is 0...
     identprop = false # We are not in the middle of an identprop value.
+    # An identprop is an identity property - a value.
     content = Hash.new # Hash holding all the properties
-    param, property = "", "" # Variables holding the properties
+    param, property = "", "" # Variables holding the idents and props
     end_of_a_series = false # To keep track of params with multiple properties
 
     # Simplest way is probably to iterate through every character, and use

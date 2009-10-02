@@ -1,0 +1,8 @@
+Doesn't work with 1.8.6 because of each_char.
+It's fine with 1.8.7 and later including >1.9.
+
+Bugs with KGS SGF?
+___
+
+The next nodes are in an array, so even if there's only one next node,
+it's next[0]. If you have better ideas.. Let me know or fork :)

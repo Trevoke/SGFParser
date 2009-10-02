@@ -12,20 +12,22 @@ class SGFNode
 
   end
 
-  def add_next node
+  def add_next node # Seemed necessary, will look for more graceful solution.
     @next << node
   end
 
   def add_properties hash
-    #puts
-    #pp hash
-    #puts
     hash.each do |key, value|
       ident = key.to_sym 
-      #pp ident, value
       @properties[ident] ||= [] 
       @properties[ident].concat value 
     end
+  end
+  
+  def method_missing method_name, *args
+    output = @properties[method_name]
+    super if output.nil?
+    output
   end
 
 end
