@@ -1,11 +1,14 @@
-Usage:
+Example:
 require 'sgf_parser'
 tree = SGFTree.new :filename => File
 tree = SGFTree.new :sgf_string => String
 
-Doesn't work with 1.8.6 because of each_char.
-It's fine with 1.8.7 and later including >1.9.
-Implemented basic Cucumber testing.
+Now works with KGS files; should work with all FF4 SGF files.
+Should also work with Ruby from 1.8.6 and up, though untested with anything
+earlier than 1.8.7.
+Fixed my 'each' command, which was broken.
+
+Now to make the files savable..
 
 ___
 

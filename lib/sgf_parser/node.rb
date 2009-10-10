@@ -1,12 +1,11 @@
 class SGFNode
 
-  attr_accessor :next, :previous, :number, :depth, :properties
+  attr_accessor :next, :previous, :number, :properties
 
   def initialize args={}
     @next = []
     add_next args[:next] if !args[:next].nil?
     @number = args[:number] rescue nil
-    @depth = args[:depth] rescue -1
     @previous = args[:previous] rescue nil
     @properties = Hash.new
     @properties.merge args[:properties] if !args[:properties].nil?
