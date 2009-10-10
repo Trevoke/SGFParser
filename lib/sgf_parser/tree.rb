@@ -50,7 +50,7 @@ class SGFTree
     @sgf.gsub! "\\\\r\\\\n", ""
     @sgf.gsub! "\\\\r", ""
     @sgf.gsub! "\\\\n", ""
-    @sgf.gsub! "\n", ""
+    #@sgf.gsub! "\n", ""
     branches = [] # This stores where new branches are open
     current = @root # Let's start at the beginning, shall we?
     node_number = 0 # Clearly the first real node's number is 0...
@@ -126,10 +126,8 @@ class SGFTree
             property += "\\"
           end
 
-        #when '\]'
-        #  identprop ? (property += char) : param += char
-        #when ' '
-        #  identprop ? (property += char) : next
+        when "\n"
+          property += "\n" if identprop
 
         else
           # Well, I guess it's "just" a character after all.

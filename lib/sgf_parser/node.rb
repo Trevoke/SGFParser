@@ -24,10 +24,19 @@ class SGFNode
     end
   end
 
+  def C
+    return @properties[:C]
+  end
+
+  alias :c :C
+  alias :comments :C
+  alias :comment :C
+  # Just trying to make it easy to get to the comments.
+
   def method_missing method_name, *args
     output = @properties[method_name]
-    super if output.nil?
-    output
+    output.nil? ? super : output
+    #output
   end
 
 end
