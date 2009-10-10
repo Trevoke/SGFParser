@@ -1,12 +1,13 @@
 class SGFNode
 
-  attr_accessor :next, :number, :depth, :properties
+  attr_accessor :next, :previous, :number, :depth, :properties
 
-  def initialize args
+  def initialize args={}
     @next = []
     add_next args[:next] if !args[:next].nil?
     @number = args[:number] rescue nil
     @depth = args[:depth] rescue -1
+    @previous = args[:previous] rescue nil
     @properties = Hash.new
     @properties.merge args[:properties] if !args[:properties].nil?
 
@@ -18,12 +19,12 @@ class SGFNode
 
   def add_properties hash
     hash.each do |key, value|
-      ident = key.to_sym 
-      @properties[ident] ||= [] 
-      @properties[ident].concat value 
+      identity = key.to_sym
+      @properties[identity] ||= []
+      @properties[identity].concat value
     end
   end
-  
+
   def method_missing method_name, *args
     output = @properties[method_name]
     super if output.nil?
