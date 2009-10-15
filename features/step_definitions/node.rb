@@ -4,7 +4,7 @@ Given /^I don't have a node$/ do
 end
 
 When /^I create a new node$/ do
-  @node = SGFNode.new
+  @node = SGF::Node.new
 end
 
 Then /^I should get a new lone node$/ do

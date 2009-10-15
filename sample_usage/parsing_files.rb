@@ -1,5 +1,5 @@
-# With this code, we will rename all files within a directory to the following
-# format : "Black_player-White_player.sgf"
+# With this code, we will display info on all files within a directory:
+# "Black_player-White_player.sgf"
 
 require '../lib/sgf_parser'
 
@@ -9,7 +9,7 @@ Dir.chdir '/home/alg/Go games/mykgsgames' # What? Sue me.
 Dir.glob('*').each do |file|
   next if File.directory? file # Let's not touch directories.
   next if File.extname(file) != ".sgf" # If it's not an SGF file, let's not touch it.
-  sgf = SGFTree.new :filename => file
+  sgf = SGF::Tree.new :filename => file
   # The "root" is an empty node, always, so we can support SGF collections painlessly:
   # Whole trees simply become branches from the root.
 

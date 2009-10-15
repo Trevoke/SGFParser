@@ -1,42 +1,53 @@
-class SGFNode
+module SGF
 
-  attr_accessor :next, :previous, :number, :properties
+  class Node
 
-  def initialize args={}
-    @next = []
-    add_next args[:next] if !args[:next].nil?
-    @number = args[:number] rescue nil
-    @previous = args[:previous] rescue nil
-    @properties = Hash.new
-    @properties.merge args[:properties] if !args[:properties].nil?
+    attr_accessor :next, :previous, :number, :properties
 
-  end
+    def initialize args={}
+      @next = []
+      add_next args[:next] if !args[:next].nil?
+      @number = args[:number] rescue nil
+      @previous = args[:previous] rescue nil
+      @properties = Hash.new
+      @properties.merge args[:properties] if !args[:properties].nil?
 
-  def add_next node # Seemed necessary, will look for more graceful solution.
-    @next << node
-  end
-
-  def add_properties hash
-    hash.each do |key, value|
-      identity = key.to_sym
-      @properties[identity] ||= []
-      @properties[identity].concat value
     end
-  end
 
-  def C
-    return @properties[:C]
-  end
+    # Seemed necessary, will look for more graceful solution.
+    def add_next node
+      @next << node
+    end
 
-  alias :c :C
-  alias :comments :C
-  alias :comment :C
-  # Just trying to make it easy to get to the comments.
+    # To return the next node in the main branch
+    def next_main
+      return @next[0]
+    end
 
-  def method_missing method_name, *args
-    output = @properties[method_name]
-    output.nil? ? super : output
-    #output
+    def add_properties hash
+      hash.each do |key, value|
+        identity = key.to_sym
+        @properties[identity] ||= []
+        @properties[identity].concat value
+      end
+    end
+
+    # Just trying to make it easy to get to the comments.
+    def C
+      return @properties[:C]
+    end
+
+    alias :c :C
+    alias :comments :C
+    alias :comment :C
+
+
+    def method_missing method_name, *args
+      output = @properties[method_name]
+      output.nil? ? super : output
+      #output
+    end
+
   end
 
 end

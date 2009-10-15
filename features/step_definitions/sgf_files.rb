@@ -5,9 +5,9 @@ Given /^The file "([^\"]*)" in "([^\"]*)"$/ do |file, dir|
 end
 
 When /^I parse "([^\"]*)"$/ do |file|
-  @tree = SGFTree.new :filename => file
+  @tree = SGF::Tree.new :filename => file
 end
 
 Then /^I should get no errors$/ do
-  @tree.class == SGFTree
+  @tree.class == SGF::Tree
 end
