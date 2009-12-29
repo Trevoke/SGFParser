@@ -2,50 +2,53 @@ module SGF
 
   class Node
 
-    attr_accessor :next, :previous, :number, :properties
+    attr_accessor :children, :properties
 
     def initialize args={}
-      @next = []
-      add_next args[:next] if !args[:next].nil?
-      @number = args[:number] rescue nil
-      @previous = args[:previous] rescue nil
+      @children = []
+      add_children args[:children] if !args[:children].nil?
       @properties = Hash.new
-      @properties.merge args[:properties] if !args[:properties].nil?
+      @properties.merge! args[:properties] if !args[:properties].nil?
 
     end
 
     # Seemed necessary, will look for more graceful solution.
-    def add_next node
-      @next << node
-    end
-
-    # To return the next node in the main branch
-    def next_main
-      return @next[0]
+    def add_children node
+      @children << node
     end
 
     def add_properties hash
       hash.each do |key, value|
-        identity = key.to_sym
-        @properties[identity] ||= []
-        @properties[identity].concat value
+        @properties[key] ||= ""
+        @properties[key].concat value
       end
     end
 
-    # Just trying to make it easy to get to the comments.
-    def C
-      return @properties[:C]
+    def each_child
+      @children.each { |child| yield child }
     end
 
-    alias :c :C                                  
-    alias :comments :C
-    alias :comment :C
+    def == other_node
+      @properties == other_node.properties
+    end
 
+    #def inspect
+    #  @properties
+    #end
+
+    # Making comments easier to access.
+    def comments
+      @properties["C"]
+    end
+
+    alias :comment :comments
+
+    private
 
     def method_missing method_name, *args
-      output = @properties[method_name]
-      output.nil? ? super : output
-      #output
+      output = @properties[method_name.to_s.upcase]
+      super(method_name, args) if output.nil?
+      output
     end
 
   end

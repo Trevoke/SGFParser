@@ -1,16 +1,19 @@
 Example:
-require 'sgf_parser'
+require 'sgfparser'
 tree = SGF::Tree.new :filename => File
 tree = SGF::Tree.new :sgf_string => String
 
-Now works with KGS files; should work with all FF4 SGF files.
+Should work with all FF4 files (in fact, all SGF files, but did not test any
+files with a format pre-FF4).
 Should also work with Ruby from 1.8.6 and up, though untested with anything
 earlier than 1.8.7.
-Fixed my 'each' command, which was broken.
 
-Now to make the files savable..
-The 'SGF Indenter', whose only purpose is to make the actual SGF file more human
-readable, is currently broken.
+The 'SGF Indenter', the purpose of which is to make the actual SGF file more
+human readable, is working.
+
+Files can be saved. There is an error in the saving test, which I don't
+understand, but... It's working as far as I can tell. I need to write
+more detailed tests, I think.
 
 ___
 
@@ -18,6 +21,3 @@ TODO
 ? Create a "Game" class, and if a whole set of () exists, then I have a game?
 That way maybe I can easily go to multiple games stored in a single SGF file?
 Mostly syntactic sugar, but may be worth implementing.
-
-Why did I create 'previous_character' ? I can't remember. Damnit.
-It had to be another way to parse the file.

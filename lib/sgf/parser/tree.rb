@@ -5,149 +5,113 @@ module SGF
 
     attr_accessor :root
 
-    #Parsing a file is the default behavior, so if both file and string are provided,
-    #File takes the precedence.
+    # Errors out if both string and filename are provided. Requires one and
+    # only one of those two arguments.
     def initialize args={}
-      @root = Node.new :number => -1, :previous => nil
+      @root = Node.new
       @sgf = ""
-
+      raise ArgumentError, "Both file and string provided" if args[:filename] &&
+                                                              args[:sgf_string]
       if !args[:filename].nil?
         load_file args[:filename]
       elsif !args[:sgf_string].nil?
         load_string args[:sgf_string]
       end
 
+    end # initialize
+
+    def each order=:preorder, &block
+      case order
+        when :preorder
+          preorder @root, &block
+      end
+    end # each
+
+    def == other_tree
+      require 'pp'
+      one = []
+      two = []
+      preorder(@root) { |x| one << x.properties }
+      other_tree.preorder(other_tree.root) { |x| two << x.properties }
+      puts "one: #{one.size} and two: #{two.size}"
+      one.each_with_index do |x, i|
+        if x != two[i]
+          puts i
+          puts "_-/\\=/\\-_ ONE _-/\\=/\\-_"
+          pp x
+          puts "_-/\\=/\\-_ TWO _-/\\=/\\-_"
+          pp two[i]
+        end
+      end
+      one == two
+    end # ==
+
+
+
+    def save args={}
+      raise ArgumentError, "No file name provided" if args[:filename].nil?
+      # SGF files are trees stored in pre-order traversal.
+      @sgf_string = "("
+      @root.children.each { |child| write_node child }
+      # write_node @root
+      @sgf_string << ")"
+
+      File.open(args[:filename], 'w') { |f| f << @sgf_string }
+    end #save
+
+    def preorder node=@root, &block
+      # stop processing if the block returns false
+      if yield node then
+        node.each_child do |child|
+          preorder(child, &block)
+        end
+      end
+    end # preorder     
+
+    private
+
+    def write_node node=@root
+      @sgf_string << ";"
+      unless node.properties.empty?
+        properties = ""
+        node.properties.each do |k, v|
+          v.gsub!("]", "\\]")
+          properties += "#{k.to_s}[#{v}]"
+        end
+        @sgf_string << "#{properties}"
+      end
+
+      case node.children.size
+        when 0
+          @sgf_string << ")"
+        when 1
+          write_node node.children[0]
+        else
+          node.each_child do |child|
+            @sgf_string << "("
+            write_node child
+          end
+      end
     end
 
     def load_string string
       @sgf = string
-      parse unless  @sgf.empty?
-    end
+      parse unless @sgf.empty?
+    end # load_string
 
     def load_file filename
       @sgf = ""
       File.open(filename, 'r') { |f| @sgf = f.read }
       parse unless @sgf.empty?
-    end
-
-    def each # Currently only returns the main branch. What else can I do?
-      current = @root
-      node_list = [current]
-      until current.next.empty?
-        #node_list.concat current.next
-        current = current.next[0]
-        node_list << current
-      end
-      node_list.each { |node| yield node }
-    end
-
-    private
-
-    def parse
-      # Getting rid of newlines. This may not be ideal. Time will tell.
-      @sgf.gsub! "\\\\n\\\\r", ""
-      @sgf.gsub! "\\\\r\\\\n", ""
-      @sgf.gsub! "\\\\r", ""
-      @sgf.gsub! "\\\\n", ""
-      #@sgf.gsub! "\n", ""
-      branches = [] # This stores where new branches are open
-      current = @root # Let's start at the beginning, shall we?
-      node_number = 0 # Clearly the first real node's number is 0...
-      identprop = false # We are not in the middle of an identprop value.
-      # An identprop is an identity property - a value.
-      content = Hash.new # Hash holding all the properties
-      param, property = "", "" # Variables holding the idents and props
-      end_of_a_series = false # To keep track of params with multiple properties
-
-      sgf_array = @sgf.split(//)
-      iterator = 0
-      array_length = sgf_array.size
-      previous_character = nil
-      # Simplest way is probably to iterate through every character, and use a case scenario
-
-      while iterator < array_length - 1 # I haven't written code this ugly since C++ :(
-        char = sgf_array[iterator]
-
-        case char
-          when '(' # Opening a new branch
-            identprop ? (property += char) : (branches.push current)
-
-          when ')' # Closing a branch
-
-            if identprop
-              property += char
-            else
-              # back to correct node.
-              current = branches.pop
-            end
-
-          when ';' # Opening a new node
-            if identprop
-              property += char
-            else
-              # Make the current node the old node, make new node, store data
-              previous = current
-              current = Node.new :previous => previous, :number => node_number
-              previous.add_properties content
-              previous.add_next current
-              node_number += 1
-              param, property = "", ""
-              content.clear
-            end
-
-          when '[' # Open comment?
-            if identprop
-              property += char
-            else # If we're not inside a comment, then now we are.
-              identprop = true
-              end_of_a_series = false
-            end
-
-          when ']' # Close comment
-            end_of_a_series = true # Maybe end of a series of comments.
-            identprop = false # That's our cue to close a comment.
-            content[param] ||= []
-            content[param] << property
-            property = ""
-
-          when "\\" # If we're inside a comment, then maybe we're about to escape a ].
-            # This is the whole reason we need this ugly charade of a loop.
-            if identprop
-              if sgf_array[iterator + 1] == "]"
-                property += "]"
-                iterator += 1
-              else
-                property += "\\"
-              end
-            else
-              #This should never happen - a backslash outside a comment ?!
-              #But let's not have it be told that I'm not prepared.
-              property += "\\"
-            end
-
-          when "\n"
-            property += "\n" if identprop
-
-          else
-            # Well, I guess it's "just" a character after all.
-            if end_of_a_series
-              end_of_a_series = false
-              param, property = "", ""
-            end
-            identprop ? (property += char) : param += char
-        end
-
-        iterator += 1
-      end
-
-    end
+    end # load_file
 
     def method_missing method_name, *args
-      output = @root.next[0].properties[method_name]
-      super if output.nil?
+      output = @root.children[0].properties[method_name]
+      super(method_name, args) if output.nil?
       output
-    end
+    end # method_missing    
 
   end
 
 end
+

@@ -1,7 +1,7 @@
 # With this code, we will display info on all files within a directory:
 # "Black_player-White_player.sgf"
 
-require '../lib/sgf_parser'
+require '../lib/sgfparser'
 
 
 Dir.chdir '/home/alg/Go games/mykgsgames' # What? Sue me.
