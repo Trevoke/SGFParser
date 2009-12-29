@@ -37,7 +37,7 @@ module SGF
       return @properties[:C]
     end
 
-    alias :c :C
+    alias :c :C                                  
     alias :comments :C
     alias :comment :C
 

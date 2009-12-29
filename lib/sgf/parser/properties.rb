@@ -2,7 +2,7 @@
 
 # Here we define SGF::Properties, so we can figure out what each property is and does.
 module SGF
-  string = %Q{AB   Add Black       setup            list of stone
+  property_string = %Q{AB   Add Black       setup            list of stone
 AE   Add Empty       setup            list of point
 AN   Annotation      game-info        simpletext
 AP  Application     root	      composed simpletext ':' simpletext
@@ -75,19 +75,18 @@ WL   White time left move             real
 WR   White rank      game-info        simpletext
 WT   White team      game-info        simpletext }
 
-  a = string.split("\n")
+  property_array = property_string.split("\n")
   hash = {}
-  a.each do |set|
+  property_array.each do |set|
     temp = set.gsub("\t", "        ")
     id = temp[0..3].strip
     desc = temp[4..19].strip
     property_type = temp[20..35].strip
     property_value = temp[37..-1].strip
     hash[id] = [desc, property_type, property_value]
-    #pp temp
   end
-  hash
-# All this work for this minuscule line!
+
+  # All this work for this minuscule line!
   Properties = hash
 
 end
