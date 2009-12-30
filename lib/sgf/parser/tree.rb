@@ -75,8 +75,8 @@ module SGF
       unless node.properties.empty?
         properties = ""
         node.properties.each do |k, v|
-          v.gsub!("]", "\\]")
-          properties += "#{k.to_s}[#{v}]"
+          v_escaped = v.gsub("]", "\\]")
+          properties += "#{k.to_s}[#{v_escaped}]"
         end
         @sgf_string << "#{properties}"
       end
