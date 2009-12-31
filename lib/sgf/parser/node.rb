@@ -2,9 +2,10 @@ module SGF
 
   class Node
 
-    attr_accessor :children, :properties
+    attr_accessor :parent, :children, :properties
 
     def initialize args={}
+      @parent = args[:parent]
       @children = []
       add_children args[:children] if !args[:children].nil?
       @properties = Hash.new
