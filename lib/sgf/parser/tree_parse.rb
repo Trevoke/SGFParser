@@ -34,13 +34,15 @@ to handle that properly.
             if identprop
               property << char
             else
-              branches.unshift current_node unless current_node == @root
+              branches.unshift current_node
             end
           when ')' # Closing a branch
             if identprop
               property << char
             else
-              current_node = branches.shift unless branches.empty?
+              current_node = branches.shift
+              param, property = "", ""
+              content.clear              
             end
           when ';' # Opening a new node
             if identprop
