@@ -31,18 +31,8 @@ module SGF
       require 'pp'
       one = []
       two = []
-      preorder(@root) { |x| one << x.properties }
-      other_tree.preorder(other_tree.root) { |x| two << x.properties }
-      puts "one: #{one.size} and two: #{two.size}"
-      one.each_with_index do |x, i|
-        if x != two[i]
-          puts i
-          puts "_-/\\=/\\-_ ONE _-/\\=/\\-_"
-          pp x
-          puts "_-/\\=/\\-_ TWO _-/\\=/\\-_"
-          pp two[i]
-        end
-      end
+      preorder(@root) { |x| one << x }
+      other_tree.preorder(other_tree.root) { |x| two << x }
       one == two
     end # ==
 
