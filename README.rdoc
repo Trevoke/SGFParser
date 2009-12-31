@@ -1,19 +1,24 @@
+SGF: all formats (but untested with FF < 4)
+Ruby: >1.8.7 (may work with 1.8.6)
+
 Example:
 require 'sgfparser'
 tree = SGF::Tree.new :filename => File
 tree = SGF::Tree.new :sgf_string => String
 
-Should work with all FF4 files (in fact, all SGF files, but did not test any
-files with a format pre-FF4).
-Should also work with Ruby from 1.8.6 and up, though untested with anything
-earlier than 1.8.7.
+All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
+Most games will just care about, say,
+tree.root.children[0] which is the first node of the first gametree.
+
+For any node, one can summon the properties as such:
+node.properties # => returns a hash of the properties.
+A single property can be called, like the comments, for instance, like so:
+node.C # => returns the comments for this node.
+
+The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
 
 The 'SGF Indenter', the purpose of which is to make the actual SGF file more
 human readable, is working.
-
-Files can be saved. There is an error in the saving test, which I don't
-understand, but... It's working as far as I can tell. I need to write
-more detailed tests, I think.
 
 ___
 
