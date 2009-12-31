@@ -50,7 +50,7 @@ to handle that properly.
             else
               # Make the current node the old node, make new node, store data
                 parent = current_node
-                current_node = Node.new
+                current_node = Node.new :parent => parent
                 parent.add_properties content
                 parent.add_children current_node
                 param, property = "", ""
