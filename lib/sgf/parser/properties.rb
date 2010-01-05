@@ -1,7 +1,11 @@
+# A parser for SGF Files. Main usage: SGF::Tree.new :filename => file_name
+module SgfParser
+
 #  http://www.red-bean.com/sgf/proplist.html
 
-# Here we define SGF::Properties, so we can figure out what each property is and does.
-module SGF
+# Here we define SGF::Properties, so we can figure out what each property
+# is and does.
+
   property_string = %Q{AB   Add Black       setup            list of stone
 AE   Add Empty       setup            list of point
 AN   Annotation      game-info        simpletext
@@ -87,7 +91,7 @@ WT   White team      game-info        simpletext }
   end
 
   # All this work for this minuscule line!
-  Properties = hash
+  PROPERTIES = hash
 
 end
 

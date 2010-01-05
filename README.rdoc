@@ -2,9 +2,9 @@ SGF: all formats (but untested with FF < 4)
 Ruby: >1.8.7 (may work with 1.8.6)
 
 Example:
-require 'sgfparser'
-tree = SGF::Tree.new :filename => File
-tree = SGF::Tree.new :sgf_string => String
+require 'sgf_parser'
+tree = SgfParser::Tree.new :filename => File
+tree = SgfParser::Tree.new :sgf_string => String
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
 Most games will just care about, say,

@@ -4,12 +4,10 @@
 require '../lib/sgf_parser'
 
 
-Dir.chdir '/home/alg/Go games/mykgsgames' # What? Sue me.
-
-Dir.glob('*').each do |file|
+Dir.glob('../sample_sgf/*').each do |file|
   next if File.directory? file # Let's not touch directories.
   next if File.extname(file) != ".sgf" # If it's not an SGF file, let's not touch it.
-  sgf = SGF::Tree.new :filename => file
+  sgf = SgfParser::Tree.new :filename => file
   # The "root" is an empty node, always, so we can support SGF collections painlessly:
   # Whole trees simply become branches from the root.
 

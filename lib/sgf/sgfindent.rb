@@ -1,5 +1,8 @@
-module SGF
+module SgfParser
 
+  # This indents an SGF file to make it more readable. It outputs to the screen
+  # by default, but can be given a file as output.
+  # Usage: SgfParser::Indenter.new infile, outfile
   class Indenter
 
     def initialize file, out=$stdout

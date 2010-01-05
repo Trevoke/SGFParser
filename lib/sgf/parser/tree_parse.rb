@@ -1,8 +1,9 @@
-module SGF
+module SgfParser
   class Tree
 
     private
 
+    # This function parses a SGF string into a linked list, or tree.
     def parse
       @sgf.gsub! "\\\\n\\\\r", ""
       @sgf.gsub! "\\\\r\\\\n", ""
