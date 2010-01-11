@@ -23,8 +23,11 @@ module SgfParser
     # list or an array of node children. Will raise an error if one of the
     # arguments is not of class Node.
     def add_children *nodes
+      nodes.flatten!
       raise "Non-node child given!" if nodes.find { |node| node.class != Node }
-      @children.concat nodes.flatten
+      # This node becomes the proud parent of one or more node!
+      nodes.each { |node| node.parent = self }
+      @children.concat nodes
     end
 
     # Adds one or more properties to the node.
