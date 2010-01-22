@@ -1,3 +1,6 @@
+Author: Aldric Giacomoni
+Email : aldric~at~trevoke.net (feedback very welcome!)
+
 SGF: all formats (but untested with FF < 4)
 Ruby: >1.8.7 (may work with 1.8.6)
 
