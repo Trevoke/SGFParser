@@ -1,22 +1,27 @@
+=INFORMATION
 Author: Aldric Giacomoni
+
 Email : aldric~at~trevoke.net (feedback very welcome!)
 
 SGF: all formats (but untested with FF < 4)
+
 Ruby: >1.8.7 (may work with 1.8.6)
 
+=QUICK HOWTO
 Example:
-<tt>require 'sgf_parser'
-tree = SgfParser::Tree.new :filename => File
-tree = SgfParser::Tree.new :sgf_string => String</tt>
+ require 'sgf_parser'
+ tree = SgfParser::Tree.new :filename => File
+ tree = SgfParser::Tree.new :sgf_string => String
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
+
 Most games will just care about, say,
-tree.root.children[0] which is the first node of the first gametree.
+ tree.root.children[0] which is the first node of the first gametree.
 
 For any node, one can summon the properties as such:
-node.properties # => returns a hash of the properties.
+ node.properties # => returns a hash of the properties.
 A single property can be called, like the comments, for instance, like so:
-node.C # => returns the comments for this node.
+ node.C # => returns the comments for this node.
 
 The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
 
