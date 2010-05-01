@@ -1,19 +1,19 @@
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19]GN[Gametree 1: properties]US[Arno Hollosi](;B[pd]N[Moves, comments, annotations]C[Nodename set to: "Moves, comments, annotations"];W[dp]C[Marked as "Good for White"]GW[1];B[pp]C[Marked as "Very good for Black"]GB[2];W[dc]C[Marked as "Very good for White"]GW[2];B[pj]C[Marked as "Even position"]DM[1];W[ci]UC[1]C[Marked as "Unclear position"];B[jd]C[Marked as "Tesuji" or "Good move"]TE[1];BM[2]W[jp]C[Marked as "Very bad move"];DO[]B[gd]C[Marked as "Doubtful move"];IT[]W[de]C[Marked as "Interesting move"];B[jj];W[]C[White "Pass" move];)(;AB[do:gq]N[Setup]C[Black & white stones at the top are added as single stones.
+(;FF[4]AP[Primiview:3.1]GM[1]SZ[19]GN[Gametree 1: properties]US[Arno Hollosi](;B[pd]N[Moves, comments, annotations]C[Nodename set to: "Moves, comments, annotations"];W[dp]C[Marked as "Good for White"]GW[1];B[pp]C[Marked as "Very good for Black"]GB[2];W[dc]C[Marked as "Very good for White"]GW[2];B[pj]C[Marked as "Even position"]DM[1];W[ci]UC[1]C[Marked as "Unclear position"];B[jd]C[Marked as "Tesuji" or "Good move"]TE[1];BM[2]W[jp]C[Marked as "Very bad move"];DO[]B[gd]C[Marked as "Doubtful move"];IT[]W[de]C[Marked as "Interesting move"];B[jj];W[]C[White "Pass" move];)(;[dedfdgdo:gqjejfjgkn:lqpn:pq]AB[dd]N[Setup]C[Black & white stones at the top are added as single stones.
 
-Black & white stones at the bottom are added using compressed point lists.]  AW[pn:pq];C[AddEmpty
+Black & white stones at the bottom are added using compressed point lists.]  AW[jd];[fpknlolqpn:pq]C[AddEmpty
 
 Black stones & stones of left white group are erased in FF[3\] way.
 
-White stones at bottom right were erased using compressed point list.]AE[pn:pq];AW[pp]AB[pd]C[Added two stones.
+White stones at bottom right were erased using compressed point list.]AE[ep];AW[pp]AB[pd]C[Added two stones.
 
-Node marked with "Black to play".]PL[B];)(;AW[er]AB[mr]N[Markup]C[Position set up without compressed point lists.]; SL[kh:kj] TW[lr:ns] TB[ao]C[Markup at top partially using compressed point lists (for markup on white stones); listed clockwise, starting at upper left:
+Node marked with "Black to play".]PL[B];)(;[dedfdgdhdidjnjninhnfnendijiiihhqgqfqeqdrdsdqdpcpbpapiqirisbobnanmsmrpepfpgphpipjfdfefffhfifjkhkikjosoroqopppqprpsprornsnnqmqlqkqkrksfsgsgrer]AW[pd]AB[dd]N[Markup]C[Position set up without compressed point lists.];[dedfedeeeffd:ffdidjejeiehfh:fjnenfodoeofpd:pfninjohoiojph:pjiiijjjjijhkh:kjsolr:nser:hsao] SL[ih] TW[pq:ss] TB[aq:cs]C[Markup at top partially using compressed point lists (for markup on white stones); listed clockwise, starting at upper left:
 - TR (triangle)
 - CR (circle)
 - SQ (square)
 - SL (selected points)
 - MA ('X')
 
-Markup at bottom: black & white territory (using compressed point lists)] CR[pd:pf]TR[fd:ff] SQ[ph:pj] MA[fh:fj];LB[ms:12345678]C[Label (LB property)
+Markup at bottom: black & white territory (using compressed point lists)] CR[nd]TR[dd] SQ[nh] MA[dh];LB[dc:1][fc:2nc:3pc:4dj:afj:bnj:cpj:dgs:ABCDEFGHgr:ABCDEFGgq:ABCDEFgp:ABCDEgo:ABCDgn:ABCgm:ABmm:12mn:123mo:1234mp:12345mq:123456mr:1234567ms:12345678]C[Label (LB property)
 
 Top: 8 single char labels (1-4, a-d)
 

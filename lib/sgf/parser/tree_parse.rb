@@ -1,5 +1,3 @@
-#TODO: Implement with StringIO. (require 'stringio')
-
 require 'stringio'
 
 module SgfParser
@@ -7,60 +5,93 @@ module SgfParser
 
     private
 
-    # This function parses a SGF string into a linked list, or tree.
+    # Creates a tree (truly, a linked list) from @sgf.
     def parse
-      @sgf.gsub! "\\\\n\\\\r", ""
-      @sgf.gsub! "\\\\r\\\\n", ""
-      @sgf.gsub! "\\\\r", ""
-      @sgf.gsub! "\\\\n", ""
-      #@sgf.gsub! "\n", ""
-      branches = [] # This stores where new branches are open
-      current_node = @root # Let's start at the beginning, shall we?
-
-      @stream = StringIO.new @sgf, 'r'
-      @identity, @property, @content = "", "", {}
-
-      until @stream.eof?
-        char = @stream.sysread(1)
-
+      while char = next_character
         case char
-          when '('
-            branches.unshift current_node
-          when ')'
-            current_node = branches.shift
-            clear_temporary_data
-          when ';'
-            parent = current_node
-            current_node = Node.new :parent => parent
-            parent.add_properties @content
-            parent.add_children current_node
-            clear_temporary_data
-          when '['
-            get_property
-            @content[@identity] ||= ""
-            @content[@identity] << @property
-            @identity = ""          
-          else
-            @identity << char unless char == "\n"
+          when '(' then store_branch
+          when ')' then fetch_branch
+          when ';' then store_node_and_create_new_node
+          when '[' then get_and_store_property
+          else store_character(char)
         end
       end
     end
 
+    def next_character
+      character_available? && @stream.sysread(1)
+    end
+
+    def character_available?
+      @stream ||= StringIO.new clean_string, 'r'
+      !@stream.eof?
+    end
+
+    def clean_string
+      @sgf.gsub! "\\\\n\\\\r", ""
+      @sgf.gsub! "\\\\r\\\\n", ""
+      @sgf.gsub! "\\\\r", ""
+      @sgf.gsub! "\\\\n", ""
+      @sgf
+    end    
+
+    def store_branch
+      @branches ||= []
+      @branches.unshift @current_node
+    end
+
+    def current_node
+      @current_node ||= @root
+    end    
+
+    def fetch_branch
+      @current_node = @branches.shift
+      clear_temporary_data
+    end
+
+    def store_node_and_create_new_node
+      parent = current_node
+      @current_node = Node.new :parent => parent
+      parent.add_properties content
+      parent.add_children @current_node
+      clear_temporary_data
+    end
+
+    def get_and_store_property
+      @content[@identity] ||= ""
+      @content[@identity] << get_property
+      @identity = ""
+    end
+
     def get_property
-      @property = ""
+      buffer = ""
       while true
-        parsed_bit = @stream.sysread(1)
-        break if parsed_bit == "]"
-        parsed_bit << @stream.sysread(1) if parsed_bit == "\\"
-        parsed_bit = "]" if parsed_bit == "\\]"
-        @property << parsed_bit
+        next_bit = @stream.sysread(1)
+        break if next_bit == "]"
+        next_bit << @stream.sysread(1) if next_bit == "\\"
+        next_bit = "]" if next_bit == "\\]"
+        buffer << next_bit
       end
+      buffer
+    end
+
+    def store_character(char)
+      @identity << char unless char == "\n"
     end
 
     def clear_temporary_data
       @content.clear
-      @identity, @property = "", ""
+      @identity = ""
+    end
+
+    def content
+      @content ||= {}
+    end
+
+    def identity
+      @identity ||= ""      
     end
 
   end
 end
+

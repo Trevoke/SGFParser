@@ -13,20 +13,19 @@ module SgfParser
     # options: \n
     # :filename => filename \n
     # !!! OR !!! \n
-    # :sgf_string => string \n
+    # :string => string \n
     def initialize args={}
       @root = Node.new
       @sgf = ""
-      raise ArgumentError, "Both file and string provided" if args[:filename] &&
-                                                              args[:sgf_string]
-      if !args[:filename].nil?
+      raise ArgumentError, "Both file and string provided" if args[:filename] && args[:string]
+      if args[:filename]
         load_file args[:filename]
-      elsif !args[:sgf_string].nil?
-        load_string args[:sgf_string]
+      elsif args[:string]
+        load_string args[:string]
       end
 
-    end # initialize
-
+      parse unless @sgf.empty?
+    end
 
     # Iterates over the tree, node by node, in preorder fashion.
     # Does not support other types of iteration, but may in the future.
@@ -36,70 +35,65 @@ module SgfParser
         when :preorder
           preorder @root, &block
       end
-    end # each
+    end
 
     # Compares a tree to another tree, node by node.
-    # Nodes must by the same (same properties, parents and children).
+    # Nodes must be the same (same properties, parents and children).
     def == other_tree
       one = []
       two = []
       each { |node| one << node }
       other_tree.each { |node| two << node }
       one == two
-    end # ==
+    end
 
     # Saves the tree as an SGF file. raises an error if a filename is not given.
     # tree.save :filename => file_name
     def save args={}
       raise ArgumentError, "No file name provided" if args[:filename].nil?
       # SGF files are trees stored in pre-order traversal.
-      @sgf_string = "("
+      @savable_sgf = "("
       @root.children.each { |child| write_node child }
       # write_node @root
-      @sgf_string << ")"
+      @savable_sgf << ")"
 
-      File.open(args[:filename], 'w') { |f| f << @sgf_string }
-    end #save
+      File.open(args[:filename], 'w') { |f| f << @savable_sgf }
+    end
 
     private
 
-    # Adds a stringified node to the variable @sgf_string - for saving purposes. 
+    # Adds a stringified node to the variable @savable_sgf.
     def write_node node=@root
-      @sgf_string << ";"
+      @savable_sgf << ";"
       unless node.properties.empty?
         properties = ""
         node.properties.each do |k, v|
           v_escaped = v.gsub("]", "\\]")
           properties += "#{k.to_s}[#{v_escaped}]"
         end
-        @sgf_string << "#{properties}"
+        @savable_sgf << "#{properties}"
       end
 
       case node.children.size
         when 0
-          @sgf_string << ")"
+          @savable_sgf << ")"
         when 1
           write_node node.children[0]
         else
           node.each_child do |child|
-            @sgf_string << "("
+            @savable_sgf << "("
             write_node child
           end
       end
     end
 
-    # Used to load and parse a string if a string was given.
     def load_string string
       @sgf = string
-      parse unless @sgf.empty?
-    end # load_string
+    end
 
-    # Used to load and parse a file if a file was given.
     def load_file filename
-      @sgf = ""
       File.open(filename, 'r') { |f| @sgf = f.read }
-      parse unless @sgf.empty?
-    end # load_file
+    end 
 
     # Traverse the tree in preorder fashion, starting with the @root node if
     # no node is given, and activating the passed block on each.

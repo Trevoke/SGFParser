@@ -16,7 +16,6 @@ describe "SgfParser::Tree" do
     @new = 'sample_sgf/ff4_ex_saved.sgf'
     @tree.save :filename => @new
     @tree2 = SgfParser::Tree.new :filename => @new
-    
     @tree2.should == @tree
   end
 

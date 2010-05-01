@@ -5,13 +5,13 @@ Email : aldric~at~trevoke.net (feedback very welcome!)
 
 SGF: all formats (but untested with FF < 4)
 
-Ruby: >1.8.7 (may work with 1.8.6)
+Ruby: >=1.8.7 (may work with 1.8.6)
 
 =QUICK HOWTO
 Example:
  require 'sgf_parser'
  tree = SgfParser::Tree.new :filename => File
- tree = SgfParser::Tree.new :sgf_string => String
+ tree = SgfParser::Tree.new :string => String
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
 
@@ -25,8 +25,10 @@ A single property can be called, like the comments, for instance, like so:
 
 The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
 
-The 'SGF Indenter', the purpose of which is to make the actual SGF file more
-human readable, is working.
+There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
+ require 'sgf_parser/sgfindent' # Done automatically if you require 'sgf_parser'
+ sgf = SgfParser::Indenter.new 'some_ugly_file.sgf' # Will output to the console
+ sgf = SgfParser::Indenter.new 'some_ugly_file.sgf' 'pretty.sgf' # Sends the result to a new file.
 
 ___
 
