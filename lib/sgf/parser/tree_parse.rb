@@ -3,9 +3,8 @@ require 'stringio'
 module SgfParser
   class Tree
 
-    private
+    #private
 
-    # Creates a tree (truly, a linked list) from @sgf.
     def parse
       while char = next_character
         case char
@@ -65,14 +64,29 @@ module SgfParser
 
     def get_property
       buffer = ""
-      while true
-        next_bit = @stream.sysread(1)
-        break if next_bit == "]"
-        next_bit << @stream.sysread(1) if next_bit == "\\"
-        next_bit = "]" if next_bit == "\\]"
-        buffer << next_bit
+      while char = next_character
+        case char
+          when "]" then break unless multiple_properties?
+          when "\\" then
+            char << next_character
+            char = "]" if char == "\\]"
+        end
+
+        buffer << char
       end
-      buffer
+      "[#{buffer}]"
+    end
+
+    def multiple_properties?
+      multiple_properties = false
+      if char = next_character
+        char = next_character if char == "\n"
+        if char == "["
+          multiple_properties = true
+        end
+        @stream.pos -= 1
+        multiple_properties
+      end
     end
 
     def store_character(char)

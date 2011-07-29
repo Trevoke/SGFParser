@@ -1,19 +1,10 @@
 module SgfParser
 
-  # This is a placeholder for the root of the gametree(s). It's an abstraction,
-  # but it allows an easy way to save, iterate over, and compare other trees.
-  # Accessors: tree.root
   class Tree
     include Enumerable
 
     attr_accessor :root
 
-    # Create a new tree. Can also be used to load a tree from either a file or
-    # a string. Raises an error if both are provided.
-    # options: \n
-    # :filename => filename \n
-    # !!! OR !!! \n
-    # :string => string \n
     def initialize args={}
       @root = Node.new
       @sgf = ""
@@ -27,10 +18,9 @@ module SgfParser
       parse unless @sgf.empty?
     end
 
-    # Iterates over the tree, node by node, in preorder fashion.
-    # Does not support other types of iteration, but may in the future.
-    # tree.each { |node| puts "I am node. Hear me #{node.properties} !"}
     def each order=:preorder, &block
+      # I know, I know. SGF is only preorder. Well, it's implemented, ain't it?
+      # Stop complaining.
       case order
         when :preorder
           preorder @root, &block
@@ -51,10 +41,8 @@ module SgfParser
     # tree.save :filename => file_name
     def save args={}
       raise ArgumentError, "No file name provided" if args[:filename].nil?
-      # SGF files are trees stored in pre-order traversal.
       @savable_sgf = "("
       @root.children.each { |child| write_node child }
-      # write_node @root
       @savable_sgf << ")"
 
       File.open(args[:filename], 'w') { |f| f << @savable_sgf }
@@ -67,11 +55,12 @@ module SgfParser
       @savable_sgf << ";"
       unless node.properties.empty?
         properties = ""
-        node.properties.each do |k, v|
-          v_escaped = v.gsub("]", "\\]")
-          properties += "#{k.to_s}[#{v_escaped}]"
+        node.properties.each do |identity, property|
+          new_property = property[1...-1]
+          new_property.gsub!("]", "\\]") if identity == "C"
+          properties += "#{identity.to_s}[#{new_property}]"
         end
-        @savable_sgf << "#{properties}"
+        @savable_sgf << properties
       end
 
       case node.children.size
@@ -104,13 +93,13 @@ module SgfParser
           preorder(child, &block)
         end
       end
-    end # preorder      
+    end
 
     def method_missing method_name, *args
       output = @root.children[0].properties[method_name]
       super(method_name, args) if output.nil?
       output
-    end # method_missing    
+    end
 
   end
 

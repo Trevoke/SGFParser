@@ -34,7 +34,6 @@ Gem::Specification.new do |s|
      "sample_sgf/redrose-tartrate.sgf",
      "sample_usage/parsing_files.rb",
      "spec/node_spec.rb",
-     "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/tree_spec.rb",
      "tryme.rb"
