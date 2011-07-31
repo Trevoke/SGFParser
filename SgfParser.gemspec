@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
     "sample_usage/parsing_files.rb",
     "spec/node_spec.rb",
     "spec/spec_helper.rb",
-    "spec/tree_parser_spec.rb",
+    "spec/parser_spec.rb",
     "spec/tree_spec.rb"
   ]
   s.homepage = %q{http://github.com/Trevoke/SGFParser}

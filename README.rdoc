@@ -1,7 +1,7 @@
 =INFORMATION
 Author: Aldric Giacomoni
 
-Email : aldric~at~trevoke.net (feedback very welcome!)
+Email : aldric@at@trevoke.net (feedback very welcome!)
 
 SGF: all formats (but untested with FF < 4)
 
@@ -9,9 +9,9 @@ Ruby: >=1.8.7 (may work with 1.8.6)
 
 =QUICK HOWTO
 Example:
- require 'sgf_parser'
- tree = SgfParser::Tree.new :filename => File
- tree = SgfParser::Tree.new :string => String
+ require 'sgf'
+ tree = SGF::Parser.new file_or_string
+
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
 
@@ -22,17 +22,20 @@ For any node, one can summon the properties as such:
  node.properties # => returns a hash of the properties.
 A single property can be called, like the comments, for instance, like so:
  node.C # => returns the comments for this node.
+ node.comments # => syntactic sugar
 
 The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
 
 There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
- require 'sgf_parser/sgfindent' # Done automatically if you require 'sgf_parser'
- sgf = SgfParser::Indenter.new 'some_ugly_file.sgf' # Will output to the console
- sgf = SgfParser::Indenter.new 'some_ugly_file.sgf' 'pretty.sgf' # Sends the result to a new file.
+ require 'sgf/sgfindent' # Done automatically if you require 'sgf_parser'
+ sgf = SGF::Indenter.new 'some_ugly_file.sgf' # Will output to the console
+ sgf = SGF::Indenter.new 'some_ugly_file.sgf' 'pretty.sgf' # Sends the result to a new file.
 
 ___
 
 TODO
-? Create a "Game" class, and if a whole set of () exists, then I have a game?
-That way maybe I can easily go to multiple games stored in a single SGF file?
-Mostly syntactic sugar, but may be worth implementing.
+- Create a "Game" class that wraps a complete set of () for ease of use
+- implement node.next to go to node.children[0] because who wants to type that anyway?
+- examine/fix the smell that when you use add_children, it also sets the parent on the passed-in nodes.
+- fix the multiple properties bug in the SGF indenter as well
+

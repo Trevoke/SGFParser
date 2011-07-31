@@ -19,7 +19,7 @@ module SGF
     def add_children *nodes
       nodes.flatten!
       raise "Non-node child given!" if nodes.any? { |node| node.class != Node }
-      nodes.each { |node| node.parent = self } #TODO: this is a smell
+      nodes.each { |node| node.parent = self }
       @children.concat nodes
     end
 
@@ -47,9 +47,14 @@ module SGF
     private
 
     def method_missing method_name, *args
-      output = @properties[method_name.to_s.upcase]
-      super(method_name, args) if output.nil?
-      output
+      property = method_name.to_s.upcase
+      if property[/(.*?)=$/]
+        @properties[$1] = args[0]
+      else
+        output = @properties[property]
+        super(method_name, args) if output.nil?
+        output
+      end
     end
 
   end
