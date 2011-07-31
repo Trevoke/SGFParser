@@ -1,9 +1,7 @@
 require 'stringio'
 
-module SgfParser
+module SGF
   class Tree
-
-    #private
 
     def parse
       while char = next_character

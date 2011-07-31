@@ -4,7 +4,7 @@
 require '../lib/sgf_parser'
 
 
-Dir.glob('../sample_sgf/*').each do |file|
+Dir.glob('../data/*').each do |file|
   next if File.directory? file # Let's not touch directories.
   next if File.extname(file) != ".sgf" # If it's not an SGF file, let's not touch it.
   sgf = SgfParser::Tree.new :filename => file

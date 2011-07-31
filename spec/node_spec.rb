@@ -1,12 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "SgfParser::Node" do
+
+  include SGF
+
   before :each do
-    @node = SgfParser::Node.new
+    @node = Node.new
   end
 
   it "should be a valid node" do
-    @node.class.should == SgfParser::Node
+    @node.class.should == Node
     @node.properties.should == {}
     @node.parent.should == nil
     @node.children.should == []
@@ -18,15 +21,15 @@ describe "SgfParser::Node" do
   end
 
   it "should link to a parent" do
-    parent = SgfParser::Node.new
+    parent = Node.new
     @node.parent = parent
     @node.parent.should == parent
   end
 
   it "should link to children" do
-    child1 = SgfParser::Node.new
-    child2 = SgfParser::Node.new
-    child3 = SgfParser::Node.new
+    child1 = Node.new
+    child2 = Node.new
+    child3 = Node.new
     @node.add_children child1, child2, child3
     @node.children.should == [child1, child2, child3]
   end

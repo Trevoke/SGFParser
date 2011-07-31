@@ -1,4 +1,4 @@
-module SgfParser
+module SGF
 
   class Tree
     include Enumerable
@@ -8,6 +8,7 @@ module SgfParser
     def initialize args={}
       @root = Node.new
       @sgf = ""
+
       raise ArgumentError, "Both file and string provided" if args[:filename] && args[:string]
       if args[:filename]
         load_file args[:filename]

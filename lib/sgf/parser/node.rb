@@ -1,26 +1,25 @@
-module SgfParser
+module SGF
 
   class Node
 
     attr_accessor :parent, :children, :properties
 
-    # Creates a new node. Options which can be passed in are:
+    # Creates a new node. Arguments which can be passed in are:
     # :parent => parent_node (nil by default)
-    # : children => [list, of, children] (empty array by default)
+    # :children => [list, of, children] (empty array by default)
     # :properties => {hash_of => properties} (empty hash by default)
     def initialize args={}
       @parent = args[:parent]
       @children = []
-      add_children args[:children] if !args[:children].nil?
+      add_children args[:children] if args[:children]
       @properties = Hash.new
-      @properties.merge! args[:properties] if !args[:properties].nil?
+      @properties.merge! args[:properties] if args[:properties]
     end
 
     def add_children *nodes
       nodes.flatten!
-      raise "Non-node child given!" if nodes.find { |node| node.class != Node }
-      # This node becomes the proud parent of one or more node!
-      nodes.each { |node| node.parent = self }
+      raise "Non-node child given!" if nodes.any? { |node| node.class != Node }
+      nodes.each { |node| node.parent = self } #TODO: this is a smell
       @children.concat nodes
     end
 
