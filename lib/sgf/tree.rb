@@ -5,18 +5,9 @@ module SGF
 
     attr_accessor :root
 
-    def initialize args={}
+    def initialize sgf
       @root = Node.new
-      @sgf = ""
-
-      raise ArgumentError, "Both file and string provided" if args[:filename] && args[:string]
-      if args[:filename]
-        load_file args[:filename]
-      elsif args[:string]
-        load_string args[:string]
-      end
-
-      parse unless @sgf.empty?
+      @sgf = sgf
     end
 
     def each order=:preorder, &block
@@ -76,14 +67,6 @@ module SGF
           end
       end
     end
-
-    def load_string string
-      @sgf = string
-    end
-
-    def load_file filename
-      File.open(filename, 'r') { |f| @sgf = f.read }
-    end 
 
     # Traverse the tree in preorder fashion, starting with the @root node if
     # no node is given, and activating the passed block on each.

@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     "lib/sgf/parser/properties.rb",
     "lib/sgf/parser/tree.rb",
     "lib/sgf/parser/tree_parse.rb",
-    "lib/sgf/sgf_indent.rb",
+    "lib/sgf/indenter.rb",
     "lib/sgf/sgfindent.rb",
     "lib/sgf_parser.rb",
     "data/ff4_ex.sgf",

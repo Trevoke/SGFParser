@@ -1,7 +1,17 @@
 require 'stringio'
 
 module SGF
-  class Tree
+  class Parser
+
+    def initialize sgf
+      @sgf = stringified(sgf)
+      @tree = Tree.new sgf
+      @root = @tree.root
+    end
+
+    def stringified sgf
+      File.exist?(sgf) ? File.read(sgf) : sgf
+    end
 
     def parse
       while char = next_character
@@ -13,6 +23,7 @@ module SGF
           else store_character(char)
         end
       end
+      @tree
     end
 
     def next_character

@@ -34,4 +34,12 @@ describe "SgfParser::Node" do
     @node.children.should == [child1, child2, child3]
   end
 
+  it "should link to children, who should get new parents" do
+    child1 = Node.new
+    child2 = Node.new
+    child3 = Node.new
+    @node.add_children child1, child2, child3
+    @node.children.each { |child| child.parent.should == @node }
+  end
+
 end
