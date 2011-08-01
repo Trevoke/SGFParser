@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{SgfParser}
-  s.version = "0.9.1"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aldric Giacomoni"]
-  s.date = %q{2011-07-29}
+  s.date = %q{2011-08-01}
   s.description = %q{SGFParser is a library that parses and saves SGF (Smart Game Format) files.}
   s.email = %q{aldric@trevoke.net}
   s.extra_rdoc_files = [
@@ -27,22 +27,21 @@ Gem::Specification.new do |s|
     "Rakefile",
     "SgfParser.gemspec",
     "VERSION",
-    "lib/sgf/parser/node.rb",
-    "lib/sgf/parser/properties.rb",
-    "lib/sgf/parser/tree.rb",
-    "lib/sgf/parser/tree_parse.rb",
+    "lib/sgf.rb",
     "lib/sgf/indenter.rb",
-    "lib/sgf/sgfindent.rb",
-    "lib/sgf_parser.rb",
-    "data/ff4_ex.sgf",
-    "data/ff4_ex_saved.sgf",
-    "data/redrose-tartrate.sgf",
-    "data/simple.sgf",
-    "data/simple_saved.sgf",
+    "lib/sgf/node.rb",
+    "lib/sgf/parser.rb",
+    "lib/sgf/properties.rb",
+    "lib/sgf/tree.rb",
     "sample_usage/parsing_files.rb",
+    "spec/data/ff4_ex.sgf",
+    "spec/data/ff4_ex_saved.sgf",
+    "spec/data/redrose-tartrate.sgf",
+    "spec/data/simple.sgf",
+    "spec/data/simple_saved.sgf",
     "spec/node_spec.rb",
-    "spec/spec_helper.rb",
     "spec/parser_spec.rb",
+    "spec/spec_helper.rb",
     "spec/tree_spec.rb"
   ]
   s.homepage = %q{http://github.com/Trevoke/SGFParser}
@@ -56,15 +55,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
     end
   else
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
   end
 end
