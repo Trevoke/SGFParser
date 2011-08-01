@@ -1,6 +1,7 @@
 $: << File.dirname(__FILE__)
 
 require 'yaml'
+require 'sgf/iterator'
 require 'sgf/properties'
 require 'sgf/node'
 require 'sgf/tree'

@@ -1,63 +1,25 @@
 require 'stringio'
 
 module SGF
-  class Parser
+  class Parser < Iterator
 
     def initialize sgf
-      @sgf = stringified(sgf)
-      @tree = Tree.new sgf
-      @root = @tree.root
+      tree = Tree.new(sgf)
+      @root = tree.root
+      super sgf, tree
     end
 
-    def stringified sgf
-      File.exist?(sgf) ? File.read(sgf) : sgf
-    end
-
-    def parse
-      while char = next_character
-        case char
-          when '(' then store_branch
-          when ')' then fetch_branch
-          when ';' then store_node_and_create_new_node
-          when '[' then get_and_store_property
-          else store_character(char)
-        end
-      end
-      @tree
-    end
-
-    def next_character
-      character_available? && @stream.sysread(1)
-    end
-
-    def character_available?
-      @stream ||= StringIO.new clean_string, 'r'
-      !@stream.eof?
-    end
-
-    def clean_string
-      @sgf.gsub! "\\\\n\\\\r", ""
-      @sgf.gsub! "\\\\r\\\\n", ""
-      @sgf.gsub! "\\\\r", ""
-      @sgf.gsub! "\\\\n", ""
-      @sgf
-    end    
-
-    def store_branch
+    def new_branch
       @branches ||= []
       @branches.unshift @current_node
     end
 
-    def current_node
-      @current_node ||= @root
-    end    
-
-    def fetch_branch
+    def close_branch
       @current_node = @branches.shift
       clear_temporary_data
     end
 
-    def store_node_and_create_new_node
+    def switch_to_new_node
       parent = current_node
       @current_node = Node.new :parent => parent
       parent.add_properties content
@@ -65,7 +27,7 @@ module SGF
       clear_temporary_data
     end
 
-    def get_and_store_property
+    def add_property
       @content[@identity] ||= ""
       @content[@identity] << get_property
       @identity = ""
@@ -105,6 +67,10 @@ module SGF
     def clear_temporary_data
       @content.clear
       @identity = ""
+    end
+
+    def current_node
+      @current_node ||= @root
     end
 
     def content
