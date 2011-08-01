@@ -42,8 +42,6 @@ module SGF
       @new_string << ";"
     end
 
-    #TODO Fix it more. Add _ONE_ set of indentation if there are newlines,
-    #TODO Not one set for every newline.
     def add_property
       buffer = "["
       while true
