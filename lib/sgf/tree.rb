@@ -7,10 +7,9 @@ module SGF
 
     # This is not something a user is ever going to initialize - interaction will be done
     # through the Parser class.
-    def initialize sgf
+    def initialize
       @root = Node.new
       @current_node = @root
-      @sgf = sgf
     end
 
     def each order=:preorder, &block

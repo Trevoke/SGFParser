@@ -2,8 +2,12 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "SGF::Parser" do
 
+  before :each do
+    @parser = SGF::Parser.new
+  end
+
   it "should have FF in the first node" do
-    tree = SGF::Parser.new('spec/data/ff4_ex.sgf').parse
+    tree = @parser.parse 'spec/data/ff4_ex.sgf'
     tree.root.children[0].properties.keys.should include("FF")
   end
 
@@ -11,10 +15,5 @@ describe "SGF::Parser" do
     pending "To be coded later"
   end
 
-  it "should parse properly the AW property" do
-    sgf = "dd][de][ef]"
-    parser = SGF::Parser.new sgf
-    parser.get_property.should == "[dd][de][ef]"
-  end
 
 end

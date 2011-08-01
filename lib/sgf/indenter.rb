@@ -7,10 +7,10 @@ module SGF
   # Usage: SgfParser::Indenter.new infile, outfile
   class Indenter < Iterator
 
-    def initialize sgf
+    def initialize
       @new_string = ""
       @indentation = 0
-      super sgf, @new_string
+      super @new_string
     end
 
     def new_branch

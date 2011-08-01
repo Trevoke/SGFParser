@@ -3,10 +3,10 @@ require 'stringio'
 module SGF
   class Parser < Iterator
 
-    def initialize sgf
-      tree = Tree.new(sgf)
+    def initialize
+      tree = Tree.new
       @root = tree.root
-      super sgf, tree
+      super tree
     end
 
     def new_branch
@@ -28,8 +28,8 @@ module SGF
     end
 
     def add_property
-      @content[@identity] ||= ""
-      @content[@identity] << get_property
+      content[identity] ||= ""
+      content[identity] << get_property
       @identity = ""
     end
 
@@ -61,7 +61,7 @@ module SGF
     end
 
     def store_character(char)
-      @identity << char unless char == "\n"
+      identity << char unless char == "\n"
     end
 
     def clear_temporary_data

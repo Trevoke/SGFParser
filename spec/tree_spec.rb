@@ -3,7 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "SGF::Tree" do
 
   before :each do
-    @tree = SGF::Parser.new('spec/data/ff4_ex.sgf').parse
+    @parser = SGF::Parser.new
+    @tree = @parser.parse('spec/data/ff4_ex.sgf')
   end
 
   it "should load a file properly" do
@@ -13,17 +14,17 @@ describe "SGF::Tree" do
   end
 
   it "should save a simple tree properly" do
-    tree = SGF::Parser.new('spec/data/simple.sgf').parse
+    tree = @parser.parse 'spec/data/simple.sgf'
     new_file = 'spec/data/simple_saved.sgf'
     tree.save :filename => new_file
-    tree2 = SGF::Parser.new(new_file).parse
+    tree2 = @parser.parse new_file
     tree.should == tree2
   end
 
   it "should save the sample SGF properly" do
     new_file = 'spec/data/ff4_ex_saved.sgf'
     @tree.save :filename => new_file
-    tree2 = SGF::Parser.new(new_file).parse
+    tree2 = @parser.parse new_file
     tree2.should == @tree
   end
 

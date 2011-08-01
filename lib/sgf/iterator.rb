@@ -1,8 +1,8 @@
 require 'stringio'
+
 module SGF
   class Iterator
-    def initialize sgf, object
-      @sgf = stringified(sgf)
+    def initialize object
       @object = object
     end
 
@@ -10,7 +10,8 @@ module SGF
       File.exist?(sgf) ? File.read(sgf) : sgf
     end
 
-    def parse
+    def parse sgf
+      @sgf = stringified sgf
       while char = next_character
         case char
           when '(' then new_branch
