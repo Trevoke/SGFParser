@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "SgfParser::Node" do
+describe "SGF::Node" do
 
   before :each do
     @node = SGF::Node.new

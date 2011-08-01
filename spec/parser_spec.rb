@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "SgfParser::Tree.parse" do
+describe "SGF::Parser" do
 
   it "should have FF in the first node" do
     tree = SGF::Parser.new('spec/data/ff4_ex.sgf').parse

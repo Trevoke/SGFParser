@@ -3,10 +3,13 @@ module SGF
   class Tree
     include Enumerable
 
-    attr_accessor :root
+    attr_accessor :root, :current_node
 
+    # This is not something a user is ever going to initialize - interaction will be done
+    # through the Parser class.
     def initialize sgf
       @root = Node.new
+      @current_node = @root
       @sgf = sgf
     end
 
@@ -38,6 +41,10 @@ module SGF
       @savable_sgf << ")"
 
       File.open(args[:filename], 'w') { |f| f << @savable_sgf }
+    end
+
+    def next_node
+      @current_node = @current_node.children[0]
     end
 
     private

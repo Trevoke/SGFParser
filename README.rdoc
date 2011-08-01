@@ -35,10 +35,8 @@ ___
 
 TODO
 - Create a "Game" class that wraps a complete set of () for ease of use
-- implement node.next to go to node.children[0] because who wants to type that anyway?
-- implement a 'current' node in Tree so we don't have to jump from node to node. This means..
-    - implement tree.next instead of node.next for tree.current_node.children[0]
 - examine/fix the smell that when you use add_children, it also sets the parent on the passed-in nodes.
 - fix the multiple properties bug in the SGF indenter as well
 - see how much of the parser code the indenter can use, since it's basically the same logic
-
+- handle merging of games together (they are stored in the same tree and become a variation
+    when they first become distinguishable from all the other games in the tree).
