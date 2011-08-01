@@ -17,9 +17,9 @@ tmtags
 coverage
 rdoc
 pkg
+.bundle
 
 ## PROJECT::SPECIFIC
-rdoc/
 
 ## Rubymine
 .idea/*
