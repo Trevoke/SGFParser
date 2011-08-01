@@ -10,7 +10,8 @@ Ruby: >=1.8.7 (may work with 1.8.6)
 =QUICK HOWTO
 Example:
  require 'sgf'
- tree = SGF::Parser.new file_or_string
+ parser = SGF::Parser.new
+ tree = parser.parse filename_or_string # => Yes, it's magic!
 
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
@@ -27,9 +28,9 @@ A single property can be called, like the comments, for instance, like so:
 The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
 
 There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
- require 'sgf/sgfindent' # Done automatically if you require 'sgf_parser'
- sgf = SGF::Indenter.new 'some_ugly_file.sgf' # Will output to the console
- sgf = SGF::Indenter.new 'some_ugly_file.sgf' 'pretty.sgf' # Sends the result to a new file.
+ require 'sgf/indenter' # Done automatically if you require 'sgf'
+ indenter = SGF::Indenter.new 'some_ugly_file.sgf' 
+ new_string = indenter.parse 'some_ugly_file.sgf' 
 
 ___
 
