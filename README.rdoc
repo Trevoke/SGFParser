@@ -19,16 +19,18 @@ Example:
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
 
 Most games will just care about, say,
- tree.root.children[0] which is the first node of the first gametree.
+ game = tree.games.first #=> The first, most often only, gametree in the SGF file
+ node = game.current_node #=> By default, this is the first node, which should have the FF property, and so on.
 
 For any node, one can summon the properties as such:
- node.properties # => returns a hash of the properties.
+ node.properties #=> returns a hash of the properties.
 A single property can be called, like the comments, for instance, like so:
- node.C # => returns the comments for this node.
- node.pw # => returns the value of PW (Player White) if it exists on this node.
- node.comments # => syntactic sugar
-
-The library currently uses method_missing to painlessly return the data. I must admit that this is both clever coding and laziness on my part.
+ node.C #=> returns the comments for this node
+ node.pw #=> returns the value of PW (Player White) if it exists on this node
+ node["AW"] #=> same as node.aw or node.properties["AW"]
+ node[:AW] #=> same as the previous line
+ node.comments #=> syntactic sugar, only works for comments
+ node.comment #=> same as the previous line
 
 There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
  require 'sgf/indenter' # Done automatically if you require 'sgf'
