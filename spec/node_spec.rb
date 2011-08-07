@@ -40,7 +40,7 @@ describe "SGF::Node" do
     @node.children.each { |child| child.parent.should == @node }
   end
 
-  it "should allow properties to be added to" do
+  it "should allow concatenation of properties" do
     @node.add_properties "TC" => "Hello,"
     @node.add_properties "TC" => " world!"
     @node.properties["TC"].should == "Hello, world!"
@@ -59,6 +59,12 @@ describe "SGF::Node" do
     @node.re.should == "This is also made up"
     @node.re = "And that too"
     @node.re.should == "And that too"
+  end
+
+  it "should implement [] as a shortcut to read properties" do
+    @node.add_properties "PB" => "Dosaku"
+    @node["PB"].should == "Dosaku"
+    @node[:PB].should == "Dosaku"
   end
 
 end

@@ -1,6 +1,10 @@
 require 'stringio'
 
 module SGF
+  #Welcome to the magical parser!
+  #This will give you a Tree object to manipulate as you see fit.
+  #parser = SGF::Parser.new
+  #tree = parser.parse(string_or_filename)
   class Parser < Iterator
 
     def initialize
@@ -8,6 +12,8 @@ module SGF
       @root = tree.root
       super tree
     end
+
+    private
 
     def new_branch
       @branches ||= []

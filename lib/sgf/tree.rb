@@ -1,5 +1,7 @@
 module SGF
 
+  #Tree holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
+  #Somehow this feels like it should be split into another class or two...
   class Tree
     include Enumerable
 
@@ -12,6 +14,7 @@ module SGF
       @current_node = @root
     end
 
+    #Iterate through all the nodes in preorder fashion
     def each order=:preorder, &block
       # I know, I know. SGF is only preorder. Well, it's implemented, ain't it?
       # Stop complaining.
@@ -42,11 +45,25 @@ module SGF
       File.open(args[:filename], 'w') { |f| f << @savable_sgf }
     end
 
+    #A simple way to go to the next node in the same branch of the tree
     def next_node
       @current_node = @current_node.children[0]
     end
 
+    #Returns an array of the Game objects in this tree.
+    def games
+      @games ||= populate_game_array
+    end
+
     private
+
+    def populate_game_array
+      games = []
+      @root.children.each do |first_node_of_gametree|
+        games << Game.new(first_node_of_gametree)
+      end
+      games
+    end
 
     # Adds a stringified node to the variable @savable_sgf.
     def write_node node=@root

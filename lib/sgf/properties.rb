@@ -1,4 +1,3 @@
-# A parser for SGF Files. Main usage: SGF::Tree.new :filename => file_name
 module SgfParser
 
 #  http://www.red-bean.com/sgf/proplist.html
@@ -90,7 +89,7 @@ WT   White team      game-info        simpletext }
     hash[id] = [desc, property_type, property_value]
   end
 
-  # All this work for this minuscule line!
+  #This holds a hash of all the official properties for FF4
   PROPERTIES = hash
 
 end

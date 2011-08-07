@@ -2,9 +2,9 @@ require 'stringio'
 
 module SGF
 
-  # This indents an SGF file to make it more readable. It outputs to the screen
-  # by default, but can be given a file as output.
-  # Usage: SgfParser::Indenter.new infile, outfile
+  # This indents an SGF file to make it more readable.
+  #indenter = SGF::Indenter.new
+  #indented_string = indenter.parse(string_or_filename)
   class Indenter < Iterator
 
     def initialize
@@ -12,6 +12,8 @@ module SGF
       @indentation = 0
       super @new_string
     end
+
+    private
 
     def new_branch
       next_line

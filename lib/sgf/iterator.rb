@@ -1,15 +1,19 @@
 require 'stringio'
 
 module SGF
+
+  #This is a Template class for the Indenter and the Parser
   class Iterator
+
+    #Initialize with some object which will be returned after parsing.
+    #Best if it's a node or a string.. Or I have no idea what will happen.
+    #It'll probably blow up in your face.
+    #I mean, let's be serious, you shouldn't be using this _anyway_.
     def initialize object
       @object = object
     end
 
-    def stringified sgf
-      File.exist?(sgf) ? File.read(sgf) : sgf
-    end
-
+    #It takes as argument an SGF string or filename, and will figure out what to do with the input.
     def parse sgf
       @sgf = stringified sgf
       while char = next_character
@@ -22,6 +26,12 @@ module SGF
         end
       end
       @object
+    end
+
+    private
+
+    def stringified sgf
+      File.exist?(sgf) ? File.read(sgf) : sgf
     end
 
     def next_character

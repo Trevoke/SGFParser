@@ -43,4 +43,8 @@ describe "SGF::Tree" do
     @tree.current_node.should == @tree.root.children[0]
   end
 
+  it "should have two gametrees" do
+    @tree.games.size.should == 2
+  end
+
 end
