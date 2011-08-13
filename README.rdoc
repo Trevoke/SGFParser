@@ -41,6 +41,7 @@ ___
 
 TODO
 - Move methods from the Tree class to the Game class as appropriate
+- Implement 'each' for Game and have Tree use that 'each' for iteration.
 - examine/fix the smell that when you use add_children, it also sets the parent on the passed-in nodes.
 - fix the multiple properties bug in the SGF indenter as well if necessary
 - handle merging of games together (they are stored in the same tree and become a variation when they first become distinguishable from all the other games in the tree).

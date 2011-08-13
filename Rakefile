@@ -7,7 +7,7 @@ begin
     gem.name = "SgfParser"
     gem.summary = %Q{A library for working with SGF files.}
     gem.description = %Q{SGFParser is a library that parses and saves SGF (Smart Game Format) files.}
-    gem.email = "aldric@trevoke.net"
+    gem.email = "trevoke@gmail.com"
     gem.homepage = "http://github.com/Trevoke/SGFParser"
     gem.authors = ["Aldric Giacomoni"]
     gem.add_development_dependency "rspec", ">= 1.2.9"

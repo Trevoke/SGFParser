@@ -28,21 +28,6 @@ describe "SGF::Tree" do
     tree2.should == @tree
   end
 
-  it "should have 'root' as the default current node" do
-    @tree.current_node.should == @tree.root
-  end
-
-  it "should have a way of setting an arbitrary node to the current node" do
-    @tree.current_node = @tree.root.children[0].children[3]
-    @tree.current_node.properties.keys.sort.should == ["B", "C", "N"]
-    @tree.current_node.children.size.should == 6
-  end
-
-  it "should have a nice way to go to children[0]" do
-    @tree.next_node
-    @tree.current_node.should == @tree.root.children[0]
-  end
-
   it "should have two gametrees" do
     @tree.games.size.should == 2
   end

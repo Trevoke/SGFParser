@@ -45,10 +45,6 @@ module SGF
       File.open(args[:filename], 'w') { |f| f << @savable_sgf }
     end
 
-    #A simple way to go to the next node in the same branch of the tree
-    def next_node
-      @current_node = @current_node.children[0]
-    end
 
     #Returns an array of the Game objects in this tree.
     def games
