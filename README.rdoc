@@ -35,13 +35,11 @@ A single property can be called, like the comments, for instance, like so:
 There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
  require 'sgf/indenter' # Done automatically if you require 'sgf'
  indenter = SGF::Indenter.new 'some_ugly_file.sgf' 
- new_string = indenter.parse 'some_ugly_file.sgf' 
+ new_string = indenter.parse 'some_ugly_file.sgf'
 
 ___
 
 TODO
-- Move methods from the Tree class to the Game class as appropriate
-- Implement 'each' for Game and have Tree use that 'each' for iteration.
 - examine/fix the smell that when you use add_children, it also sets the parent on the passed-in nodes.
 - fix the multiple properties bug in the SGF indenter as well if necessary
 - handle merging of games together (they are stored in the same tree and become a variation when they first become distinguishable from all the other games in the tree).

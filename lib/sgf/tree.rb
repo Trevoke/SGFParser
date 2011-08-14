@@ -14,14 +14,8 @@ module SGF
       @current_node = @root
     end
 
-    #Iterate through all the nodes in preorder fashion
-    def each order=:preorder, &block
-      # I know, I know. SGF is only preorder. Well, it's implemented, ain't it?
-      # Stop complaining.
-      case order
-        when :preorder
-          preorder @root, &block
-      end
+    def each
+      games.each {|game| yield game}
     end
 
     # Compares a tree to another tree, node by node.
@@ -84,17 +78,6 @@ module SGF
             @savable_sgf << "("
             write_node child
           end
-      end
-    end
-
-    # Traverse the tree in preorder fashion, starting with the @root node if
-    # no node is given, and activating the passed block on each.
-    def preorder node=@root, &block
-      # stop processing if the block returns false
-      if yield node then
-        node.each_child do |child|
-          preorder(child, &block)
-        end
       end
     end
 
