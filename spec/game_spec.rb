@@ -40,9 +40,3 @@ describe "SGF::Game" do
   end
 
 end
-
-def parse file
-  parser = SGF::Parser.new
-  tree = parser.parse file
-  tree.games.first
-end

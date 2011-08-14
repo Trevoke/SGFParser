@@ -7,6 +7,15 @@ describe "SGF::Tree" do
     @tree = @parser.parse('spec/data/ff4_ex.sgf')
   end
 
+  it "should use preorder traversal for each" do
+    @tree = parse 'spec/data/example1.sgf'
+    array = []
+    @tree.each {|node| array << node}
+    array[0].c.should == "[root]"
+    array[1].c.should == "[a]"
+    array[2].c.should == "[b]"
+  end
+
   it "should load a file properly" do
     @tree.class.should == SGF::Tree
     @tree.root.children.size.should == 2

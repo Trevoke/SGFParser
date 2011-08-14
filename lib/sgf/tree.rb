@@ -13,9 +13,9 @@ module SGF
       @root = Node.new
       @current_node = @root
     end
-
+  
     def each
-      games.each {|game| yield game}
+      games.each {|game| game.each {|node| yield node }}
     end
 
     # Compares a tree to another tree, node by node.
