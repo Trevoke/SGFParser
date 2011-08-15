@@ -3,8 +3,12 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "SGF::Tree" do
 
   before :each do
-    @parser = SGF::Parser.new
-    @tree = @parser.parse('spec/data/ff4_ex.sgf')
+    @tree = get_tree_from 'spec/data/ff4_ex.sgf'
+  end
+
+  after :each do
+    FileUtils.rm_f 'spec/data/simple_saved.sgf'
+    FileUtils.rm_f 'spec/data/ff4_ex_saved.sgf'
   end
 
   it "should use preorder traversal for each" do
@@ -24,17 +28,17 @@ describe "SGF::Tree" do
 
   it "should save a simple tree properly" do
     simple_sgf = 'spec/data/simple.sgf'
-    tree = get_tree_from simple_sgf #@parser.parse simple_sgf
+    tree = get_tree_from simple_sgf
     new_file = 'spec/data/simple_saved.sgf'
     tree.save :filename => new_file
-    tree2 = get_tree_from new_file#@parser.parse new_file
+    tree2 = get_tree_from new_file
     tree.should == tree2
   end
 
   it "should save the sample SGF properly" do
     new_file = 'spec/data/ff4_ex_saved.sgf'
     @tree.save :filename => new_file
-    tree2 = @parser.parse new_file
+    tree2 = get_tree_from new_file
     tree2.should == @tree
   end
 
