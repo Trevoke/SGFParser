@@ -45,7 +45,20 @@ module SGF
       @games ||= populate_game_array
     end
 
+    def inspect
+      out = "#<SGF::Tree:#{self.object_id}, "
+      out << "Games: #{games.count}, "
+      out << "Nodes: #{node_count}"
+      out << ">"
+    end
+
     private
+
+    def node_count
+      count = 0
+      each { |node| count += 1 }
+      count
+    end
 
     def populate_game_array
       games = []

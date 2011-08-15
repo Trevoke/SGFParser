@@ -8,7 +8,7 @@ describe "SGF::Tree" do
   end
 
   it "should use preorder traversal for each" do
-    @tree = parse 'spec/data/example1.sgf'
+    @tree = get_tree_from 'spec/data/example1.sgf'
     array = []
     @tree.each {|node| array << node}
     array[0].c.should == "[root]"
@@ -23,10 +23,11 @@ describe "SGF::Tree" do
   end
 
   it "should save a simple tree properly" do
-    tree = @parser.parse 'spec/data/simple.sgf'
+    simple_sgf = 'spec/data/simple.sgf'
+    tree = get_tree_from simple_sgf #@parser.parse simple_sgf
     new_file = 'spec/data/simple_saved.sgf'
     tree.save :filename => new_file
-    tree2 = @parser.parse new_file
+    tree2 = get_tree_from new_file#@parser.parse new_file
     tree.should == tree2
   end
 
@@ -39,6 +40,22 @@ describe "SGF::Tree" do
 
   it "should have two gametrees" do
     @tree.games.size.should == 2
+  end
+
+  it "should tell you the id of the object on inspect" do
+    @tree.inspect.should match /#{@tree.object_id}/
+  end
+
+  it "should tell you the class of the object on inspect" do
+    @tree.inspect.should match /SGF::Tree/
+  end
+
+  it "should tell you how many games it has on inspect" do
+    @tree.inspect.should match /Games: 2/
+  end
+
+  it "should tell you how many nodes it has on inspect" do
+    @tree.inspect.should match /Nodes: 62/
   end
 
 end

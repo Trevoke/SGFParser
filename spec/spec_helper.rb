@@ -4,8 +4,13 @@ require 'sgf'
 require 'rspec'
 require 'rspec/autorun'
 
-def parse file
+def get_first_game_from file
   parser = SGF::Parser.new
   tree = parser.parse file
   tree.games.first
+end
+
+def get_tree_from file
+  parser = SGF::Parser.new
+  parser.parse file
 end

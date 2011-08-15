@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "SGF::Game" do
 
   before :each do
-    @game = parse 'spec/data/ff4_ex.sgf'
+    @game = get_first_game_from 'spec/data/ff4_ex.sgf'
   end
 
   it "should hold the first node of the game" do
@@ -31,7 +31,7 @@ describe "SGF::Game" do
   end
 
   it "should use preorder traversal for each" do
-    @game = parse 'spec/data/example1.sgf'
+    @game = get_first_game_from 'spec/data/example1.sgf'
     array = []
     @game.each {|node| array << node}
     array[0].c.should == "[root]"

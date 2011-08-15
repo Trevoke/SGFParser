@@ -58,6 +58,14 @@ module SGF
     #Sometimes you think of 'comment' and not 'comments'
     alias :comment :comments
 
+    def inspect
+      out = "#<#{self.class}:#{self.object_id}, "
+      out << "Children: #{@children.size}, "
+      out << "Parent: " << (!!@parent).to_s
+      out << @properties.inspect
+      out << ">"
+    end
+
     private
 
     def method_missing method_name, *args
