@@ -34,7 +34,7 @@ A single property can be called, like the comments, for instance, like so:
 
 There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
  require 'sgf/indenter' # Done automatically if you require 'sgf'
- indenter = SGF::Indenter.new 'some_ugly_file.sgf' 
+ indenter = SGF::Indenter.new
  new_string = indenter.parse 'some_ugly_file.sgf'
 
 ___
