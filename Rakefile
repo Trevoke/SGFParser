@@ -1,24 +1,8 @@
 require 'rubygems'
 require 'rake'
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "SgfParser"
-    gem.summary = %Q{A library for working with SGF files.}
-    gem.description = %Q{SGFParser is a library that parses and saves SGF (Smart Game Format) files.}
-    gem.email = "trevoke@gmail.com"
-    gem.homepage = "http://github.com/Trevoke/SGFParser"
-    gem.authors = ["Aldric Giacomoni"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
-
+require "bundler/gem_tasks"
 require 'rspec/core/rake_task'
+
 desc 'Default: run specs.'
 task :default => :spec
 
