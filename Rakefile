@@ -31,18 +31,34 @@ desc "Manage gem versioning since Bundler doesn't do it"
 namespace 'version' do
   desc "Bump major version number"
   task "bump:major" do
-    #TODO implement bump:major
+    bump :major
   end
   desc "Bump minor version number"
   task "bump:minor" do
-    #TODO implement bump:minor
+    bump :minor
   end
   desc "Bump patch version number"
   task "bump:patch" do
-    #TODO implement bump:patch
+    bump :patch
   end
   desc "write out a specified version"
   task "write" do
     #TODO implement write
   end
+end
+
+def bump flag
+  version = {}
+  version[:major], version[:minor], version[:patch] = SGF::VERSION.split('.')
+  version[flag] = version[flag].to_i + 1
+  new_flags = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
+  File.open('lib/sgf/version.rb', 'w') { |f| f << new_version_file_string(new_flags) }
+  puts "New version is now #{new_flags}"
+end
+
+def new_version_file_string version_number
+  %Q{module SGF
+  VERSION = "#{version_number}"
+end
+}
 end
