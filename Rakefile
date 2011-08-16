@@ -26,3 +26,23 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+desc "Manage gem versioning since Bundler doesn't do it"
+namespace 'version' do
+  desc "Bump major version number"
+  task "bump:major" do
+    #TODO implement bump:major
+  end
+  desc "Bump minor version number"
+  task "bump:minor" do
+    #TODO implement bump:minor
+  end
+  desc "Bump patch version number"
+  task "bump:patch" do
+    #TODO implement bump:patch
+  end
+  desc "write out a specified version"
+  task "write" do
+    #TODO implement write
+  end
+end
