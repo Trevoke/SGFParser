@@ -41,7 +41,7 @@ namespace 'version' do
   task "bump:patch" do
     bump :patch
   end
-  desc "write out a specified version"
+  desc "write out a specified version (rake version:write[\"x.y.z\"])"
   task "write", :version do |task, args|
     change_version_to(args.version)
   end
