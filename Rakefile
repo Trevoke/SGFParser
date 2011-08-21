@@ -27,7 +27,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-desc "Manage gem versioning since Bundler doesn't do it"
+desc "Handle gem version"
 namespace 'version' do
   desc "Bump major version number"
   task "bump:major" do
@@ -42,74 +42,64 @@ namespace 'version' do
     bump :patch
   end
   desc "write out a specified version"
-  task "write" do
-    #TODO implement write
+  task "write", :version do |task, args|
+    change_version_to(args.version)
   end
 end
 
-def bump flag
-  version = {}
-  version[:major], version[:minor], version[:patch] = current_version.split('.')
-  version[flag] = version[flag].to_i + 1
-  new_flags = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
-  File.open(version_file, 'w') { |f| f << new_version_file_string(new_flags) }
-  puts "New version is now #{new_flags}"
+VERSION_ASSIGNMENT_REGEXP = /\A\s*?VERSION\s*?=\s*?['"](.*?)['"]\s*?\z/mx
+
+def raise_too_many_files_found
+  raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file_name method in your Rakefile and provide the correct path."
+end
+
+def raise_too_many_lines_matched
+  raise ArgumentError, "There are more than one line in version.rb which assign a value to VERSION. This is almost certainly a mistake. At the very least, I have no idea what I'm supposed to do. You must either increment the version manually in the file, or change the file so it only assigns VERSION once."
+end
+
+def raise_no_lines_matched
+  raise ArgumentError, "I did not find anything in the version file matching a version assignment."
+end
+
+def bump bit_to_increment
+  change_version_to incremented_version(bit_to_increment)
+end
+
+def change_version_to(new_version_string)
+  File.open(version_file_name, 'w') { |f| f << new_version_file_string( new_version_string ) }
+  puts "New version is now #{new_version_string}"
+end
+
+def incremented_version bit
+  version_hash = {}
+  version_hash[:major], version_hash[:minor], version_hash[:patch] = current_version.split('.')
+  version_hash[bit] = version_hash[bit].to_i + 1
+  "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
+end
+
+def new_version_file_string new_version_number
+  arrayed_current_version_file.map do |line|
+    is_version_line?(line) ? %Q{  VERSION = "#{new_version_number}"\n} : line
+  end.join
 end
 
 def current_version
-  @current_version ||= find_current_version
+  array_of_value_versions = arrayed_current_version_file.grep(VERSION_ASSIGNMENT_REGEXP) { $1 }
+  raise_too_many_lines_matched if array_of_value_versions.size > 1
+  raise_no_lines_matched if array_of_value_versions.empty?
+  array_of_value_versions.first
 end
 
 def arrayed_current_version_file
-  @arrayed_current_version_file ||= File.readlines version_file
+  File.readlines(version_file_name)
 end
 
-def version_file
-  @version_file ||= determine_version_file
-end
-
-def new_version_file_string version_number
-  @new_file ||= create_new_version_file_string(version_number)
-end
-
-def find_current_version
-  version_line_array = arrayed_current_version_file.find_all { |x| is_version_line? x }
-  if version_line_array.size > 1
-    raise ArgumentError, "There are more than one line in version.rb which assign a value to VERSION. This is almost certainly a mistake. At the very least, I have no idea what I'm supposed to do. You must either increment the version manually in the file, or change the file so it only assigns VERSION once."
-  end
-  if version_line_array.size < 1
-    p arrayed_current_version_file
-    raise ArgumentError, "I did not find anything in the version file matching a version assignment."
-  end
-  version_number version_line_array.first
-end
-
-def determine_version_file
+def version_file_name
   file_array = Dir['*/**/version.rb']
-  if file_array.size > 1
-    raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file method in your Rakefile and provide the correct path."
-  end
+  raise_too_many_files_found if file_array.size > 1
   file_array.first
 end
 
-def create_new_version_file_string(new_version_number)
-  new_file = ""
-  arrayed_current_version_file.each do |line|
-    if is_version_line? line
-      new_file << %Q{VERSION = "#{new_version_number}"\n}
-    else
-      new_file << line
-    end
-  end
-  new_file
-end
-
 def is_version_line? line
-  !!version_number(line)
-end
-
-
-def version_number line
-  line[/\A\s*?VERSION\s*?=\s*?['"](.*?)['"]\s*?\z/mx]
-  $1
+  !!(line[VERSION_ASSIGNMENT_REGEXP])
 end
