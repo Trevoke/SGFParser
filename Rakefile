@@ -49,6 +49,49 @@ end
 
 VERSION_ASSIGNMENT_REGEXP = /\A\s*?VERSION\s*?=\s*?['"](.*?)['"]\s*?\z/mx
 
+def bump bit_to_increment
+  change_version_to incremented_version(bit_to_increment)
+end
+
+def change_version_to(new_version)
+  File.open(version_file, 'w') { |f| f << new_version_file( new_version ) }
+  puts "New version is now #{new_version}"
+end
+
+def incremented_version bit_to_increment
+  version_hash = {}
+  version_hash[:major], version_hash[:minor], version_hash[:patch] = current_version.split('.')
+  version_hash[bit_to_increment] = version_hash[bit_to_increment].to_i + 1
+  "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
+end
+
+def new_version_file new_version
+  lines_of_version_file.map do |line|
+    is_line_with_version_assignment?(line) ? %Q{  VERSION = "#{new_version}"\n} : line
+  end.join
+end
+
+def current_version
+  array_of_value_versions = lines_of_version_file.grep(VERSION_ASSIGNMENT_REGEXP) { $1 }
+  raise_too_many_lines_matched if array_of_value_versions.size > 1
+  raise_no_lines_matched if array_of_value_versions.empty?
+  array_of_value_versions.first
+end
+
+def lines_of_version_file
+  @content_of_version_file ||= File.readlines(version_file)
+end
+
+def version_file
+  file_array = Dir['*/**/version.rb']
+  raise_too_many_files_found if file_array.size > 1
+  file_array.first
+end
+
+def is_line_with_version_assignment? line
+  !!(line[VERSION_ASSIGNMENT_REGEXP])
+end
+
 def raise_too_many_files_found
   raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file_name method in your Rakefile and provide the correct path."
 end
@@ -59,47 +102,4 @@ end
 
 def raise_no_lines_matched
   raise ArgumentError, "I did not find anything in the version file matching a version assignment."
-end
-
-def bump bit_to_increment
-  change_version_to incremented_version(bit_to_increment)
-end
-
-def change_version_to(new_version_string)
-  File.open(version_file_name, 'w') { |f| f << new_version_file_string( new_version_string ) }
-  puts "New version is now #{new_version_string}"
-end
-
-def incremented_version bit
-  version_hash = {}
-  version_hash[:major], version_hash[:minor], version_hash[:patch] = current_version.split('.')
-  version_hash[bit] = version_hash[bit].to_i + 1
-  "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
-end
-
-def new_version_file_string new_version_number
-  arrayed_current_version_file.map do |line|
-    is_version_line?(line) ? %Q{  VERSION = "#{new_version_number}"\n} : line
-  end.join
-end
-
-def current_version
-  array_of_value_versions = arrayed_current_version_file.grep(VERSION_ASSIGNMENT_REGEXP) { $1 }
-  raise_too_many_lines_matched if array_of_value_versions.size > 1
-  raise_no_lines_matched if array_of_value_versions.empty?
-  array_of_value_versions.first
-end
-
-def arrayed_current_version_file
-  File.readlines(version_file_name)
-end
-
-def version_file_name
-  file_array = Dir['*/**/version.rb']
-  raise_too_many_files_found if file_array.size > 1
-  file_array.first
-end
-
-def is_version_line? line
-  !!(line[VERSION_ASSIGNMENT_REGEXP])
 end
