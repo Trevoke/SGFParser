@@ -45,4 +45,5 @@ TODO
 - examine/fix the smell that when you use add_children, it also sets the parent on the passed-in nodes.
 - handle merging of games together (they are stored in the same tree and become a variation when they first become distinguishable from all the other games in the tree).
 - let the indenter become an executable that takes input sgf and output sgf as arguments.
-- implement a list of errors/warnings that happened when parsing
+- implement checking for validity of SGF.
+- implement a list of errors/warnings that happened when parsing.
