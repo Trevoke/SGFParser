@@ -59,10 +59,10 @@ def change_version_to(new_version)
 end
 
 def incremented_version bit_to_increment
-  version_hash = {}
-  version_hash[:major], version_hash[:minor], version_hash[:patch] = current_version.split('.')
-  version_hash[bit_to_increment] = version_hash[bit_to_increment].to_i + 1
-  "#{version_hash[:major]}.#{version_hash[:minor]}.#{version_hash[:patch]}"
+  version = {}
+  version[:major], version[:minor], version[:patch] = current_version.split('.')
+  version[bit_to_increment] = version[bit_to_increment].to_i + 1
+  "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
 end
 
 def new_version_file new_version
@@ -93,7 +93,7 @@ def is_line_with_version_assignment? line
 end
 
 def raise_too_many_files_found
-  raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file_name method in your Rakefile and provide the correct path."
+  raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file method in your Rakefile and provide the correct path."
 end
 
 def raise_too_many_lines_matched
