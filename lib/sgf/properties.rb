@@ -1,4 +1,4 @@
-module SgfParser
+module SGF
 
 #  http://www.red-bean.com/sgf/proplist.html
 
