@@ -7,7 +7,6 @@ describe "SGF::Indenter" do
   end
 
   it "should nicely show a single node with one property" do
-
     new_string = @indenter.parse '(;FF[4])'
     new_string.should == "\n  (\n  ;FF[4]\n  )\n"
   end

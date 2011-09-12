@@ -12,7 +12,7 @@ describe "SGF::Parser" do
   end
 
   it "should give an error if FF is missing from the first node" do
-    pending "To be coded later"
+    pending "Have to start setting up expectations of proper form."
   end
 
 
