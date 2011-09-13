@@ -2,7 +2,9 @@
 Author: Aldric Giacomoni
 
 Email : aldric@trevoke.net
+
 Are you using this gem? Is there functionality you wish it had? Is something hard to do?
+
 Let me know and I'll make it possible, or easier!
 
 SGF: all formats (but untested with FF < 4)
