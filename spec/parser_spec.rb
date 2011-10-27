@@ -15,5 +15,11 @@ describe "SGF::Parser" do
     pending "Have to start setting up expectations of proper form."
   end
 
+  it "should parse a very simple tree" do
+    tree = @parser.parse '(;FF[4];W[qd])'
+    game_root = tree.root.children[0]
+    game_root.properties.should == {"FF" => "[4]"}
+    game_root.children[0].properties.should == {"W" => "[qd]"}
+  end
 
 end
