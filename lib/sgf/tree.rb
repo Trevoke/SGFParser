@@ -7,8 +7,6 @@ module SGF
 
     attr_accessor :root, :current_node
 
-    # This is not something a user is ever going to initialize - interaction will be done
-    # through the Parser class.
     def initialize
       @root = Node.new
       @current_node = @root
@@ -31,6 +29,7 @@ module SGF
     # Saves the tree as an SGF file. raises an error if a filename is not given.
     # tree.save :filename => file_name
     def save args={}
+    #TODO this is silly. Don't provide a hash, just pass in the filename
       raise ArgumentError, "No file name provided" if args[:filename].nil?
       @savable_sgf = "("
       @root.children.each { |child| write_node child }
