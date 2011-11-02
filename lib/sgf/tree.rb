@@ -5,15 +5,16 @@ module SGF
   class Tree
     include Enumerable
 
-    attr_accessor :root, :current_node
+    attr_accessor :root, :current_node, :errors
 
     def initialize
       @root = Node.new
       @current_node = @root
+      @errors = []
     end
   
     def each
-      games.each {|game| game.each {|node| yield node }}
+      games.each { |game| game.each {|node| yield node }}
     end
 
     # Compares a tree to another tree, node by node.

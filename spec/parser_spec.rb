@@ -6,13 +6,15 @@ describe "SGF::Parser" do
     @parser = SGF::Parser.new
   end
 
-  it "should have FF in the first node" do
-    tree = @parser.parse 'spec/data/ff4_ex.sgf'
-    tree.root.children[0].properties.keys.should include("FF")
-  end
+  #it "should have FF in the first node" do
+  #  tree = @parser.parse 'spec/data/ff4_ex.sgf'
+  #  tree.root.children[0].properties.keys.should include("FF")
+  #end
 
-  it "should give an error if FF is missing from the first node" do
-    pending "Have to start setting up expectations of proper form."
+  it "should give an error if the first character is not (" do
+    tree = @parser.parse ';)'
+    tree.errors.should include?(SGF::MalformedDataError)
+    tree.errors[0].message.should == "The first character is not '('."
   end
 
   it "should parse a very simple tree" do
