@@ -61,8 +61,8 @@ module SGF
     def inspect
       out = "#<#{self.class}:#{self.object_id}, "
       out << "Children: #{@children.size}, "
-      out << "Parent: " << (!!@parent).to_s
-      out << @properties.inspect
+      out << "Parent: " << (!!@parent).to_s << ", "
+      out << "Properties:" << @properties.inspect
       out << ">"
     end
 

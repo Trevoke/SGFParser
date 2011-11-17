@@ -1,13 +1,13 @@
 =INFORMATION
 Author: Aldric Giacomoni
 
-Email : aldric@trevoke.net
+Email : trevoke@gmail.com
 
 Are you using this gem? Is there functionality you wish it had? Is something hard to do?
 
 Let me know and I'll make it possible, or easier!
 
-SGF: all formats (but untested with FF < 4)
+SGF: FF4 - may support earlier ones as well, but untested.
 
 Ruby: >=1.8.7 (may work with 1.8.6)
 
@@ -40,3 +40,12 @@ There is also a SGF Indenter. Its purpose is to make SGF files more readable to 
  require 'sgf/indenter' # Done automatically if you require 'sgf'
  indenter = SGF::Indenter.new
  new_string = indenter.parse 'some_ugly_file.sgf'
+
+---
+What do I want out of the parser?
+1) Assume FF4
+
+What warnings/errors do I want?
+1) Error if first two characters are not (;
+2) Warning if FF is not specified in first node
+2) Warning if a multiple-entry identity only has one property

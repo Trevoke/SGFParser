@@ -1,5 +1,6 @@
 $: << File.dirname(__FILE__)
 
+require 'sgf/error'
 require 'sgf/version'
 require 'sgf/iterator'
 require 'sgf/properties'
