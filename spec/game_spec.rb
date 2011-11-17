@@ -7,7 +7,7 @@ describe "SGF::Game" do
   end
 
   it "should hold the first node of the game" do
-    @game.current_node["FF"].should == "[4]"
+    @game.current_node["FF"].should == "4"
   end
 
   it "should throw up if initialized with a non-Node argument" do

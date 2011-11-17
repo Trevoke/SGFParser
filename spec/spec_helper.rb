@@ -6,12 +6,12 @@ require 'rspec'
 require 'rspec/autorun'
 
 def get_first_game_from file
-  parser = SGF::Parser.new
-  tree = parser.parse file
+  tree = get_tree_from file
   tree.games.first
 end
 
 def get_tree_from file
   parser = SGF::Parser.new
-  parser.parse file
+  p File.read file
+  parser.parse File.read(file)
 end

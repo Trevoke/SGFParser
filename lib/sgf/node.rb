@@ -21,8 +21,10 @@ module SGF
     def add_children *nodes
       nodes.flatten!
       raise "Non-node child given!" if nodes.any? { |node| node.class != Node }
-      nodes.each { |node| node.parent = self }
-      @children.concat nodes
+      nodes.each do |node|
+        node.parent = self
+        @children << node
+        end
     end
 
     #Takes a hash {identity => property} and adds those to the current node.

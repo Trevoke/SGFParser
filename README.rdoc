@@ -41,6 +41,8 @@ There is also a SGF Indenter. Its purpose is to make SGF files more readable to 
  indenter = SGF::Indenter.new
  new_string = indenter.parse 'some_ugly_file.sgf'
 
+WARNING: An implementation requirement is to make sure any closing bracket (']') inside a comment is escaped: '\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly on anything which does not follow this rule.
+
 ---
 What do I want out of the parser?
 1) Assume FF4

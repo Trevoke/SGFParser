@@ -13,19 +13,28 @@ module SGF
     NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
 
     def initialize strict_parsing = true
+      @strict_parsing = strict_parsing
       @tree = Tree.new
       @root = @tree.root
-      @strict_parsing = strict_parsing
+      @current_node = @root
+      @branches = []
+    end
+
+    def create_new_node
+      node = Node.new
+      @current_node.add_children node
+      @current_node = node
     end
 
     def parse sgf
       check_for_errors_before_parsing sgf if @strict_parsing
       @stream = streamable sgf
       until @stream.eof?
-        char = @stream.sysread 1
-        node = Node.new
-        current_node.add_children node
-        @current_node = node
+        case next_character
+          when ";" then create_new_node
+          when "(" then open_branch
+          when ")" then close_branch
+        end
         parse_node_data
         add_properties_to_current_node
       end
@@ -50,14 +59,21 @@ module SGF
       sgf
     end
 
+    def open_branch
+      @branches.unshift @current_node
+    end
+
+    def close_branch
+      @current_node = @branches.shift
+    end
+
     def parse_node_data
-      @identities = {}
+      @node_properties = {}
       while still_inside_node?
         parse_identity
         parse_property
-        @identities[@identity] = @property
+        @node_properties[@identity] = @property
       end
-
     end
 
     def still_inside_node?
@@ -83,15 +99,11 @@ module SGF
     end
 
     def add_properties_to_current_node
-      current_node.add_properties @identities
+      @current_node.add_properties @node_properties
     end
 
     def next_character
       !@stream.eof? && @stream.sysread(1)
-    end
-
-    def current_node
-      @current_node ||= @root
     end
 
   end
