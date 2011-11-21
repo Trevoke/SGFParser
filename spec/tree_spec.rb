@@ -11,6 +11,26 @@ describe "SGF::Tree" do
     FileUtils.rm_f 'spec/data/ff4_ex_saved.sgf'
   end
 
+  it "should have two gametrees" do
+    @tree.games.size.should == 2
+  end
+
+  it "should tell you the id of the object on inspect" do
+    @tree.inspect.should match /#{@tree.object_id}/
+  end
+
+  it "should tell you the class of the object on inspect" do
+    @tree.inspect.should match /SGF::Tree/
+  end
+
+  it "should tell you how many games it has on inspect" do
+    @tree.inspect.should match /Games: 2/
+  end
+
+  it "should tell you how many nodes it has on inspect" do
+    @tree.inspect.should match /Nodes: 62/
+  end
+
   it "should use preorder traversal for each" do
     @tree = get_tree_from 'spec/data/example1.sgf'
     array = []
@@ -40,26 +60,6 @@ describe "SGF::Tree" do
     @tree.save :filename => new_file
     tree2 = get_tree_from new_file
     tree2.should == @tree
-  end
-
-  it "should have two gametrees" do
-    @tree.games.size.should == 2
-  end
-
-  it "should tell you the id of the object on inspect" do
-    @tree.inspect.should match /#{@tree.object_id}/
-  end
-
-  it "should tell you the class of the object on inspect" do
-    @tree.inspect.should match /SGF::Tree/
-  end
-
-  it "should tell you how many games it has on inspect" do
-    @tree.inspect.should match /Games: 2/
-  end
-
-  it "should tell you how many nodes it has on inspect" do
-    @tree.inspect.should match /Nodes: 62/
   end
 
 end

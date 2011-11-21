@@ -30,9 +30,9 @@ module SGF
     #Takes a hash {identity => property} and adds those to the current node.
     #If a property already exists, it will append to it.
     def add_properties hash
-      hash.each do |key, value|
-        @properties[key] ||= ""
-        @properties[key].concat value
+      hash.each do |identity, property|
+        @properties[identity] ||= property.class.new
+        @properties[identity].concat property
       end
     end
 

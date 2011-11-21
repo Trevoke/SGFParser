@@ -53,14 +53,24 @@ describe "SGF::Parser" do
     node.children[1].c.should == "branch"
   end
 
-  it "should parse a tricky comment well" do
+  it "should parse a comment with a ] inside" do
     parser = strict_parser
-    tree = parser.parse "(;C[Oh hi] there\\]"
+    tree = parser.parse "(;C[Oh hi\\] there]"
     tree.root.children[0].c.should == "Oh hi] there"
   end
 
   it "should parse a multi-property identity well" do
-    pending "code me!"
+    parser = strict_parser
+    tree = parser.parse "(;FF[4];AW[bd][cc][qr])"
+    tree.root.children[0].children[0].aw.should == ["bd", "cc", "qr"]
+  end
+
+  it "should parse multiple trees" do
+    parser = strict_parser
+    tree = parser.parse "(;FF[4];AW[dd][cc])(;FF[4];PB[ad])"
+    tree.root.children.size.should == 2
+    tree.root.children[0].children[0].aw.should == ["dd", "cc"]
+    tree.root.children[1].children[0].pb.should == "ad"
   end
 
   private

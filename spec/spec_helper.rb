@@ -12,6 +12,5 @@ end
 
 def get_tree_from file
   parser = SGF::Parser.new
-  p File.read file
   parser.parse File.read(file)
 end

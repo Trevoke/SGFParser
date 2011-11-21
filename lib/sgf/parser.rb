@@ -11,6 +11,9 @@ module SGF
     BRANCHING = ["(", ")"]
     PROPERTY = ["[", "]"]
     NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
+    LIST_IDENTITIES = ["AW", "AB", "AE", "AR", "CR", "DD",
+                       "LB", "LN", "MA", "SL", "SQ", "TR", "VW",
+                       "TB", "TW"]
 
     def initialize strict_parsing = true
       @strict_parsing = strict_parsing
@@ -31,12 +34,16 @@ module SGF
       @stream = streamable sgf
       until @stream.eof?
         case next_character
-          when ";" then create_new_node
-          when "(" then open_branch
-          when ")" then close_branch
+          when ";" then
+            create_new_node
+            parse_node_data
+            add_properties_to_current_node
+          when "(" then
+            open_branch
+          when ")" then
+            close_branch
+          else next
         end
-        parse_node_data
-        add_properties_to_current_node
       end
       @tree
     end
@@ -87,18 +94,56 @@ module SGF
     def parse_identity
       @identity = ""
       while char = next_character and char != "["
-        @identity << char
+        @identity << char unless char == "\n"
       end
     end
 
     def parse_property
       @property = ""
+      case @identity.upcase
+        when "C" then
+          parse_comment
+        when *LIST_IDENTITIES then
+          parse_multi_property
+        else
+          parse_generic_property
+      end
+    end
+
+    def parse_comment
+      while char = next_character and still_inside_comment? char
+        @property << char
+      end
+      @property.gsub! "\\]", "]"
+    end
+
+    def parse_multi_property
+      while char = next_character and still_inside_multi_property? char
+        @property << char
+      end
+      @property = @property.gsub("][", ",").split(",")
+    end
+
+    def parse_generic_property
       while char = next_character and char != "]"
         @property << char
       end
     end
 
+    def still_inside_comment? char
+      char != "]" || (char == "]" && @property[-1..-1] == "\\")
+    end
+
+    def still_inside_multi_property? char
+      return true if char != "]"
+      char = next_character
+      @stream.pos -= 1
+      return true if char == "["
+      false
+    end
+
     def add_properties_to_current_node
+      p @node_properties
       @current_node.add_properties @node_properties
     end
 
