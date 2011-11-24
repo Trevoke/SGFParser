@@ -89,7 +89,7 @@ module SGF
     def still_inside_node?
       inside_a_node = false
       while char = next_character
-        next if char == "\n"
+        next if char[/\s/]
         inside_a_node = !NODE_DELIMITERS.include?(char)
         break
       end

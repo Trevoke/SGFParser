@@ -35,9 +35,9 @@ describe "SGF::Tree" do
     @tree = get_tree_from 'spec/data/example1.sgf'
     array = []
     @tree.each {|node| array << node}
-    array[0].c.should == "[root]"
-    array[1].c.should == "[a]"
-    array[2].c.should == "[b]"
+    array[0].c.should == "root"
+    array[1].c.should == "a"
+    array[2].c.should == "b"
   end
 
   it "should load a file properly" do
