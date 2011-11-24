@@ -9,13 +9,13 @@ describe "SGF::Parser" do
 
   it "should not give an error if it is told to sit down and shut up" do
     parser = lenient_parser
-    pending "Read Rspec doc to find equivalent of assert_raises_nothing"
-    expect { parser.parse ';)'}.to raise_nothing
+    expect { parser.parse ';)'}.to_not raise_error
   end
 
   it "should parse a simple node" do
     parser = lenient_parser
     tree = parser.parse ";PW[5]"
+    p tree.root.children[0]
     tree.root.children[0].pw.should == "5"
   end
 
@@ -55,7 +55,7 @@ describe "SGF::Parser" do
 
   it "should parse a comment with a ] inside" do
     parser = strict_parser
-    tree = parser.parse "(;C[Oh hi\\] there]"
+    tree = parser.parse "(;C[Oh hi\\] there])"
     tree.root.children[0].c.should == "Oh hi] there"
   end
 
@@ -67,10 +67,20 @@ describe "SGF::Parser" do
 
   it "should parse multiple trees" do
     parser = strict_parser
-    tree = parser.parse "(;FF[4];AW[dd][cc])(;FF[4];PB[ad])"
+    tree = parser.parse "(;FF[4]PW[Aldric];AW[dd][cc])(;FF[4]PW[Hi];PB[ad])"
     tree.root.children.size.should == 2
     tree.root.children[0].children[0].aw.should == ["dd", "cc"]
     tree.root.children[1].children[0].pb.should == "ad"
+  end
+
+  it "should not put (; into the identity when separated by line breaks" do
+    parser = strict_parser
+    tree = parser.parse "(;FF[4]\n\n(;B[dd])(;B[da]))"
+    game = tree.root.children[0]
+    p game
+    game.children.size.should == 2
+    game.children[0].b.should == "dd"
+    game.children[1].b.should == "da"
   end
 
   private

@@ -23,25 +23,17 @@ module SGF
       @branches = []
     end
 
-    def create_new_node
-      node = Node.new
-      @current_node.add_children node
-      @current_node = node
-    end
-
     def parse sgf
       check_for_errors_before_parsing sgf if @strict_parsing
       @stream = streamable sgf
       until @stream.eof?
         case next_character
+          when "(" then open_branch
           when ";" then
             create_new_node
             parse_node_data
             add_properties_to_current_node
-          when "(" then
-            open_branch
-          when ")" then
-            close_branch
+          when ")" then close_branch
           else next
         end
       end
@@ -74,6 +66,12 @@ module SGF
       @current_node = @branches.shift
     end
 
+    def create_new_node
+      node = Node.new
+      @current_node.add_children node
+      @current_node = node
+    end
+
     def parse_node_data
       @node_properties = {}
       while still_inside_node?
@@ -83,12 +81,20 @@ module SGF
       end
     end
 
+    def add_properties_to_current_node
+      p @node_properties
+      @current_node.add_properties @node_properties
+    end
+
     def still_inside_node?
-      char = next_character
-      return false unless char
-      @stream.pos -= 1
-      return false if NODE_DELIMITERS.include? char
-      true
+      inside_a_node = false
+      while char = next_character
+        next if char == "\n"
+        inside_a_node = !NODE_DELIMITERS.include?(char)
+        break
+      end
+      @stream.pos -= 1 if char
+      inside_a_node
     end
 
     def parse_identity
@@ -101,12 +107,9 @@ module SGF
     def parse_property
       @property = ""
       case @identity.upcase
-        when "C" then
-          parse_comment
-        when *LIST_IDENTITIES then
-          parse_multi_property
-        else
-          parse_generic_property
+        when "C" then parse_comment
+        when *LIST_IDENTITIES then parse_multi_property
+        else parse_generic_property
       end
     end
 
@@ -140,11 +143,6 @@ module SGF
       @stream.pos -= 1
       return true if char == "["
       false
-    end
-
-    def add_properties_to_current_node
-      p @node_properties
-      @current_node.add_properties @node_properties
     end
 
     def next_character
