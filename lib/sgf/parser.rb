@@ -82,7 +82,6 @@ module SGF
     end
 
     def add_properties_to_current_node
-      p @node_properties
       @current_node.add_properties @node_properties
     end
 

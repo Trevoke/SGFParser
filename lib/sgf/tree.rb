@@ -28,15 +28,13 @@ module SGF
     end
 
     # Saves the tree as an SGF file. raises an error if a filename is not given.
-    # tree.save :filename => file_name
-    def save args={}
-    #TODO this is silly. Don't provide a hash, just pass in the filename
-      raise ArgumentError, "No file name provided" if args[:filename].nil?
+    # tree.save file_name
+    def save filename
       @savable_sgf = "("
       @root.children.each { |child| write_node child }
       @savable_sgf << ")"
 
-      File.open(args[:filename], 'w') { |f| f << @savable_sgf }
+      File.open(filename, 'w') { |f| f << @savable_sgf }
     end
 
 
@@ -74,8 +72,12 @@ module SGF
       unless node.properties.empty?
         properties = ""
         node.properties.each do |identity, property|
-          new_property = property[1...-1]
-          new_property.gsub!("]", "\\]") if identity == "C"
+          if property.instance_of? Array
+            new_property = property.join "]["
+          else
+            new_property = property
+          end
+          new_property = new_property.gsub("]", "\\]") if identity == "C"
           properties += "#{identity.to_s}[#{new_property}]"
         end
         @savable_sgf << properties

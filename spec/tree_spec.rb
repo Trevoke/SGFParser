@@ -50,14 +50,14 @@ describe "SGF::Tree" do
     simple_sgf = 'spec/data/simple.sgf'
     tree = get_tree_from simple_sgf
     new_file = 'spec/data/simple_saved.sgf'
-    tree.save :filename => new_file
+    tree.save new_file
     tree2 = get_tree_from new_file
     tree.should == tree2
   end
 
   it "should save the sample SGF properly" do
     new_file = 'spec/data/ff4_ex_saved.sgf'
-    @tree.save :filename => new_file
+    @tree.save new_file
     tree2 = get_tree_from new_file
     tree2.should == @tree
   end
