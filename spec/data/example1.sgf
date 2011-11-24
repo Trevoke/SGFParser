@@ -1,1 +1,10 @@
-(;FF[4]C[root](;C[a];C[b](;C[c])(;C[d];C[e]))(;C[f](;C[g];C[h];C[i])(;C[j])))
+(;FF[4]C[root]
+    (;C[a];C[b]
+        (;C[c])
+        (;C[d];C[e])
+    )
+    (;C[f]
+        (;C[g];C[h];C[i])
+        (;C[j])
+    )
+)
