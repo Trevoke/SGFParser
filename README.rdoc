@@ -45,8 +45,11 @@ WARNING: An implementation requirement is to make sure any closing bracket (']')
 
 ---
 What do I want out of the parser?
+
 1) Assume FF4
 
 What warnings/errors do I want?
+
 1) Warning if FF is not specified in first node
+
 2) Errors if tree ends inside an identity, inside a property, with branches open.
