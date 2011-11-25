@@ -15,10 +15,10 @@ Ruby: >=1.8.7 (may work with 1.8.6)
 Example:
  require 'sgf'
  parser = SGF::Parser.new
- tree = parser.parse filename_or_string # => Yes, it's magic!
+ tree = parser.parse string # => Yes, it's magic!
 
 
-All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees.
+All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees. Simply put the root nodes (the one with the FF identity) as children of this @root node.
 
 Most games will just care about, say,
  game = tree.games.first #=> The first, most often only, gametree in the SGF file
@@ -41,13 +41,12 @@ There is also a SGF Indenter. Its purpose is to make SGF files more readable to 
  indenter = SGF::Indenter.new
  new_string = indenter.parse 'some_ugly_file.sgf'
 
-WARNING: An implementation requirement is to make sure any closing bracket (']') inside a comment is escaped: '\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly on anything which does not follow this rule.
+WARNING: An implementation requirement is to make sure any closing bracket (']') inside a comment is escaped: '\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
 
 ---
 What do I want out of the parser?
 1) Assume FF4
 
 What warnings/errors do I want?
-1) Error if first two characters are not (;
-2) Warning if FF is not specified in first node
-2) Warning if a multiple-entry identity only has one property
+1) Warning if FF is not specified in first node
+2) Errors if tree ends inside an identity, inside a property, with branches open.

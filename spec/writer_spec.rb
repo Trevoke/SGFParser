@@ -52,7 +52,6 @@ EOF
     tree.save TEMP_FILE
     tree2 = get_tree_from TEMP_FILE
     tree2.should == tree
-    [tree, tree2]
   end
 
 end

@@ -8,33 +8,16 @@ module SGF
 
     def save
       @string = ""
-
       @root.children.each do |node|
         @string << "("
         write_tree_from node
       end
-
       File.open(@filename, 'w') { |f| f << @string }
-    end
-
-    def decide_what_comes_after node
-      case node.children.size
-        when 0 then
-          @string << ")"
-        when 1 then
-          write_tree_from node.children[0]
-        else
-          node.each_child do |child_node|
-            @string << "("
-            write_tree_from child_node
-          end
-      end
     end
 
     # Creates a stringified SGF tree from the given node.
     def write_tree_from node
       @string << stringify_node(node)
-
       decide_what_comes_after node
     end
 
@@ -44,6 +27,19 @@ module SGF
         properties << translate_pair_to_string(identity, property)
       end
       ";#{properties}"
+    end
+
+
+    def decide_what_comes_after node
+      case node.children.size
+        when 0 then @string << ")"
+        when 1 then write_tree_from node.children[0]
+        else
+          node.each_child do |child_node|
+            @string << "("
+            write_tree_from child_node
+          end
+      end
     end
 
     def translate_pair_to_string(identity, property)
