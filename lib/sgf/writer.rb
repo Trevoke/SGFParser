@@ -8,7 +8,7 @@ module SGF
 
     def save
       @string = ""
-      #write_tree_from @root
+
       @root.children.each do |node|
         @string << "("
         write_tree_from node
@@ -17,26 +17,33 @@ module SGF
       File.open(@filename, 'w') { |f| f << @string }
     end
 
-    # Creates a stringified SGF tree from the given node.
-    def write_tree_from node = @root
-      @string << ";"
-      properties = ""
-      node.properties.each do |identity, property|
-        properties << translate_pair_to_string(identity, property)
-      end
-      @string << properties
-
+    def decide_what_comes_after node
       case node.children.size
         when 0 then
           @string << ")"
         when 1 then
           write_tree_from node.children[0]
         else
-          node.each_child do |child|
+          node.each_child do |child_node|
             @string << "("
-            write_tree_from child
+            write_tree_from child_node
           end
       end
+    end
+
+    # Creates a stringified SGF tree from the given node.
+    def write_tree_from node
+      @string << stringify_node(node)
+
+      decide_what_comes_after node
+    end
+
+    def stringify_node node
+      properties = ""
+      node.properties.each do |identity, property|
+        properties << translate_pair_to_string(identity, property)
+      end
+      ";#{properties}"
     end
 
     def translate_pair_to_string(identity, property)

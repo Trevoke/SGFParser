@@ -138,10 +138,14 @@ module SGF
 
     def still_inside_multi_property? char
       return true if char != "]"
-      char = next_character
-      @stream.pos -= 1
-      return true if char == "["
-      false
+      inside_multi_property = false
+      while char = next_character
+        next if char[/\s/]
+        inside_multi_property = char == "["
+        break
+      end
+      @stream.pos -= 1 if char
+      inside_multi_property
     end
 
     def next_character
