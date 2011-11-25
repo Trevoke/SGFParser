@@ -6,11 +6,6 @@ describe "SGF::Tree" do
     @tree = get_tree_from 'spec/data/ff4_ex.sgf'
   end
 
-  after :each do
-    FileUtils.rm_f 'spec/data/simple_saved.sgf'
-    FileUtils.rm_f 'spec/data/ff4_ex_saved.sgf'
-  end
-
   it "should have two gametrees" do
     @tree.games.size.should == 2
   end
@@ -44,22 +39,6 @@ describe "SGF::Tree" do
     @tree.class.should == SGF::Tree
     @tree.root.children.size.should == 2
     @tree.root.children[0].children.size.should == 5
-  end
-
-  it "should save a simple tree properly" do
-    simple_sgf = 'spec/data/simple.sgf'
-    tree = get_tree_from simple_sgf
-    new_file = 'spec/data/simple_saved.sgf'
-    tree.save new_file
-    tree2 = get_tree_from new_file
-    tree.should == tree2
-  end
-
-  it "should save the sample SGF properly" do
-    new_file = 'spec/data/ff4_ex_saved.sgf'
-    @tree.save new_file
-    tree2 = get_tree_from new_file
-    tree2.should == @tree
   end
 
 end

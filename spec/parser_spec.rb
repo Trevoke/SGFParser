@@ -15,7 +15,6 @@ describe "SGF::Parser" do
   it "should parse a simple node" do
     parser = lenient_parser
     tree = parser.parse ";PW[5]"
-    p tree.root.children[0]
     tree.root.children[0].pw.should == "5"
   end
 
@@ -77,7 +76,6 @@ describe "SGF::Parser" do
     parser = strict_parser
     tree = parser.parse "(;FF[4]\n\n(;B[dd])(;B[da]))"
     game = tree.root.children[0]
-    p game
     game.children.size.should == 2
     game.children[0].b.should == "dd"
     game.children[1].b.should == "da"

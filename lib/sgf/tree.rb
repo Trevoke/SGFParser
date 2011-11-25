@@ -12,9 +12,9 @@ module SGF
       @current_node = @root
       @errors = []
     end
-  
+
     def each
-      games.each { |game| game.each {|node| yield node }}
+      games.each { |game| game.each { |node| yield node } }
     end
 
     # Compares a tree to another tree, node by node.
@@ -27,17 +27,6 @@ module SGF
       one == two
     end
 
-    # Saves the tree as an SGF file. raises an error if a filename is not given.
-    # tree.save file_name
-    def save filename
-      @savable_sgf = "("
-      @root.children.each { |child| write_node child }
-      @savable_sgf << ")"
-
-      File.open(filename, 'w') { |f| f << @savable_sgf }
-    end
-
-
     #Returns an array of the Game objects in this tree.
     def games
       @games ||= populate_game_array
@@ -48,6 +37,11 @@ module SGF
       out << "Games: #{games.count}, "
       out << "Nodes: #{node_count}"
       out << ">"
+    end
+
+    # Saves the Tree as an SGF file. Takes a filename as argument.
+    def save filename
+      SGF::Writer.new(@root, filename).save
     end
 
     private
@@ -66,43 +60,11 @@ module SGF
       games
     end
 
-    # Adds a stringified node to the variable @savable_sgf.
-    def write_node node=@root
-      @savable_sgf << ";"
-      unless node.properties.empty?
-        properties = ""
-        node.properties.each do |identity, property|
-          if property.instance_of? Array
-            new_property = property.join "]["
-          else
-            new_property = property
-          end
-          new_property = new_property.gsub("]", "\\]") if identity == "C"
-          properties += "#{identity.to_s}[#{new_property}]"
-        end
-        @savable_sgf << properties
-      end
-
-      case node.children.size
-        when 0
-          @savable_sgf << ")"
-        when 1
-          write_node node.children[0]
-        else
-          node.each_child do |child|
-            @savable_sgf << "("
-            write_node child
-          end
-      end
-    end
-
     def method_missing method_name, *args
       output = @root.children[0].properties[method_name]
       super(method_name, args) if output.nil?
       output
     end
-
-  end
-
-end
+  end # Tree
+end # SGF
 
