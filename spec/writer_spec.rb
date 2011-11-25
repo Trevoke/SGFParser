@@ -7,6 +7,7 @@ describe "SGF::Writer" do
   after :each do
     FileUtils.rm_f TEMP_FILE
   end
+
   it "should save a simple tree properly" do
     simple_sgf = 'spec/data/simple.sgf'
     tree = get_tree_from simple_sgf
@@ -21,6 +22,8 @@ describe "SGF::Writer" do
     tree = parser.parse sgf_string
     tree.save TEMP_FILE
     File.read(TEMP_FILE).should == sgf_string
+    tree2 = parser.parse File.read(TEMP_FILE)
+    tree.should == tree2
   end
 
   it "should save the sample SGF properly" do

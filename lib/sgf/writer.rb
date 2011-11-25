@@ -1,40 +1,40 @@
 module SGF
   class Writer
 
-    def initialize root, filename
+    def initialize(root, filename)
       @root = root
       @filename = filename
     end
 
     def save
-      @savable_sgf = ""
-      #write_node @root
-      @root.children.each do |child|
-        @savable_sgf << "("
-        write_node child
+      @string = ""
+      #write_tree_from @root
+      @root.children.each do |node|
+        @string << "("
+        write_tree_from node
       end
 
-      File.open(@filename, 'w') { |f| f << @savable_sgf }
+      File.open(@filename, 'w') { |f| f << @string }
     end
 
-    # Adds a stringified node to the variable @savable_sgf.
-    def write_node node=@root
-      @savable_sgf << ";"
+    # Creates a stringified SGF tree from the given node.
+    def write_tree_from node = @root
+      @string << ";"
       properties = ""
       node.properties.each do |identity, property|
         properties << translate_pair_to_string(identity, property)
       end
-      @savable_sgf << properties
+      @string << properties
 
       case node.children.size
         when 0 then
-          @savable_sgf << ")"
+          @string << ")"
         when 1 then
-          write_node node.children[0]
+          write_tree_from node.children[0]
         else
           node.each_child do |child|
-            @savable_sgf << "("
-            write_node child
+            @string << "("
+            write_tree_from child
           end
       end
     end
