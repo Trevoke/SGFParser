@@ -68,6 +68,21 @@ module SGF
       out << ">"
     end
 
+    def to_s(indent = 0)
+      properties = []
+      @properties.each do |identity, property|
+        properties << stringify_identity_and_property(identity, property)
+      end
+      whitespace = leading_whitespace(indent)
+      "#{whitespace};#{properties.join("\n#{whitespace}")}"
+    end   
+
+    def stringify_identity_and_property(identity, property)
+      new_property = property.instance_of?(Array) ? property.join("][") : property
+      new_property = new_property.gsub("]", "\\]") if identity == "C"
+      "#{identity.to_s}[#{new_property}]"
+    end
+
     private
 
     def method_missing method_name, *args
@@ -79,6 +94,10 @@ module SGF
         super(method_name, args) if output.nil?
         output
       end
+    end
+
+    def leading_whitespace(indent)
+      "#{" " * indent}"
     end
 
   end
