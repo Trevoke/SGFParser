@@ -5,13 +5,28 @@ module SGF
   # This indents an SGF file to make it more readable.
   #indenter = SGF::Indenter.new
   #indented_string = indenter.parse(string_or_filename)
-  class Indenter < Iterator
+  class Indenter
 
     def initialize
       @new_string = ""
       @indentation = 0
-      super @new_string
     end
+
+    #It takes as argument an SGF string or filename, and will figure out what to do with the input.
+    def parse sgf
+      @sgf = stringified sgf
+      while char = next_character
+        case char
+          when '(' then new_branch
+          when ')' then close_branch
+          when ';' then switch_to_new_node
+          when '[' then add_property
+          else store_character char
+        end
+      end
+      @new_string
+    end
+
 
     private
 
@@ -69,6 +84,30 @@ module SGF
     def store_character char
       @new_string << char unless char == "\n"
     end
+
+    private
+
+    def stringified sgf
+      File.exist?(sgf) ? File.read(sgf) : sgf
+    end
+
+    def next_character
+      character_available? && @stream.sysread(1)
+    end
+
+    def character_available?
+      @stream ||= StringIO.new clean_string, 'r'
+      !@stream.eof?
+    end
+
+    def clean_string
+      @sgf.gsub! "\\\\n\\\\r", ""
+      @sgf.gsub! "\\\\r\\\\n", ""
+      @sgf.gsub! "\\\\r", ""
+      @sgf.gsub! "\\\\n", ""
+      @sgf
+    end
+
 
   end
 end
