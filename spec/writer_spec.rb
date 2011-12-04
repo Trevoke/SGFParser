@@ -44,6 +44,21 @@ EOF
     parse_save_load_and_compare_to_saved sgf
   end
 
+  it "should indent a simple SGF nicely" do
+    sgf = save_to_temp_file_and_read '(;FF[4])'
+    sgf.should == "(\n  ;FF[4]\n)"
+  end
+
+  it "should indent a one-node SGF with two properties" do
+    sgf = save_to_temp_file_and_read '(;FF[4]PW[Cho Chikun])'
+    sgf.should == "(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
+  end
+
+  it "should indent two nodes on same column" do
+    sgf = save_to_temp_file_and_read '(;FF[4];PB[qq])'
+    sgf.should == "(\n  ;FF[4]\n  ;PB[qq]\n)"
+  end
+
   private
 
   def parse_save_load_and_compare_to_saved string
@@ -52,6 +67,14 @@ EOF
     tree.save TEMP_FILE
     tree2 = get_tree_from TEMP_FILE
     tree2.should == tree
+  end
+
+
+  def save_to_temp_file_and_read sgf_string
+    tree = SGF::Parser.new.parse sgf_string
+    tree.save TEMP_FILE
+    sgf = File.read TEMP_FILE
+    sgf
   end
 
 end

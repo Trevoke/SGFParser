@@ -3,6 +3,6 @@
 
 require '../lib/sgf'
 
-indenter = SGF::Indenter.new
-new_sgf = indenter.parse ARGV[0]
-File.open(ARGV[1], 'w') { |f| new_sgf }
+parser = SGF::Parser.new
+tree = parser.parse ARGV[0]
+tree.save ARGV[1]

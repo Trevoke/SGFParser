@@ -43,7 +43,7 @@ module SGF
     private
 
     def check_for_errors_before_parsing string
-      raise(SGF::MalformedDataError, "The first two characters of the string should be (;") unless string[0..1] == "(;"
+      raise(SGF::MalformedDataError, "The first two characters of the string should be (;") unless string[/\A\(\s*;/]
     end
 
     def streamable sgf

@@ -4,48 +4,53 @@ module SGF
     def initialize(root, filename)
       @root = root
       @filename = filename
+      @indentation = 0
     end
 
     def save
-      @string = ""
+      @indentation += 2
+      @sgf = ""
       @root.children.each do |node|
-        @string << "("
+        @sgf << "("
         write_tree_from node
       end
-      File.open(@filename, 'w') { |f| f << @string }
+      File.open(@filename, 'w') { |f| f << @sgf }
     end
 
     # Creates a stringified SGF tree from the given node.
     def write_tree_from node
-      @string << stringify_node(node)
+      @sgf << "\n" << node.to_s(@indentation)
       decide_what_comes_after node
     end
 
-    def stringify_node node
-      properties = ""
-      node.properties.each do |identity, property|
-        properties << translate_pair_to_string(identity, property)
-      end
-      ";#{properties}"
-    end
-
-
     def decide_what_comes_after node
       case node.children.size
-        when 0 then @string << ")"
+        when 0 then
+          close_branch
         when 1 then write_tree_from node.children[0]
         else
           node.each_child do |child_node|
-            @string << "("
+            open_branch
             write_tree_from child_node
           end
       end
     end
 
-    def translate_pair_to_string(identity, property)
-      new_property = property.instance_of?(Array) ? property.join("][") : property
-      new_property = new_property.gsub("]", "\\]") if identity == "C"
-      "#{identity.to_s}[#{new_property}]"
+    private
+
+    def whitespace
+      " " * @indentation
+    end
+
+    def open_branch
+      @sgf << "\n" << whitespace << "("
+      @indentation += 2
+    end
+
+    def close_branch
+      @indentation -= 2
+      @indentation = (@indentation < 0) ? 0 : @indentation
+      @sgf << "\n" << whitespace << ")"
     end
   end
 end
