@@ -2,18 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "SGF::Parser" do
 
-  SIMPLIFIED_SAMPLE_SGF= <<EOF
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19]
-  (;DD[kq:os][dq:hs]
-    AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj]
-    [gd:md][fh:ij][kj:nh]
-    LN[pj:pd][nf:ff][ih:fj][kh:nj]
-    C[Arrows, lines and dimmed points.])
-  (;B[qd]N[Style & text type])
-)
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])
-EOF
-
   it "should give an error if the first two character are not (;" do
     parser = strict_parser
     expect { parser.parse ';)' }.to raise_error SGF::MalformedDataError

@@ -4,20 +4,6 @@ describe "SGF::Writer" do
 
   TEMP_FILE = 'spec/data/temp.sgf'
 
-  SIMPLIFIED_SAMPLE_SGF= <<EOF
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19]
-  (;DD[kq:os][dq:hs]
-    AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj]
-    [gd:md][fh:ij][kj:nh]
-    LN[pj:pd][nf:ff][ih:fj][kh:nj]
-    C[Arrows, lines and dimmed points.])
-  (;B[qd]N[Style & text type])
-)
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])
-EOF
-
-  ONE_LINE_SIMPLE_SAMPLE_SGF= "(;FF[4]AP[Primiview:3.1]GM[1]SZ[19](;DD[kq:os][dq:hs]AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj][gd:md][fh:ij][kj:nh]LN[pj:pd][nf:ff][ih:fj][kh:nj]C[Arrows, lines and dimmed points.])(;B[qd]N[Style & text type]))(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])"
-
   after :each do
     FileUtils.rm_f TEMP_FILE
   end
@@ -58,6 +44,22 @@ EOF
     sgf = save_to_temp_file_and_read '(;FF[4];PB[qq])'
     sgf.should == "(\n  ;FF[4]\n  ;PB[qq]\n)"
   end
+
+  it "should indent branches further" do
+    string = '(;FF[4](;PB[qq])(;PB[qa]))'
+    sgf = save_to_temp_file_and_read string
+    expected = %Q{(
+  ;FF[4]
+  (
+    ;PB[qq]
+  )
+  (
+    ;PB[qa]
+  )
+)}
+    sgf.should == expected
+  end
+
 
   private
 

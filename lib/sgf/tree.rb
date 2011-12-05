@@ -41,7 +41,7 @@ module SGF
 
     # Saves the Tree as an SGF file. Takes a filename as argument.
     def save filename
-      SGF::Writer.new(@root, filename).save
+      SGF::Writer.new.save(@root, filename)
     end
 
     private

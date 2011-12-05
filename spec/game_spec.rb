@@ -2,9 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "SGF::Game" do
 
-  before :each do
-  end
-
   it "should hold the first node of the game" do
     game = get_first_game_from 'spec/data/ff4_ex.sgf'
     game.current_node["FF"].should == "4"
