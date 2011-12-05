@@ -15,12 +15,11 @@ Ruby: >=1.8.7 (may work with 1.8.6)
 Example:
  require 'sgf'
  parser = SGF::Parser.new
- tree = parser.parse string # => Yes, it's magic!
-
+ tree = parser.parse string
 
 All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees. Simply put the root nodes (the one with the FF identity) as children of this @root node.
 
-Most games will just care about, say,
+In most situations (one game, no variations), this is all you'll need:
  game = tree.games.first #=> The first, most often only, gametree in the SGF file
  node = game.current_node #=> By default, this is the first node, which should have the FF property, and so on.
  node = game.next_node #=> Switches 'current_node' to game.children[0] and returns that node. 
@@ -36,20 +35,13 @@ A single property can be called, like the comments, for instance, like so:
  node.comments #=> syntactic sugar, only works for comments
  node.comment #=> same as the previous line
 
-There is also a SGF Indenter. Its purpose is to make SGF files more readable to humans at a glance.
- require 'sgf/indenter' # Done automatically if you require 'sgf'
- indenter = SGF::Indenter.new
- new_string = indenter.parse 'some_ugly_file.sgf'
+When you save an SGF, it will also automatically indent it to make it a little easier for people to parse. There are a few ways to use it.
+
+ require 'sgf'
+ sgf = File.read('file.sgf')
+ file = SGF::Parser.new.parse(sgf).save('destination.sgf')
+ ----
+ $ sgf_indent source.sgf destination.sgf
+
 
 WARNING: An implementation requirement is to make sure any closing bracket (']') inside a comment is escaped: '\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
-
----
-What do I want out of the parser?
-
-1) Assume FF4
-
-What warnings/errors do I want?
-
-1) Warning if FF is not specified in first node
-
-2) Errors if tree ends inside an identity, inside a property, with branches open.
