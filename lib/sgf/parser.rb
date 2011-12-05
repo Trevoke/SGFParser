@@ -14,7 +14,8 @@ module SGF
     LIST_IDENTITIES = ["AW", "AB", "AE", "AR", "CR", "DD",
                        "LB", "LN", "MA", "SL", "SQ", "TR", "VW",
                        "TB", "TW"]
-
+    # There is an optional argument in case you don't want this to raise errors.
+    # You probably shouldn't use it, but who's gonna stop you?
     def initialize strict_parsing = true
       @strict_parsing = strict_parsing
       @tree = Tree.new
@@ -23,6 +24,7 @@ module SGF
       @branches = []
     end
 
+    # This takes as argument an SGF in string format and returns an SGF::Tree object
     def parse sgf
       check_for_errors_before_parsing sgf if @strict_parsing
       @stream = streamable sgf

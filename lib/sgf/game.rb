@@ -4,7 +4,8 @@ module SGF
 
     attr_accessor :current_node, :root
 
-    #Takes a SGF::Node as an argument
+    #Takes a SGF::Node as an argument. It will be a problem if that node isn't
+    #really the first node of of a game (ie: no FF property)
     def initialize node
       raise ArgumentError, "Expected SGF::Node argument but received #{node.class}" unless node.instance_of? SGF::Node
       @root = node
