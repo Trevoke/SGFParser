@@ -3,13 +3,10 @@ module SGF
 
     # Takes a node and a filename as arguments
     def save(root_node, filename)
-      @indentation = 2
+      @indentation = 0
       @sgf = ""
-      root_node.children.each do |node|
-        @sgf << "("
-        write_tree_from node
-      end
-      close_branch
+      write_new_branch_from root_node
+
       File.open(filename, 'w') { |f| f << @sgf }
     end
 

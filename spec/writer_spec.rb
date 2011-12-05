@@ -32,23 +32,24 @@ describe "SGF::Writer" do
 
   it "should indent a simple SGF nicely" do
     sgf = save_to_temp_file_and_read '(;FF[4])'
-    sgf.should == "(\n  ;FF[4]\n)"
+    sgf.should == "\n(\n  ;FF[4]\n)"
   end
 
   it "should indent a one-node SGF with two properties" do
     sgf = save_to_temp_file_and_read '(;FF[4]PW[Cho Chikun])'
-    sgf.should == "(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
+    sgf.should == "\n(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
   end
 
   it "should indent two nodes on same column" do
     sgf = save_to_temp_file_and_read '(;FF[4];PB[qq])'
-    sgf.should == "(\n  ;FF[4]\n  ;PB[qq]\n)"
+    sgf.should == "\n(\n  ;FF[4]\n  ;PB[qq]\n)"
   end
 
   it "should indent branches further" do
     string = '(;FF[4](;PB[qq])(;PB[qa]))'
     sgf = save_to_temp_file_and_read string
-    expected = %Q{(
+    expected = %Q{
+(
   ;FF[4]
   (
     ;PB[qq]
@@ -60,6 +61,20 @@ describe "SGF::Writer" do
     sgf.should == expected
   end
 
+  it "should indent two gametrees" do
+    string = '(;FF[4];PB[qq])(;FF[4];PB[dd])'
+    sgf = save_to_temp_file_and_read string
+    expected = %Q{
+(
+  ;FF[4]
+  ;PB[qq]
+)
+(
+  ;FF[4]
+  ;PB[dd]
+)}
+    sgf.should == expected
+  end
 
   private
 
