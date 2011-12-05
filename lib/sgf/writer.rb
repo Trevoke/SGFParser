@@ -14,6 +14,7 @@ module SGF
         @sgf << "("
         write_tree_from node
       end
+      close_branch
       File.open(@filename, 'w') { |f| f << @sgf }
     end
 
@@ -25,13 +26,14 @@ module SGF
 
     def decide_what_comes_after node
       case node.children.size
-        when 0 then
-          close_branch
+        #when 0 then
+        #  close_branch
         when 1 then write_tree_from node.children[0]
         else
           node.each_child do |child_node|
             open_branch
             write_tree_from child_node
+            close_branch
           end
       end
     end
