@@ -1,5 +1,6 @@
 module SGF
   class Game
+
     include Enumerable
 
     attr_accessor :current_node, :root
