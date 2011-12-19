@@ -85,6 +85,10 @@ module SGF
 
     private
 
+    def leading_whitespace(indent)
+      "#{" " * indent}"
+    end
+
     def method_missing method_name, *args
       property = method_name.to_s.upcase
       if property[/(.*?)=$/]
@@ -94,10 +98,6 @@ module SGF
         super(method_name, args) if output.nil?
         output
       end
-    end
-
-    def leading_whitespace(indent)
-      "#{" " * indent}"
     end
 
   end
