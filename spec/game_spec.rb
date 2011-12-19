@@ -39,4 +39,12 @@ describe "SGF::Game" do
     array[2].c.should == "b"
   end
 
+  it "should have the expected game-level information" do
+    game = get_first_game_from 'spec/data/ff4_ex.sgf'
+    game.name.should == "Gametree 1: properties"
+    game.data_entry.should == "Arno Hollosi"
+    expect { game.opening }.to raise_error(SGF::NoIdentityError)
+    expect { game.nonexistent_identity }.to raise_error(NoMethodError)
+  end
+
 end

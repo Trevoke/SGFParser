@@ -3,6 +3,12 @@ module SGF
 
     include Enumerable
 
+    SGF::Game::PROPERTIES.each do |human_readable_method, sgf_identity|
+      define_method(human_readable_method.to_sym) do
+        @root[sgf_identity] ? @root[sgf_identity] : raise(SGF::NoIdentityError)
+      end
+    end
+
     attr_accessor :current_node, :root
 
     #Takes a SGF::Node as an argument. It will be a problem if that node isn't
@@ -24,6 +30,13 @@ module SGF
     end
 
     private
+
+    def method_missing method_name, *args
+      human_readable_identity = method_name.to_s.downcase
+      identity = SGF::Game::PROPERTIES[human_readable_identity]
+      return @root[identity] if identity
+      super(method_name, args)
+    end
 
     def preorder node=@root, &block
       # stop processing if the block returns false
