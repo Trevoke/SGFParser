@@ -11,37 +11,6 @@ SGF: FF4 - may support earlier ones as well, but untested.
 
 Ruby: >=1.8.7 (may work with 1.8.6)
 
-=QUICK HOWTO
-Example:
- require 'sgf'
- parser = SGF::Parser.new
- tree = parser.parse string
-
-All trees begin with an empty node ( @root) which allows a simple support of multiple gametrees. Simply put the root nodes (the one with the FF identity) as children of this @root node.
-
-In most situations (one game, no variations), this is all you'll need:
- game = tree.games.first #=> The first, most often only, gametree in the SGF file
- node = game.current_node #=> By default, this is the first node, which should have the FF property, and so on.
- node = game.next_node #=> Switches 'current_node' to game.children[0] and returns that node. 
-                       #   Useful to just go straight down the main branch.
-
-For any node, one can summon the properties as such:
- node.properties #=> returns a hash of the properties.
-A single property can be called, like the comments, for instance, like so:
- node.C #=> returns the comments for this node
- node.pw #=> returns the value of PW (Player White) if it exists on this node
- node["AW"] #=> same as node.aw or node.properties["AW"]
- node[:AW] #=> same as the previous line
- node.comments #=> syntactic sugar, only works for comments
- node.comment #=> same as the previous line
-
-When you save an SGF, it will also automatically indent it to make it a little easier for people to parse. There are a few ways to use it.
-
- require 'sgf'
- sgf = File.read('file.sgf')
- file = SGF::Parser.new.parse(sgf).save('destination.sgf')
- ----
- $ sgf_indent source.sgf destination.sgf
-
-
 WARNING: An implementation requirement is to make sure any closing bracket (']') inside a comment is escaped: '\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
+
+Documentation available at the Github wiki: https://github.com/Trevoke/SGFParser/wiki

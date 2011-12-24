@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email = %q{trevoke@gmail.com}
   s.homepage = %q{http://github.com/Trevoke/SGFParser}
   s.date = %q{2011-08-01}
-  s.summary = %q{SGF::Parser is a library that parses and saves SGF (Smart Game Format) files.}
+  s.summary = %q{A library that parses and saves SGF (Smart Game Format) files.}
   s.description = %q{SGF::Parser does standard stream parsing of the SGF file, instead of using an AG or some other auto-generated newfangled parser stuff. It is therefore faster to use, and hopefully will also be easier to use. Feedback helps :)}
   s.extra_rdoc_files = [
     "LICENSE",
