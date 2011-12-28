@@ -24,7 +24,9 @@ module SGF
       @branches = []
     end
 
-    # This takes as argument an SGF in string format and returns an SGF::Tree object
+    # This takes as argument an SGF and returns an SGF::Tree object
+    # It accepts a local path (String), a stringified SGF (String),
+    # or a file handler (File).
     def parse sgf
       @stream = streamably_stringify sgf
       until @stream.eof?
