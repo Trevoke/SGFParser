@@ -47,4 +47,12 @@ describe "SGF::Game" do
     expect { game.nonexistent_identity }.to raise_error(NoMethodError)
   end
 
+  it "should give you a minimum of useful information on inspect" do
+    game = get_first_game_from 'spec/data/simple.sgf'
+    inspect = game.inspect
+    inspect.should match /SGF::Game/
+    inspect.should match /#{game.object_id}/
+
+  end
+
 end

@@ -29,7 +29,7 @@ module SGF
 
     #Returns an array of the Game objects in this tree.
     def games
-      @games ||= populate_game_array
+      populate_game_array
     end
 
     def inspect
@@ -56,7 +56,7 @@ module SGF
 
     def node_count
       count = 0
-      each { |node| count += 1 }
+      games.each { |game| count += game.node_count }
       count
     end
 
@@ -73,6 +73,7 @@ module SGF
       super(method_name, args) if output.nil?
       output
     end
+
   end # Tree
 end # SGF
 

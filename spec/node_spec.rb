@@ -67,24 +67,19 @@ describe "SGF::Node" do
     @node[:PB].should == "Dosaku"
   end
 
-  it "should give you the number of children when you inspect the object" do
-    @node.add_children SGF::Node.new, SGF::Node.new
-    @node.inspect.should match /Children: 2/
-  end
-
-  it "should tell whether it has a parent when you inspect the object" do
-    @node.add_children SGF::Node.new
-    @node.inspect.should match /Parent: false/
-    @node.parent = SGF::Node.new
-    @node.inspect.should match /Parent: true/
-  end
-
-  it "should give you the object_id when you inspect the object" do
+  it "should give you a relatively useful inspect" do
     @node.inspect.should match /#{@node.object_id}/
-  end
-
-  it "should give you the class when you inspect the object" do
     @node.inspect.should match /SGF::Node/
+
+    @node.add_properties({"C" => "Oh hi", "PB" => "Dosaku", "AE" => "[dd][gh]"})
+    @node.inspect.should match /3 Properties/
+
+    @node.add_children SGF::Node.new, SGF::Node.new
+    @node.inspect.should match /2 Children/
+
+    @node.inspect.should match /Has no parent/
+    @node.parent = SGF::Node.new
+    @node.inspect.should match /Has a parent/
   end
 
   it "should properly show a string version of the node" do

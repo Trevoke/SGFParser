@@ -10,20 +10,12 @@ describe "SGF::Tree" do
     @tree.games.size.should == 2
   end
 
-  it "should tell you the id of the object on inspect" do
-    @tree.inspect.should match /#{@tree.object_id}/
-  end
-
-  it "should tell you the class of the object on inspect" do
-    @tree.inspect.should match /SGF::Tree/
-  end
-
-  it "should tell you how many games it has on inspect" do
-    @tree.inspect.should match /2 Games/
-  end
-
-  it "should tell you how many nodes it has on inspect" do
-    @tree.inspect.should match /62 Nodes/
+  it "should have a decent inspect" do
+    inspect = @tree.inspect
+    inspect.should match /SGF::Tree/
+    inspect.should match /#{@tree.object_id}/
+    inspect.should match /2 Games/
+    inspect.should match /62 Nodes/
   end
 
   it "should use preorder traversal for each" do

@@ -29,6 +29,20 @@ module SGF
       preorder @root, &block
     end
 
+    def node_count
+      count = 0
+      each { |node| count += 1 }
+      count
+    end
+
+    def inspect
+      "<SGF::Game:#{object_id}>"
+    end
+
+    def to_s
+      inspect
+    end
+
     private
 
     def method_missing method_name, *args
