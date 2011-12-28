@@ -39,6 +39,8 @@ module SGF
       "<SGF::Game:#{object_id}>"
     end
 
+    alias :inspect :to_s
+
     def to_str
       SGF::Writer.new.stringify_tree_from @root
     end

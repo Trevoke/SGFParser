@@ -68,6 +68,8 @@ module SGF
       out << ">"
     end
 
+    alias :inspect :to_s
+
     def to_str(indent = 0)
       properties = []
       @properties.each do |identity, property|
