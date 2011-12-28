@@ -26,7 +26,7 @@ module SGF
 
     # This takes as argument an SGF in string format and returns an SGF::Tree object
     def parse sgf
-      @stream = streamable sgf
+      @stream = streamably_stringify sgf
       until @stream.eof?
         case next_character
           when "(" then open_branch
@@ -43,10 +43,10 @@ module SGF
 
     private
 
-    def streamable sgf
-      case sgf
-        when File then sgf = sgf.read
-      end
+    def streamably_stringify sgf
+      sgf = sgf.read if sgf.instance_of?(File)
+      sgf = File.read(sgf) if File.exist?(sgf)
+
       check_for_errors_before_parsing sgf if @strict_parsing
       StringIO.new clean(sgf), 'r'
     end

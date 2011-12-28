@@ -90,10 +90,6 @@ describe "SGF::Parser" do
     node.ar.should == ["aa:sc", "sa:ac", "aa:sa", "aa:ac", "cd:cj", "gd:md", "fh:ij", "kj:nh"]
   end
 
-  it "should parse a file if given a URL as input" do
-    pending
-  end
-
   it "should parse a file if given a file handler as input" do
     parser = strict_parser
     file = File.open 'spec/data/simple.sgf'
@@ -104,7 +100,12 @@ describe "SGF::Parser" do
   end
 
   it "should parse a file if given a local path as input"  do
-    pending
+    parser = strict_parser
+    local_path = 'spec/data/simple.sgf'
+    tree = parser.parse local_path
+    game = tree.games.first
+    game.white_player.should == "redrose"
+    game.black_player.should == "tartrate"
   end
 
   private
