@@ -26,7 +26,6 @@ module SGF
 
     # This takes as argument an SGF in string format and returns an SGF::Tree object
     def parse sgf
-      check_for_errors_before_parsing sgf if @strict_parsing
       @stream = streamable sgf
       until @stream.eof?
         case next_character
@@ -44,16 +43,20 @@ module SGF
 
     private
 
+    def streamable sgf
+      case sgf
+        when File then sgf = sgf.read
+      end
+      check_for_errors_before_parsing sgf if @strict_parsing
+      StringIO.new clean(sgf), 'r'
+    end
+
     def check_for_errors_before_parsing string
       msg = "The first two non-whitespace characters of the string should be (;"
       unless string[/\A\s*\(\s*;/]
         msg << " but they were #{string[0..1]} instead."
         raise(SGF::MalformedDataError, msg)
       end
-    end
-
-    def streamable sgf
-      StringIO.new clean(sgf), 'r'
     end
 
     def clean sgf

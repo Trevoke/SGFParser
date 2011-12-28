@@ -89,6 +89,24 @@ describe "SGF::Parser" do
     node = root.children[0].children[0]
     node.ar.should == ["aa:sc", "sa:ac", "aa:sa", "aa:ac", "cd:cj", "gd:md", "fh:ij", "kj:nh"]
   end
+
+  it "should parse a file if given a URL as input" do
+    pending
+  end
+
+  it "should parse a file if given a file handler as input" do
+    parser = strict_parser
+    file = File.open 'spec/data/simple.sgf'
+    tree = parser.parse file
+    game = tree.games.first
+    game.white_player.should == "redrose"
+    game.black_player.should == "tartrate"
+  end
+
+  it "should parse a file if given a local path as input"  do
+    pending
+  end
+
   private
 
   def lenient_parser
