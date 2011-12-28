@@ -68,7 +68,11 @@ module SGF
       out << ">"
     end
 
-    def to_s(indent = 0)
+    def to_s
+      inspect
+    end
+
+    def to_str(indent = 0)
       properties = []
       @properties.each do |identity, property|
         properties << stringify_identity_and_property(identity, property)

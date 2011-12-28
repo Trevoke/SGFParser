@@ -89,7 +89,7 @@ describe "SGF::Node" do
 
   it "should properly show a string version of the node" do
     @node.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
-    @node.to_s.should == ";C[Oh hi\\]]\nPB[Dosaku]"
+    @node.to_str.should == ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
 end

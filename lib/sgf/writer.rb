@@ -17,7 +17,7 @@ module SGF
     private
 
     def write_tree_from node
-      @sgf << "\n" << node.to_s(@indentation)
+      @sgf << "\n" << node.to_str(@indentation)
       decide_what_comes_after node
     end
 
