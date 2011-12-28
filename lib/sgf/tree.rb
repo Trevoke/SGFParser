@@ -34,9 +34,17 @@ module SGF
 
     def inspect
       out = "#<SGF::Tree:#{self.object_id}, "
-      out << "Games: #{games.count}, "
-      out << "Nodes: #{node_count}"
+      out << "#{games.count} Games, "
+      out << "#{node_count} Nodes"
       out << ">"
+    end
+
+    def to_s
+      inspect
+    end
+
+    def to_str
+      SGF::Writer.new.stringify_tree_from @root
     end
 
     # Saves the Tree as an SGF file. Takes a filename as argument.

@@ -18,10 +18,6 @@ module SGF
     # You probably shouldn't use it, but who's gonna stop you?
     def initialize strict_parsing = true
       @strict_parsing = strict_parsing
-      @tree = Tree.new
-      @root = @tree.root
-      @current_node = @root
-      @branches = []
     end
 
     # This takes as argument an SGF and returns an SGF::Tree object
@@ -29,6 +25,10 @@ module SGF
     # or a file handler (File).
     def parse sgf
       @stream = streamably_stringify sgf
+      @tree = Tree.new
+      @root = @tree.root
+      @current_node = @root
+      @branches = []
       until @stream.eof?
         case next_character
           when "(" then open_branch

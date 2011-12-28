@@ -19,11 +19,11 @@ describe "SGF::Tree" do
   end
 
   it "should tell you how many games it has on inspect" do
-    @tree.inspect.should match /Games: 2/
+    @tree.inspect.should match /2 Games/
   end
 
   it "should tell you how many nodes it has on inspect" do
-    @tree.inspect.should match /Nodes: 62/
+    @tree.inspect.should match /62 Nodes/
   end
 
   it "should use preorder traversal for each" do

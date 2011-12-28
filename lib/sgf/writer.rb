@@ -1,11 +1,15 @@
 module SGF
   class Writer
 
+  def stringify_tree_from root_node
+    @indentation = 0
+    @sgf = ""
+    write_new_branch_from root_node
+  end
+
     # Takes a node and a filename as arguments
     def save(root_node, filename)
-      @indentation = 0
-      @sgf = ""
-      write_new_branch_from root_node
+      stringify_tree_from root_node
 
       File.open(filename, 'w') { |f| f << @sgf }
     end
