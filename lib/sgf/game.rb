@@ -35,12 +35,8 @@ module SGF
       count
     end
 
-    def inspect
-      "<SGF::Game:#{object_id}>"
-    end
-
     def to_s
-      inspect
+      "<SGF::Game:#{object_id}>"
     end
 
     private

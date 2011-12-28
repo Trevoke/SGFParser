@@ -60,16 +60,12 @@ module SGF
     #Sometimes you think of 'comment' and not 'comments'
     alias :comment :comments
 
-    def inspect
+    def to_s
       out = "#<#{self.class}:#{self.object_id}, "
       out << (@parent ? "Has a parent, " : "Has no parent, ")
       out << "#{@children.size} Children, "
       out << "#{@properties.keys.size} Properties"
       out << ">"
-    end
-
-    def to_s
-      inspect
     end
 
     def to_str(indent = 0)

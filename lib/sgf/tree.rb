@@ -32,15 +32,11 @@ module SGF
       populate_game_array
     end
 
-    def inspect
+    def to_s
       out = "#<SGF::Tree:#{self.object_id}, "
       out << "#{games.count} Games, "
       out << "#{node_count} Nodes"
       out << ">"
-    end
-
-    def to_s
-      inspect
     end
 
     def to_str
