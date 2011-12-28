@@ -53,11 +53,9 @@ module SGF
     end
 
     def preorder node=@root, &block
-      # stop processing if the block returns false
-      if yield node then
-        node.each_child do |child|
-          preorder(child, &block)
-        end
+      yield node
+      node.each_child do |child|
+        preorder child, &block
       end
     end
   end
