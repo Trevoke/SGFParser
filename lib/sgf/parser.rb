@@ -14,16 +14,14 @@ module SGF
     LIST_IDENTITIES = ["AW", "AB", "AE", "AR", "CR", "DD",
                        "LB", "LN", "MA", "SL", "SQ", "TR", "VW",
                        "TB", "TW"]
-    # There is an optional argument in case you don't want this to raise errors.
-    # You probably shouldn't use it, but who's gonna stop you?
-    def initialize strict_parsing = true
-      @strict_parsing = strict_parsing
-    end
 
     # This takes as argument an SGF and returns an SGF::Tree object
     # It accepts a local path (String), a stringified SGF (String),
     # or a file handler (File).
-    def parse sgf
+    # The second argument is optional, in case you don't want this to raise errors.
+    # You probably shouldn't use it, but who's gonna stop you?
+    def parse sgf, strict_parsing = true
+      @strict_parsing = strict_parsing
       @stream = streamably_stringify sgf
       @tree = Tree.new
       @root = @tree.root
