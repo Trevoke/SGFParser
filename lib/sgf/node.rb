@@ -14,7 +14,7 @@ module SGF
       @children = []
       add_children args[:children] if args[:children]
       @properties = Hash.new
-      @properties.merge! args[:properties] if args[:properties]
+      add_properties args[:properties] if args[:properties]
     end
 
     #Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
@@ -24,7 +24,7 @@ module SGF
       nodes.each do |node|
         node.parent = self
         @children << node
-        end
+      end
     end
 
     #Takes a hash {identity => property} and adds those to the current node.
@@ -34,6 +34,7 @@ module SGF
         @properties[identity] ||= property.class.new
         @properties[identity].concat property
       end
+      update_human_readable_methods
     end
 
     #Iterate through each child. Yields a child node, if one exists.
@@ -52,14 +53,6 @@ module SGF
       @properties[identity]
     end
 
-    #Sometimes you think of 'comments' and not of node["C"] or node.properties["C"]
-    def comments
-      @properties["C"]
-    end
-
-    #Sometimes you think of 'comment' and not 'comments'
-    alias :comment :comments
-
     def to_s
       out = "#<#{self.class}:#{self.object_id}, "
       out << (@parent ? "Has a parent, " : "Has no parent, ")
@@ -77,7 +70,7 @@ module SGF
       end
       whitespace = leading_whitespace(indent)
       "#{whitespace};#{properties.join("\n#{whitespace}")}"
-    end   
+    end
 
     def stringify_identity_and_property(identity, property)
       new_property = property.instance_of?(Array) ? property.join("][") : property
@@ -86,6 +79,15 @@ module SGF
     end
 
     private
+
+    def update_human_readable_methods
+      SGF::Node::PROPERTIES.each do |human_readable_method, sgf_identity|
+        next if defined? human_readable_method.to_sym
+        define_method(human_readable_method.to_sym) do
+          @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError)
+        end
+      end
+    end
 
     def leading_whitespace(indent)
       "#{" " * indent}"
