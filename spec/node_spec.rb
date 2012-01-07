@@ -87,4 +87,11 @@ describe "SGF::Node" do
     @node.to_str.should == ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
+  it "should get a node depth number one more by the parent when attached to a parent" do
+    child = SGF::Node.new
+    @node.add_children child
+    @node.depth.should == 0
+    child.depth.should == 1
+  end
+
 end

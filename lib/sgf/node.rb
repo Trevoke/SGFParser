@@ -3,13 +3,14 @@ module SGF
   #Your basic node. It holds information about itself, its parent, and its children.
   class Node
 
-    attr_accessor :parent, :children, :properties
+    attr_accessor :parent, :children, :properties, :depth
 
     # Creates a new node. Arguments which can be passed in are:
     # :parent => parent_node (nil by default)
     # :children => [list, of, children] (empty array if nothing is passed)
     # :properties => {hash_of => properties} (empty hash if nothing is passed)
     def initialize args={}
+      @depth = 0
       @parent = args[:parent]
       @children = []
       add_children args[:children] if args[:children]
@@ -23,6 +24,7 @@ module SGF
       raise "Non-node child given!" if nodes.any? { |node| node.class != Node }
       nodes.each do |node|
         node.parent = self
+        node.depth = @depth + 1
         @children << node
       end
     end
