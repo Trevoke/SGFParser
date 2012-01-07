@@ -52,8 +52,8 @@ module SGF
     end
 
     def check_for_errors_before_parsing string
-      msg = "The first two non-whitespace characters of the string should be (;"
       unless string[/\A\s*\(\s*;/]
+        msg = "The first two non-whitespace characters of the string should be (;"
         msg << " but they were #{string[0..1]} instead."
         raise(SGF::MalformedDataError, msg)
       end
