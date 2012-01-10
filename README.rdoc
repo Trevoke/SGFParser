@@ -3,9 +3,7 @@ Author: Aldric Giacomoni || Email : trevoke@gmail.com
 
 Build status {<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />}[http://travis-ci.org/Trevoke/SGFParser]
 
-Are you using this gem? Is there functionality you wish it had? Is something hard to do?
-
-Let me know and I'll make it possible, or easier!
+Are you using this gem? Is there functionality you wish it had? Is something hard to do? Does the documentation not make sense, and you know how to make it more helpful? Let me know and I'll make it possible, or easier!
 
 SGF: FF4 - may support earlier ones as well, but untested.
 
