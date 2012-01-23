@@ -2,6 +2,7 @@ module SGF
 
   #Your basic node. It holds information about itself, its parent, and its children.
   class Node
+    include Observable
 
     attr_accessor :parent, :children, :properties, :depth
 
@@ -23,6 +24,9 @@ module SGF
       nodes.flatten!
       raise "Non-node child given!" if nodes.any? { |node| node.class != Node }
       nodes.each do |node|
+        if node.parent && node.parent.children
+          node.parent.children.delete node
+        end
         node.parent = self
         node.depth = @depth + 1
         @children << node

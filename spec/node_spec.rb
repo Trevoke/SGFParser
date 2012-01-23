@@ -94,4 +94,14 @@ describe "SGF::Node" do
     child.depth.should == 1
   end
 
+  it "should not be the child of many nodes" do
+    parent1 = SGF::Node.new
+    parent2 = SGF::Node.new
+    parent1.add_children @node
+    parent2.add_children @node
+    @node.parent.should eq(parent2)
+    parent2.children.should include(@node)
+    parent1.children.should_not include(@node)
+  end
+
 end
