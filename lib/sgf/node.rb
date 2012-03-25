@@ -7,18 +7,18 @@ module SGF
 
     attr_accessor :children, :properties, :depth
 
-    # Creates a new node. Arguments which can be passed in are:
-    # :parent => parent_node (nil by default)
-    # :children => [list, of, children] (empty array if nothing is passed)
-    # :properties => {hash_of => properties} (empty hash if nothing is passed)
+    # Creates a new node. You can pass in a hash. There are two special keys, parent and children.
+    # * parent: parent_node (nil by default)
+    # * children: [list, of, children] (empty array if nothing is passed)
+    # Anything else passed to the hash will become an SGF identity/property pair on the node.
     def initialize args={}
-      opts = {children: [], properties: {}, parent: nil}
+      opts = {children: [], parent: nil}
       opts.merge! args
       @depth = 0
       @children = []
-      set_parent opts[:parent]
-      add_children opts[:children]
-      add_properties opts[:properties]
+      set_parent opts.delete :parent
+      add_children opts.delete :children
+      add_properties opts
     end
 
     def parent

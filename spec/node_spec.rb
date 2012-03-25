@@ -125,8 +125,8 @@ describe SGF::Node do
 
     it "should properly update depth when parentage changes" do
       @node.add_properties(name: "original node")
-      link1 = SGF::Node.new(properties: {name: "link1"})
-      link2 = SGF::Node.new(properties: {name: "link2"})
+      link1 = SGF::Node.new(name: "link1")
+      link2 = SGF::Node.new(name: "link2")
       link2.parent = link1
       link1.parent = @node
       @node.parent.should be_nil

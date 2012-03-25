@@ -8,12 +8,10 @@ module SGF
   class Parser
 
     NEW_NODE = ";"
-    BRANCHING = ["(", ")"]
-    PROPERTY = ["[", "]"]
+    BRANCHING = %w{( )}
+    PROPERTY = %w([ ])
     NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
-    LIST_IDENTITIES = ["AW", "AB", "AE", "AR", "CR", "DD",
-                       "LB", "LN", "MA", "SL", "SQ", "TR", "VW",
-                       "TB", "TW"]
+    LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
     # This takes as argument an SGF and returns an SGF::Tree object
     # It accepts a local path (String), a stringified SGF (String),

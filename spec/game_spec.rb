@@ -59,9 +59,9 @@ describe "SGF::Game" do
   end
 
   it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
-    root = SGF::Node.new :properties => {FF: "4", PB: "Me", PW: "You"}
+    root = SGF::Node.new FF: "4", PB: "Me", PW: "You"
     game = SGF::Game.new root
-    root.add_children SGF::Node.new(:properties => {B: "dd"})
+    root.add_children SGF::Node.new(B: "dd")
     nodes = []
     game.each { |node| nodes << node; nil }
     nodes.size.should eq 2
