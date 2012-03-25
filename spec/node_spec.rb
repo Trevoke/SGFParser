@@ -1,107 +1,155 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "SGF::Node" do
+describe SGF::Node do
 
   before :each do
     @node = SGF::Node.new
   end
 
-  it "should be a valid node" do
-    @node.class.should == SGF::Node
-    @node.properties.should == {}
-    @node.parent.should == nil
-    @node.children.should == []
-  end
-
-  it "should store properties" do
-    @node.add_properties "PB" => "Dosaku"
-    @node.properties.should == {"PB" => "Dosaku"}
-  end
-
-  it "should link to a parent" do
-    parent = SGF::Node.new
-    @node.parent = parent
-    @node.parent.should == parent
-  end
-
-  it "should link to children" do
-    child1 = SGF::Node.new
-    child2 = SGF::Node.new
-    child3 = SGF::Node.new
-    @node.add_children child1, child2, child3
-    @node.children.should == [child1, child2, child3]
-  end
-
-  it "should link to children, who should get new parents" do
-    child1 = SGF::Node.new
-    child2 = SGF::Node.new
-    child3 = SGF::Node.new
-    @node.add_children child1, child2, child3
-    @node.children.each { |child| child.parent.should == @node }
-  end
-
-  it "should allow concatenation of properties" do
-    @node.add_properties "TC" => "Hello,"
-    @node.add_properties "TC" => " world!"
-    @node.properties["TC"].should == "Hello, world!"
-  end
-
-  it "should give you the properties based on method given" do
-    @node.add_properties "PW" => "The Tick"
-    @node.add_properties "PB" => "Batmanuel"
-    @node.pw.should == "The Tick"
-    @node.pb.should == "Batmanuel"
-  end
-
-  it "should allow you to change a property completely" do
-    @node.add_properties "RE" => "This is made up"
-    @node.properties["RE"] = "This is also made up"
-    @node.re.should == "This is also made up"
-    @node.re = "And that too"
-    @node.re.should == "And that too"
-  end
-
-  it "should implement [] as a shortcut to read properties" do
-    @node.add_properties "PB" => "Dosaku"
-    @node["PB"].should == "Dosaku"
-    @node[:PB].should == "Dosaku"
-  end
-
   it "should give you a relatively useful inspect" do
     @node.inspect.should match /#{@node.object_id}/
     @node.inspect.should match /SGF::Node/
+    @node.inspect.should match /Has no parent/
 
-    @node.add_properties({"C" => "Oh hi", "PB" => "Dosaku", "AE" => "[dd][gh]"})
+    @node.add_properties({C: "Oh hi", PB: "Dosaku", AE: "[dd][gh]"})
     @node.inspect.should match /3 Properties/
 
     @node.add_children SGF::Node.new, SGF::Node.new
     @node.inspect.should match /2 Children/
 
-    @node.inspect.should match /Has no parent/
     @node.parent = SGF::Node.new
     @node.inspect.should match /Has a parent/
   end
 
   it "should properly show a string version of the node" do
     @node.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
-    @node.to_str.should == ";C[Oh hi\\]]\nPB[Dosaku]"
+    @node.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
-  it "should get a node depth number one more by the parent when attached to a parent" do
-    child = SGF::Node.new
-    @node.add_children child
-    @node.depth.should == 0
-    child.depth.should == 1
+  it "should properly show a string version of the node if identities are symbols" do
+    @node.add_properties({C: "Oh hi]", PB: "Dosaku"})
+    @node.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
-  it "should not be the child of many nodes" do
-    parent1 = SGF::Node.new
-    parent2 = SGF::Node.new
-    parent1.add_children @node
-    parent2.add_children @node
-    @node.parent.should eq(parent2)
-    parent2.children.should include(@node)
-    parent1.children.should_not include(@node)
+  context "Heredity" do
+    it "should link to a parent" do
+      parent = SGF::Node.new
+      @node.parent = parent
+      @node.parent.should eq parent
+    end
+
+    it "should link to children" do
+      child1 = SGF::Node.new
+      child2 = SGF::Node.new
+      child3 = SGF::Node.new
+      @node.add_children child1, child2, child3
+      @node.children.should eq [child1, child2, child3]
+    end
+
+    it "should link to children, who should get new parents" do
+      child1 = SGF::Node.new
+      child2 = SGF::Node.new
+      child3 = SGF::Node.new
+      @node.add_children child1, child2, child3
+      @node.children.each { |child| child.parent.should eq @node }
+    end
+
+    it "should not be the child of many nodes" do
+      parent1 = SGF::Node.new
+      parent2 = SGF::Node.new
+      parent1.add_children @node
+      parent2.add_children @node
+      @node.parent.should eq(parent2)
+      parent2.children.should include(@node)
+      parent1.children.should_not include(@node)
+    end
+
+    it "should become a child of its new parent" do
+      parent = SGF::Node.new
+      @node.parent = parent
+      parent.children.should include @node
+    end
+
   end
 
+  context "Properties" do
+
+    it "should store properties" do
+      @node.add_properties PB: "Dosaku"
+      @node.properties.should eq({PB: "Dosaku"})
+    end
+
+    it "should allow concatenation of properties" do
+      @node.add_properties "TC" => "Hello,"
+      @node.add_properties "TC" => " world!"
+      @node.properties["TC"].should eq "Hello, world!"
+    end
+
+    it "should give you the properties based on method given" do
+      @node.add_properties "PW" => "The Tick"
+      @node.add_properties "PB" => "Batmanuel"
+      @node.pw.should eq "The Tick"
+      @node.pb.should eq "Batmanuel"
+    end
+
+    it "should allow you to change a property completely" do
+      @node.add_properties "RE" => "This is made up"
+      @node.properties["RE"] = "This is also made up"
+      @node.re.should eq "This is also made up"
+      @node.re = "And that too"
+      @node.re.should eq "And that too"
+    end
+
+    it "should implement [] as a shortcut to read properties" do
+      @node.add_properties "PB" => "Dosaku"
+      @node["PB"].should eq "Dosaku"
+      @node[:PB].should eq "Dosaku"
+    end
+
+  end
+
+  context "Node depth" do
+
+    it "should get a node depth number one more by the parent when attached to a parent" do
+      child = SGF::Node.new
+      @node.add_children child
+      @node.depth.should eq 0
+      child.depth.should eq 1
+    end
+
+    it "should properly set depth if a parent is passed to initializer" do
+      node2 = SGF::Node.new parent: @node
+      node2.parent.should eq @node
+      node2.depth.should eq 1
+    end
+
+    it "should properly update depth when parentage changes" do
+      @node.add_properties(name: "original node")
+      link1 = SGF::Node.new(properties: {name: "link1"})
+      link2 = SGF::Node.new(properties: {name: "link2"})
+      link2.parent = link1
+      link1.parent = @node
+      @node.parent.should be_nil
+      link1.parent.should eq @node
+      link2.parent.should eq link1
+      p link1.children
+      @node.depth.should == 0
+      link1.depth.should == 1
+      link2.depth.should == 2
+    end
+
+    it "should properly update depth when childhood changes" do
+      link1 = SGF::Node.new
+      link2 = SGF::Node.new
+      link3 = SGF::Node.new
+      link1.add_children link2
+      link2.add_children link3
+      @node.add_children link1
+      @node.add_children link3
+      @node.depth.should == 0
+      link1.depth.should == 1
+      link2.depth.should == 2
+      link3.depth.should == 1
+    end
+  end
 end

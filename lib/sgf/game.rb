@@ -26,12 +26,12 @@ module SGF
 
     #Iterate through all the nodes in preorder fashion
     def each &block
-      preorder @root, &block
+      @root.each &block
     end
 
     def node_count
       count = 0
-      each { |node| count += 1 }
+      each { count += 1 }
       count
     end
 
@@ -54,11 +54,5 @@ module SGF
       super(method_name, args)
     end
 
-    def preorder node=@root, &block
-      yield node
-      node.each_child do |child|
-        preorder child, &block
-      end
-    end
   end
 end

@@ -7,7 +7,7 @@ describe "SGF::Tree" do
   end
 
   it "should have two gametrees" do
-    @tree.games.size.should == 2
+    @tree.games.size.should eq 2
   end
 
   it "should have a decent inspect" do
@@ -21,16 +21,16 @@ describe "SGF::Tree" do
   it "should use preorder traversal for each" do
     @tree = get_tree_from 'spec/data/example1.sgf'
     array = []
-    @tree.each {|node| array << node}
-    array[0].c.should == "root"
-    array[1].c.should == "a"
-    array[2].c.should == "b"
+    @tree.each { |node| array << node }
+    array[0].c.should eq "root"
+    array[1].c.should eq "a"
+    array[2].c.should eq "b"
   end
 
   it "should load a file properly" do
-    @tree.class.should == SGF::Tree
-    @tree.root.children.size.should == 2
-    @tree.root.children[0].children.size.should == 5
+    @tree.class.should eq SGF::Tree
+    @tree.root.children.size.should eq 2
+    @tree.root.children[0].children.size.should eq 5
   end
 
 end

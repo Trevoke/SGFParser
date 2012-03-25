@@ -32,17 +32,17 @@ describe "SGF::Writer" do
 
   it "should indent a simple SGF nicely" do
     sgf = save_to_temp_file_and_read '(;FF[4])'
-    sgf.should == "\n(\n  ;FF[4]\n)"
+    sgf.should eq "\n(\n  ;FF[4]\n)"
   end
 
   it "should indent a one-node SGF with two properties" do
     sgf = save_to_temp_file_and_read '(;FF[4]PW[Cho Chikun])'
-    sgf.should == "\n(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
+    sgf.should eq "\n(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
   end
 
   it "should indent two nodes on same column" do
     sgf = save_to_temp_file_and_read '(;FF[4];PB[qq])'
-    sgf.should == "\n(\n  ;FF[4]\n  ;PB[qq]\n)"
+    sgf.should eq "\n(\n  ;FF[4]\n  ;PB[qq]\n)"
   end
 
   it "should indent branches further" do
@@ -58,7 +58,7 @@ describe "SGF::Writer" do
     ;PB[qa]
   )
 )}
-    sgf.should == expected
+    sgf.should eq expected
   end
 
   it "should indent two gametrees" do
@@ -73,7 +73,7 @@ describe "SGF::Writer" do
   ;FF[4]
   ;PB[dd]
 )}
-    sgf.should == expected
+    sgf.should eq expected
   end
 
   private
@@ -83,15 +83,14 @@ describe "SGF::Writer" do
     tree = parser.parse string
     tree.save TEMP_FILE
     tree2 = get_tree_from TEMP_FILE
-    tree2.should == tree
+    tree2.should eq tree
   end
 
 
   def save_to_temp_file_and_read sgf_string
     tree = SGF::Parser.new.parse sgf_string
     tree.save TEMP_FILE
-    sgf = File.read TEMP_FILE
-    sgf
+    File.read TEMP_FILE
   end
 
 end
