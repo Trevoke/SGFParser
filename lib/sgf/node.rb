@@ -1,4 +1,3 @@
-require 'set'
 module SGF
 
   #Your basic node. It holds information about itself, its parent, and its children.
@@ -26,18 +25,24 @@ module SGF
     end
 
     def parent= parent
-      return unless parent
       if @parent
         @parent.children.delete self
       end
       @parent = parent
-      parent.children << self
-      self.each do |node|
-        node.depth = node.parent.depth + 1
+      if parent.nil?
+        @depth = 0
+      else
+        parent.children << self
+	@depth = parent.depth + 1
       end
+      update_depth_of_children
     end
 
     alias :set_parent :parent=
+
+    def remove_parent
+      set_parent nil
+    end
 
     #Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
     def add_children *nodes
@@ -114,6 +119,12 @@ module SGF
         define_method(human_readable_method.to_sym) do
           @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError)
         end
+      end
+    end
+
+    def update_depth_of_children
+      each_child do |node|
+        node.each { |x| x.depth = x.parent.depth + 1 }
       end
     end
 
