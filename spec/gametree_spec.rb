@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "SGF::Game" do
+describe SGF::Gametree do
 
   it "should hold the first node of the game" do
     game = get_first_game_from 'spec/data/ff4_ex.sgf'
@@ -8,8 +8,8 @@ describe "SGF::Game" do
   end
 
   it "should throw up if initialized with a non-Node argument" do
-    expect { SGF::Game.new("I am a string") }.to raise_error(ArgumentError)
-    expect { SGF::Game.new(SGF::Node.new) }.to_not raise_error(ArgumentError)
+    expect { SGF::Gametree.new("I am a string") }.to raise_error(ArgumentError)
+    expect { SGF::Gametree.new(SGF::Node.new) }.to_not raise_error(ArgumentError)
   end
 
   it "should have the expected game-level information" do
@@ -60,7 +60,7 @@ describe "SGF::Game" do
 
   it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
     root = SGF::Node.new FF: "4", PB: "Me", PW: "You"
-    game = SGF::Game.new root
+    game = SGF::Gametree.new root
     root.add_children SGF::Node.new(B: "dd")
     nodes = []
     game.each { |node| nodes << node; nil }

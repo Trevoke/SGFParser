@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    SgfParser (2.0.0)
+    SgfParser (2.1.0)
 
 GEM
   remote: http://rubygems.org/

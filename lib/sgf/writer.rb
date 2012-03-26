@@ -9,6 +9,7 @@ module SGF
 
     # Takes a node and a filename as arguments
     def save(root_node, filename)
+      #TODO - accept any I/O object
       stringify_tree_from root_node
 
       File.open(filename, 'w') { |f| f << @sgf }

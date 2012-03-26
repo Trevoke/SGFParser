@@ -24,16 +24,16 @@ module SGF
       @parent
     end
 
+    #Set the given node as a parent and self as one of that node's children
     def parent= parent
-      if @parent
-        @parent.children.delete self
-      end
+      @parent.children.delete self if @parent
 
       case @parent = parent
-        when nil then @depth = 0
+        when nil
+          @depth = 0
         else
           @parent.children << self
-	  @depth = parent.depth + 1
+	        @depth = @parent.depth + 1
       end
       update_depth_of_children
     end

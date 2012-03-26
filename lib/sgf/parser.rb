@@ -2,9 +2,9 @@ require 'stringio'
 
 module SGF
 
-  #The parser returns a SGF::Tree representation of the SGF file
+  #The parser returns a SGF::Collection representation of the SGF file
   #parser = SGF::Parser.new
-  #tree = parser.parse sgf_in_string_form
+  #collection = parser.parse sgf_in_string_form
   class Parser
 
     NEW_NODE = ";"
@@ -13,7 +13,7 @@ module SGF
     NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
-    # This takes as argument an SGF and returns an SGF::Tree object
+    # This takes as argument an SGF and returns an SGF::Collection object
     # It accepts a local path (String), a stringified SGF (String),
     # or a file handler (File).
     # The second argument is optional, in case you don't want this to raise errors.
@@ -21,8 +21,8 @@ module SGF
     def parse sgf, strict_parsing = true
       @strict_parsing = strict_parsing
       @stream = streamably_stringify sgf
-      @tree = Tree.new
-      @root = @tree.root
+      @collection = Collection.new
+      @root = @collection.root
       @current_node = @root
       @branches = []
       until @stream.eof?
@@ -36,7 +36,7 @@ module SGF
           else next
         end
       end
-      @tree
+      @collection
     end
 
     private

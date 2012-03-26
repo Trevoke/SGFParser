@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "SGF::Writer" do
+describe SGF::Writer do
 
   TEMP_FILE = 'spec/data/temp.sgf'
 
@@ -80,16 +80,16 @@ describe "SGF::Writer" do
 
   def parse_save_load_and_compare_to_saved string
     parser =SGF::Parser.new
-    tree = parser.parse string
-    tree.save TEMP_FILE
-    tree2 = get_tree_from TEMP_FILE
-    tree2.should eq tree
+    collection = parser.parse string
+    collection.save TEMP_FILE
+    collection2 = get_collection_from TEMP_FILE
+    collection2.should eq collection
   end
 
 
   def save_to_temp_file_and_read sgf_string
-    tree = SGF::Parser.new.parse sgf_string
-    tree.save TEMP_FILE
+    collection = SGF::Parser.new.parse sgf_string
+    collection.save TEMP_FILE
     File.read TEMP_FILE
   end
 

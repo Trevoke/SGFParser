@@ -2,7 +2,7 @@ module SGF
 
 #  http://www.red-bean.com/sgf/proplist.html
 
-  class Game
+  class Gametree
 
     PROPERTIES = {"annotator"=>"AN",
                   "black_octisquares"=>"BO", #Octi

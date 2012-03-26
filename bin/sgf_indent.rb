@@ -9,5 +9,5 @@ if ARGV.size != 2
 end
 
 parser = SGF::Parser.new
-tree = parser.parse ARGV[0]
-tree.save ARGV[1]
+collection = parser.parse ARGV[0]
+collection.save ARGV[1]

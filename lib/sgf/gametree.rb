@@ -1,9 +1,9 @@
 module SGF
-  class Game
+  class Gametree
 
     include Enumerable
 
-    SGF::Game::PROPERTIES.each do |human_readable_method, sgf_identity|
+    SGF::Gametree::PROPERTIES.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
         @root[sgf_identity] ? @root[sgf_identity] : raise(SGF::NoIdentityError)
       end
@@ -49,7 +49,7 @@ module SGF
 
     def method_missing method_name, *args
       human_readable_identity = method_name.to_s.downcase
-      identity = SGF::Game::PROPERTIES[human_readable_identity]
+      identity = SGF::Gametree::PROPERTIES[human_readable_identity]
       return @root[identity] if identity
       super(method_name, args)
     end

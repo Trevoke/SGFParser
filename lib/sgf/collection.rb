@@ -1,8 +1,8 @@
 module SGF
 
-  #Tree holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
+  #Collection holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
   #Somehow this feels like it should be split into another class or two...
-  class Tree
+  class Collection
     include Enumerable
 
     attr_accessor :root, :current_node, :errors
@@ -14,27 +14,27 @@ module SGF
     end
 
     def each
-      games.each { |game| game.each { |node| yield node } }
+      gametrees.each { |game| game.each { |node| yield node } }
     end
 
     # Compares a tree to another tree, node by node.
     # Nodes must be the same (same properties, parents and children).
-    def == other_tree
+    def == other_collection
       one = []
       two = []
       each { |node| one << node }
-      other_tree.each { |node| two << node }
+      other_collection.each { |node| two << node }
       one == two
     end
 
     #Returns an array of the Game objects in this tree.
-    def games
+    def gametrees
       populate_game_array
     end
 
     def to_s
-      out = "#<SGF::Tree:#{self.object_id}, "
-      out << "#{games.count} Games, "
+      out = "#<SGF::Collection:#{self.object_id}, "
+      out << "#{gametrees.count} Games, "
       out << "#{node_count} Nodes"
       out << ">"
     end
@@ -45,7 +45,7 @@ module SGF
       SGF::Writer.new.stringify_tree_from @root
     end
 
-    # Saves the Tree as an SGF file. Takes a filename as argument.
+    # Saves the Collection as an SGF file. Takes a filename as argument.
     def save filename
       SGF::Writer.new.save(@root, filename)
     end
@@ -54,14 +54,14 @@ module SGF
 
     def node_count
       count = 0
-      games.each { |game| count += game.node_count }
+      gametrees.each { |game| count += game.node_count }
       count
     end
 
     def populate_game_array
       games = []
-      @root.children.each do |first_node_of_gametree|
-        games << Game.new(first_node_of_gametree)
+      @root.children.each do |first_node_of_tree|
+        games << Gametree.new(first_node_of_tree)
       end
       games
     end
@@ -72,6 +72,6 @@ module SGF
       output
     end
 
-  end # Tree
+  end # Collection
 end # SGF
 

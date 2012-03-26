@@ -20,11 +20,11 @@ SIMPLIFIED_SAMPLE_SGF= <<EOF
 EOF
 
 def get_first_game_from file
-  tree = get_tree_from file
-  tree.games.first
+  collection = get_collection_from file
+  collection.gametrees.first
 end
 
-def get_tree_from file
+def get_collection_from file
   parser = SGF::Parser.new
   parser.parse File.read(file)
 end
