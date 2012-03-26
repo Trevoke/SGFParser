@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'spec_helper'
 
 describe SGF::Node do
 
@@ -124,18 +124,39 @@ describe SGF::Node do
     end
 
     it "should properly update depth when parentage changes" do
-      @node.add_properties(name: "original node")
-      link1 = SGF::Node.new(name: "link1")
-      link2 = SGF::Node.new(name: "link2")
+      link1 = SGF::Node.new
+      link2 = SGF::Node.new
       link2.parent = link1
       link1.parent = @node
       @node.parent.should be_nil
       link1.parent.should eq @node
       link2.parent.should eq link1
       p link1.children
-      @node.depth.should == 0
-      link1.depth.should == 1
-      link2.depth.should == 2
+      @node.depth.should eq 0
+      link1.depth.should eq 1
+      link2.depth.should eq 2
+    end
+
+    it "should properly update depth if parent is set to nil / parent is removed" do
+     parent = SGF::Node.new
+     child = SGF::Node.new
+     
+     @node.add_children child
+     @node.parent = parent
+     @node.depth.should eq 1
+     child.depth.should eq 2
+     
+     @node.parent = nil
+     @node.depth.should eq 0
+     child.depth.should eq 1
+     
+     @node.parent = parent
+     @node.depth.should eq 1
+     child.depth.should eq 2
+     
+     @node.remove_parent
+     @node.depth.should eq 0
+     child.depth.should eq 1
     end
 
     it "should properly update depth when childhood changes" do
@@ -146,10 +167,10 @@ describe SGF::Node do
       link2.add_children link3
       @node.add_children link1
       @node.add_children link3
-      @node.depth.should == 0
-      link1.depth.should == 1
-      link2.depth.should == 2
-      link3.depth.should == 1
+      @node.depth.should eq 0
+      link1.depth.should eq 1
+      link2.depth.should eq 2
+      link3.depth.should eq 1
     end
   end
 end
