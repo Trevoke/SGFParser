@@ -1,3 +1,7 @@
+== 3.0.0alpha
+- Rename Tree to Collection
+- Rename Game to Gametree
+
 == 2.1.0
 - Adding children and adding parents all works beautifully
 - Node depth is set properly and updated properly
