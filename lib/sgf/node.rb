@@ -28,12 +28,12 @@ module SGF
       if @parent
         @parent.children.delete self
       end
-      @parent = parent
-      if parent.nil?
-        @depth = 0
-      else
-        parent.children << self
-	@depth = parent.depth + 1
+
+      case @parent = parent
+        when nil then @depth = 0
+        else
+          @parent.children << self
+	  @depth = parent.depth + 1
       end
       update_depth_of_children
     end
@@ -78,8 +78,7 @@ module SGF
 
     #Syntactic sugar for node.properties["XX"]
     def [] identity
-      identity = identity.to_s
-      @properties[identity]
+      @properties[flexible(identity)]
     end
 
     def to_s
@@ -103,8 +102,9 @@ module SGF
 
     def stringify_identity_and_property(identity, property)
       new_property = property.instance_of?(Array) ? property.join("][") : property
-      new_property = new_property.gsub("]", "\\]") if flexible(identity) == "C"
-      "#{identity.to_s}[#{new_property}]"
+      new_id = flexible identity
+      new_property = new_property.gsub("]", "\\]") if new_id == "C"
+      "#{new_id}[#{new_property}]"
     end
 
     private
