@@ -45,6 +45,10 @@ module SGF
       SGF::Writer.new.stringify_tree_from @root
     end
 
+    def slice range
+     self
+    end
+
     private
 
     def method_missing method_name, *args

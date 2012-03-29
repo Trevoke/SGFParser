@@ -67,4 +67,30 @@ describe SGF::Gametree do
     nodes.size.should eq 2
   end
 
+  context "Slices" do
+
+    it "should return same gametree if slice is [0..0]" do
+      root = SGF::Node.new FF: '4', PB: 'Aldric', PW: 'Eric'
+      game = SGF::Gametree.new root
+      slice = game.slice(0..0)
+      slice.should be_instance_of SGF::Gametree
+      slice.root.should eq root
+    end
+
+    it "should slice through a one-branch list" do
+      @node = SGF::Node.new
+      @node.pw = 'Aldric'
+      child1 = SGF::Node.new b: "qq"
+      child2 = SGF::Node.new a: "rn"
+      child3 = SGF::Node.new b: "nr"
+      @node.add_children child1
+      child1.add_children child2
+      child2.add_children child3
+      slice = @node.slice(1..3)
+      slice.b.should eq 'qq'
+      slice.parent.should be_nil
+      slice.children[0].a.should eq 'rn'
+      slice.children[0].children[0].b.should eq 'nr'
+    end
+  end
 end
