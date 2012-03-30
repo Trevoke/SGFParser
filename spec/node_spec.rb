@@ -76,7 +76,7 @@ describe SGF::Node do
 
     it "should store properties" do
       @node.add_properties PB: "Dosaku"
-      @node.properties.should eq({PB: "Dosaku"})
+      @node.properties.should eq({"PB" => "Dosaku"})
     end
 
     it "should allow concatenation of properties" do
@@ -131,7 +131,6 @@ describe SGF::Node do
       @node.parent.should be_nil
       link1.parent.should eq @node
       link2.parent.should eq link1
-      p link1.children
       @node.depth.should eq 0
       link1.depth.should eq 1
       link2.depth.should eq 2

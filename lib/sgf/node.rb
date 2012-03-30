@@ -4,7 +4,7 @@ module SGF
   class Node
     include Enumerable
 
-    attr_accessor :children, :properties, :depth
+    attr_accessor :children, :properties
 
     # Creates a new node. You can pass in a hash. There are two special keys, parent and children.
     # * parent: parent_node (nil by default)
@@ -30,19 +30,28 @@ module SGF
 
       case @parent = parent
         when nil
-          @depth = 0
+          set_depth 0
         else
           @parent.children << self
-	        @depth = @parent.depth + 1
+	        set_depth  @parent.depth + 1
       end
-      update_depth_of_children
     end
-
     alias :set_parent :parent=
 
     def remove_parent
       set_parent nil
     end
+
+    def depth
+      @depth
+    end
+
+    def depth= new_depth
+      @depth = new_depth
+      update_depth_of_children
+    end
+
+    alias :set_depth :depth=
 
     #Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
     def add_children *nodes
@@ -56,8 +65,8 @@ module SGF
     def add_properties hash
       @properties ||= {}
       hash.each do |identity, property|
-        @properties[identity] ||= property.class.new
-        @properties[identity].concat property
+        @properties[flexible identity] ||= property.class.new
+        @properties[flexible identity].concat property
       end
       update_human_readable_methods
     end

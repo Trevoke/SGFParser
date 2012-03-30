@@ -78,19 +78,27 @@ describe SGF::Gametree do
     end
 
     it "should slice through a one-branch list" do
-      @node = SGF::Node.new
-      @node.pw = 'Aldric'
+      node = SGF::Node.new
+      game = SGF::Gametree.new node
+      node.pw = 'Aldric'
       child1 = SGF::Node.new b: "qq"
       child2 = SGF::Node.new a: "rn"
       child3 = SGF::Node.new b: "nr"
-      @node.add_children child1
+      node.add_children child1
       child1.add_children child2
       child2.add_children child3
-      slice = @node.slice(1..3)
-      slice.b.should eq 'qq'
-      slice.parent.should be_nil
-      slice.children[0].a.should eq 'rn'
-      slice.children[0].children[0].b.should eq 'nr'
+      slice = game.slice(1..3)
+      slice.should be_instance_of SGF::Gametree
+      root = slice.root
+      root.b.should eq 'qq'
+      root.parent.should be_nil
+      root.children[0].a.should eq 'rn'
+      root.children[0].children[0].b.should eq 'nr'
     end
+
+    it "should return a collection with all the children of given depth as root" do
+      pending "Oh god that's a lot of work."
+    end
+
   end
 end
