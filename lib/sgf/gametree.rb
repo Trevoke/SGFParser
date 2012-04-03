@@ -46,16 +46,18 @@ module SGF
     end
 
     def slice range
-      new_root = @root
+      new_root = nil
       each do |node|
         if node.depth == range.begin
-          new_root = node
+          new_root = node.dup
           break
         end
       end
+
+      new_root ||= @root.dup
       new_root.depth = 0
       new_root.parent = nil
-      game = SGF::Gametree.new new_root 
+      SGF::Gametree.new new_root
     end
 
     private

@@ -49,22 +49,24 @@ describe SGF::Gametree do
 
   end
 
-  it "should use preorder traversal for each" do
-    game = get_first_game_from 'spec/data/example1.sgf'
-    array = []
-    game.each { |node| array << node }
-    array[0].c.should eq "root"
-    array[1].c.should eq "a"
-    array[2].c.should eq "b"
-  end
+  context "blocks" do
+    it "should use preorder traversal for each" do
+      game = get_first_game_from 'spec/data/example1.sgf'
+      array = []
+      game.each { |node| array << node }
+      array[0].c.should eq "root"
+      array[1].c.should eq "a"
+      array[2].c.should eq "b"
+    end
 
-  it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
-    root = SGF::Node.new FF: "4", PB: "Me", PW: "You"
-    game = SGF::Gametree.new root
-    root.add_children SGF::Node.new(B: "dd")
-    nodes = []
-    game.each { |node| nodes << node; nil }
-    nodes.size.should eq 2
+    it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
+      root = SGF::Node.new FF: "4", PB: "Me", PW: "You"
+      game = SGF::Gametree.new root
+      root.add_children SGF::Node.new(B: "dd")
+      nodes = []
+      game.each { |node| nodes << node; nil }
+      nodes.size.should eq 2
+    end
   end
 
   context "Slices" do
@@ -94,10 +96,6 @@ describe SGF::Gametree do
       root.parent.should be_nil
       root.children[0].a.should eq 'rn'
       root.children[0].children[0].b.should eq 'nr'
-    end
-
-    it "should return a collection with all the children of given depth as root" do
-      pending "Oh god that's a lot of work."
     end
 
   end

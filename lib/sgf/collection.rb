@@ -1,7 +1,6 @@
 module SGF
 
   #Collection holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
-  #Somehow this feels like it should be split into another class or two...
   class Collection
     include Enumerable
 

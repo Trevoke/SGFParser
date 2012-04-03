@@ -9,5 +9,4 @@ module SGF
   class NoIdentityError < StandardError
     # Error if the user tries to read an identity that doesn't exist
   end
-
 end
