@@ -4,9 +4,7 @@ describe SGF::Writer do
 
   TEMP_FILE = 'spec/data/temp.sgf'
 
-  after :each do
-    FileUtils.rm_f TEMP_FILE
-  end
+  after { FileUtils.rm_f TEMP_FILE }
 
   it "should save a simple tree properly" do
     sgf = File.read('spec/data/simple.sgf')
