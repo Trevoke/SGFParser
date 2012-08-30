@@ -3,67 +3,69 @@ require 'spec_helper'
 describe SGF::Node do
 
   let(:node) { SGF::Node.new }
+  subject { node }
 
-  it "should give you a relatively useful inspect" do
-    node.inspect.should match /#{node.object_id}/
-    node.inspect.should match /SGF::Node/
-    node.inspect.should match /Has no parent/
+  context 'inspect' do
+    subject { node.inspect }
+    it { should match /#{node.object_id}/ }
+    it { should match /SGF::Node/ }
+    it { should match /Has no parent/ }
 
-    node.add_properties({C: "Oh hi", PB: "Dosaku", AE: "[dd][gh]"})
-    node.inspect.should match /3 Properties/
+    it "should give you a relatively useful inspect" do
+      node.add_properties({C: "Oh hi", PB: "Dosaku", AE: "[dd][gh]"})
+      should match /3 Properties/
 
-    node.add_children SGF::Node.new, SGF::Node.new
-    node.inspect.should match /2 Children/
+      node.add_children SGF::Node.new, SGF::Node.new
+      node.inspect.should match /2 Children/
 
-    node.parent = SGF::Node.new
-    node.inspect.should match /Has a parent/
+      node.parent = SGF::Node.new
+      node.inspect.should match /Has a parent/
+    end
+
   end
 
   it "should properly show a string version of the node" do
-    node.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
-    node.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
+    subject.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
+    subject.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
   it "should properly show a string version of the node if identities are symbols" do
-    node.add_properties({C: "Oh hi]", PB: "Dosaku"})
-    node.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
+    subject.add_properties({C: "Oh hi]", PB: "Dosaku"})
+    subject.to_str.should eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
   context "Heredity" do
+
+    let(:parent) { SGF::Node.new }
+    let(:child1) { SGF::Node.new }
+    let(:child3) { SGF::Node.new }
+    let(:child2) { SGF::Node.new }
+
     it "should link to a parent" do
-      parent = SGF::Node.new
-      node.parent = parent
-      node.parent.should eq parent
+      subject.parent = parent
+      subject.parent.should eq parent
     end
 
     it "should link to children" do
-      child1 = SGF::Node.new
-      child2 = SGF::Node.new
-      child3 = SGF::Node.new
       node.add_children child1, child2, child3
       node.children.should eq [child1, child2, child3]
     end
 
     it "should link to children, who should get new parents" do
-      child1 = SGF::Node.new
-      child2 = SGF::Node.new
-      child3 = SGF::Node.new
       node.add_children child1, child2, child3
       node.children.each { |child| child.parent.should eq node }
     end
 
     it "should not be the child of many nodes" do
-      parent1 = SGF::Node.new
       parent2 = SGF::Node.new
-      parent1.add_children node
+      parent.add_children node
       parent2.add_children node
       node.parent.should eq(parent2)
       parent2.children.should include(node)
-      parent1.children.should_not include(node)
+      parent.children.should_not include(node)
     end
 
     it "should become a child of its new parent" do
-      parent = SGF::Node.new
       node.parent = parent
       parent.children.should include node
     end

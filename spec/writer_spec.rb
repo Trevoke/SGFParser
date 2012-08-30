@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe SGF::Writer do
 
+  let(:parser) { SGF::Parser.new }
+
   TEMP_FILE = 'spec/data/temp.sgf'
 
   after { FileUtils.rm_f TEMP_FILE }
@@ -77,18 +79,20 @@ describe SGF::Writer do
   private
 
   def parse_save_load_and_compare_to_saved string
-    parser =SGF::Parser.new
-    collection = parser.parse string
-    collection.save TEMP_FILE
+    collection = parse_and_save string
     collection2 = get_collection_from TEMP_FILE
     collection2.should eq collection
   end
 
-
-  def save_to_temp_file_and_read sgf_string
-    collection = SGF::Parser.new.parse sgf_string
-    collection.save TEMP_FILE
+  def save_to_temp_file_and_read string
+    parse_and_save string
     File.read TEMP_FILE
+  end
+
+  def parse_and_save string
+    collection = parser.parse string
+    collection.save TEMP_FILE
+    collection
   end
 
 end
