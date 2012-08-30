@@ -1,6 +1,6 @@
 module SGF
 
-  #Your basic node. It holds information about itself, its parent, and its children.
+  # Your basic node. It holds information about itself, its parent, and its children.
   class Node
     include Enumerable
 
@@ -24,7 +24,7 @@ module SGF
       @parent
     end
 
-    #Set the given node as a parent and self as one of that node's children
+    # Set the given node as a parent and self as one of that node's children
     def parent= parent
       @parent.children.delete self if @parent
 
@@ -33,9 +33,10 @@ module SGF
           set_depth 0
         else
           @parent.children << self
-	        set_depth  @parent.depth + 1
+          set_depth @parent.depth + 1
       end
     end
+
     alias :set_parent :parent=
 
     def remove_parent
@@ -53,15 +54,15 @@ module SGF
 
     alias :set_depth :depth=
 
-    #Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
+    # Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
     def add_children *nodes
       nodes.flatten.each do |node|
         node.parent= self
       end
     end
 
-    #Takes a hash {identity => property} and adds those to the current node.
-    #If a property already exists, it will append to it.
+    # Takes a hash {identity => property} and adds those to the current node.
+    # If a property already exists, it will append to it.
     def add_properties hash
       @properties ||= {}
       hash.each do |identity, property|
@@ -75,17 +76,17 @@ module SGF
       preorder self, &block
     end
 
-    #Iterate through and yield each child. 
+    # Iterate through and yield each child.
     def each_child
       @children.each { |child| yield child }
     end
 
-    #Compare to another node.
+    # Compare to another node.
     def == other_node
       @properties == other_node.properties
     end
 
-    #Syntactic sugar for node.properties["XX"]
+    # Syntactic sugar for node.properties["XX"]
     def [] identity
       @properties[flexible(identity)]
     end
@@ -145,7 +146,7 @@ module SGF
     end
 
     def leading_whitespace(indent)
-      "#{" " * indent}"
+      ' ' * indent
     end
 
     def method_missing method_name, *args
