@@ -3,9 +3,11 @@ require 'spec_helper'
 describe SGF::Gametree do
 
   let(:game) { get_first_game_from 'spec/data/ff4_ex.sgf' }
-  let(:root_node) { SGF::Node.new({FF: '4', AP: 'Primiview:3.1',
-                                   GM: '1', SZ: '19', GN: 'Gametree 1: properties',
-                                   US: 'Arno Hollosi'}) }
+  let(:root_node) {
+    SGF::Node.new({FF: '4', AP: 'Primiview:3.1',
+                   GM: '1', SZ: '19', GN: 'Gametree 1: properties',
+                   US: 'Arno Hollosi'})
+  }
   subject { game }
 
   it 'should throw up if initialized with a non-Node argument' do

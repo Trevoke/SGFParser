@@ -74,7 +74,7 @@ module SGF
     end
 
     def create_new_node
-      node = Node.new
+      node = SGF::Node.new
       @current_node.add_children node
       @current_node = node
     end
