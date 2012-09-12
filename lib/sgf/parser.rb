@@ -62,7 +62,7 @@ module SGF
 
     def parse_node_data
       @node_properties = {}
-      while still_inside_node?
+      while @sgf_stream.still_inside_node?
         parse_identity
         parse_property
         @node_properties[@identity] = @property
@@ -71,10 +71,6 @@ module SGF
 
     def add_properties_to_current_node
       @current_node.add_properties @node_properties
-    end
-
-    def still_inside_node?
-      @sgf_stream.still_inside_node?
     end
 
     def parse_identity
