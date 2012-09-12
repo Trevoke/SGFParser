@@ -38,14 +38,6 @@ module SGF
 
     private
 
-    def clean sgf
-      sgf.gsub! "\\\\n\\\\r", ''
-      sgf.gsub! "\\\\r\\\\n", ''
-      sgf.gsub! "\\\\r", ''
-      sgf.gsub! "\\\\n", ''
-      sgf
-    end
-
     def open_branch
       @branches.unshift @current_node
     end
