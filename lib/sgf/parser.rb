@@ -19,7 +19,7 @@ module SGF
     # The second argument is optional, in case you don't want this to raise errors.
     # You probably shouldn't use it, but who's gonna stop you?
     def parse sgf, strict_parsing = true
-      @strict_parsing = strict_parsing
+      @error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @stream = streamably_stringify sgf
       @collection = Collection.new
       @root = @collection.root
@@ -45,16 +45,8 @@ module SGF
       sgf = sgf.read if sgf.instance_of?(File)
       sgf = File.read(sgf) if File.exist?(sgf)
 
-      check_for_errors_before_parsing sgf if @strict_parsing
+      @error_checker.check_for_errors_before_parsing sgf
       StringIO.new clean(sgf), 'r'
-    end
-
-    def check_for_errors_before_parsing string
-      unless string[/\A\s*\(\s*;/]
-        msg = "The first two non-whitespace characters of the string should be (;"
-        msg << " but they were #{string[0..1]} instead."
-        raise(SGF::MalformedDataError, msg)
-      end
     end
 
     def clean sgf
@@ -163,3 +155,18 @@ module SGF
 
 end
 
+class StrictErrorChecker
+  def check_for_errors_before_parsing string
+    unless string[/\A\s*\(\s*;/]
+      msg = "The first two non-whitespace characters of the string should be (;"
+      msg << " but they were #{string[0..1]} instead."
+      raise(SGF::MalformedDataError, msg)
+    end
+  end
+end
+
+class LaxErrorChecker
+  def check_for_errors_before_parsing string
+    # just look the other way
+  end
+end
