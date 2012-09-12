@@ -16,9 +16,6 @@ module SGF
     # @collection
     #   parse
     #
-    # @root
-    #   parse
-    #
     # @current_node
     #   parse, open_branch, close_branch, create_new_node,
     #   add_properties_to_current_node
