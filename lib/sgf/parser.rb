@@ -20,12 +20,12 @@ module SGF
     # You probably shouldn't use it, but who's gonna stop you?
     def parse sgf, strict_parsing = true
       @error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
-      @stream = streamably_stringify sgf
+      @sgf_stream = streamably_stringify sgf
       @collection = Collection.new
       @root = @collection.root
       @current_node = @root
       @branches = []
-      until @stream.eof?
+      until @sgf_stream.stream.eof?
         case next_character
           when "(" then open_branch
           when ";" then
@@ -46,7 +46,7 @@ module SGF
       sgf = File.read(sgf) if File.exist?(sgf)
 
       @error_checker.check_for_errors_before_parsing sgf
-      StringIO.new clean(sgf), 'r'
+      @sgf_stream = SgfStream.new(StringIO.new clean(sgf), 'r')
     end
 
     def clean sgf
@@ -91,7 +91,7 @@ module SGF
         inside_a_node = !NODE_DELIMITERS.include?(char)
         break
       end
-      @stream.pos -= 1 if char
+      @sgf_stream.stream.pos -= 1 if char
       inside_a_node
     end
 
@@ -143,12 +143,12 @@ module SGF
         inside_multi_property = char == "["
         break
       end
-      @stream.pos -= 1 if char
+      @sgf_stream.stream.pos -= 1 if char
       inside_multi_property
     end
 
     def next_character
-      !@stream.eof? && @stream.sysread(1)
+      !@sgf_stream.stream.eof? && @sgf_stream.stream.sysread(1)
     end
 
   end
@@ -168,5 +168,13 @@ end
 class LaxErrorChecker
   def check_for_errors_before_parsing string
     # just look the other way
+  end
+end
+
+class SgfStream
+  attr_reader :stream
+
+  def initialize stream
+    @stream = stream
   end
 end
