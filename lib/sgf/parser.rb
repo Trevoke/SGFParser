@@ -19,8 +19,8 @@ module SGF
     # The second argument is optional, in case you don't want this to raise errors.
     # You probably shouldn't use it, but who's gonna stop you?
     def parse sgf, strict_parsing = true
-      @error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
-      @sgf_stream = streamably_stringify sgf
+      error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
+      @sgf_stream = SgfStream.new(sgf, error_checker)
       @collection = Collection.new
       @root = @collection.root
       @current_node = @root
@@ -40,14 +40,6 @@ module SGF
     end
 
     private
-
-    def streamably_stringify sgf
-      sgf = sgf.read if sgf.instance_of?(File)
-      sgf = File.read(sgf) if File.exist?(sgf)
-
-      @error_checker.check_for_errors_before_parsing sgf
-      @sgf_stream = SgfStream.new(StringIO.new clean(sgf), 'r')
-    end
 
     def clean sgf
       sgf.gsub! "\\\\n\\\\r", ''
@@ -174,7 +166,20 @@ end
 class SgfStream
   attr_reader :stream
 
-  def initialize stream
-    @stream = stream
+  def initialize sgf, error_checker
+    sgf = sgf.read if sgf.instance_of?(File)
+    sgf = File.read(sgf) if File.exist?(sgf)
+    error_checker.check_for_errors_before_parsing sgf
+    @stream = StringIO.new clean(sgf), 'r'
+  end
+
+  private
+
+  def clean sgf
+    sgf.gsub! "\\\\n\\\\r", ''
+    sgf.gsub! "\\\\r\\\\n", ''
+    sgf.gsub! "\\\\r", ''
+    sgf.gsub! "\\\\n", ''
+    sgf
   end
 end
