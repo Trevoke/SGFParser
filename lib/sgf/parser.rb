@@ -48,8 +48,7 @@ module SGF
       error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @sgf_stream = SgfStream.new(sgf, error_checker)
       @collection = Collection.new
-      @root = @collection.root
-      @current_node = @root
+      @current_node = @collection.root
       @branches = []
       until @sgf_stream.eof?
         case @sgf_stream.next_character
