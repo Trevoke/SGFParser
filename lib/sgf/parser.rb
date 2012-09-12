@@ -97,7 +97,7 @@ module SGF
     end
 
     def parse_multi_property
-      while char = @sgf_stream.next_character and still_inside_multi_property? char
+      while char = @sgf_stream.next_character and @sgf_stream.still_inside_multi_property? char
         @property << char
       end
       @property = @property.gsub("][", ",").split(",")
@@ -112,19 +112,6 @@ module SGF
     def still_inside_comment? char
       char != "]" || (char == "]" && @property[-1..-1] == "\\")
     end
-
-    def still_inside_multi_property? char
-      return true if char != "]"
-      inside_multi_property = false
-      while char = @sgf_stream.next_character
-        next if char[/\s/]
-        inside_multi_property = char == "["
-        break
-      end
-      @sgf_stream.stream.pos -= 1 if char
-      inside_multi_property
-    end
-
   end
 
 end
@@ -176,6 +163,18 @@ class SgfStream
     end
     @stream.pos -= 1 if char
     inside_a_node
+  end
+
+  def still_inside_multi_property? char
+    return true if char != "]"
+    inside_multi_property = false
+    while char = next_character
+      next if char[/\s/]
+      inside_multi_property = char == "["
+      break
+    end
+    @stream.pos -= 1 if char
+    inside_multi_property
   end
 
   private
