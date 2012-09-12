@@ -25,8 +25,8 @@ module SGF
       @root = @collection.root
       @current_node = @root
       @branches = []
-      until @sgf_stream.stream.eof?
-        case next_character
+      until @sgf_stream.eof?
+        case @sgf_stream.next_character
           when "(" then open_branch
           when ";" then
             create_new_node
@@ -78,7 +78,7 @@ module SGF
 
     def still_inside_node?
       inside_a_node = false
-      while char = next_character
+      while char = @sgf_stream.next_character
         next if char[/\s/]
         inside_a_node = !NODE_DELIMITERS.include?(char)
         break
@@ -89,7 +89,7 @@ module SGF
 
     def parse_identity
       @identity = ""
-      while char = next_character and char != "["
+      while char = @sgf_stream.next_character and char != "["
         @identity << char unless char == "\n"
       end
     end
@@ -104,21 +104,21 @@ module SGF
     end
 
     def parse_comment
-      while char = next_character and still_inside_comment? char
+      while char = @sgf_stream.next_character and still_inside_comment? char
         @property << char
       end
       @property.gsub! "\\]", "]"
     end
 
     def parse_multi_property
-      while char = next_character and still_inside_multi_property? char
+      while char = @sgf_stream.next_character and still_inside_multi_property? char
         @property << char
       end
       @property = @property.gsub("][", ",").split(",")
     end
 
     def parse_generic_property
-      while char = next_character and char != "]"
+      while char = @sgf_stream.next_character and char != "]"
         @property << char
       end
     end
@@ -130,17 +130,13 @@ module SGF
     def still_inside_multi_property? char
       return true if char != "]"
       inside_multi_property = false
-      while char = next_character
+      while char = @sgf_stream.next_character
         next if char[/\s/]
         inside_multi_property = char == "["
         break
       end
       @sgf_stream.stream.pos -= 1 if char
       inside_multi_property
-    end
-
-    def next_character
-      !@sgf_stream.stream.eof? && @sgf_stream.stream.sysread(1)
     end
 
   end
@@ -171,6 +167,14 @@ class SgfStream
     sgf = File.read(sgf) if File.exist?(sgf)
     error_checker.check_for_errors_before_parsing sgf
     @stream = StringIO.new clean(sgf), 'r'
+  end
+
+  def eof?
+    @stream.eof?
+  end
+
+  def next_character
+    !@stream.eof? && @stream.sysread(1)
   end
 
   private
