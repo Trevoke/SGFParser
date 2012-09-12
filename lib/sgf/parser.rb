@@ -7,10 +7,7 @@ module SGF
   #collection = parser.parse sgf_in_string_form
   class Parser
 
-    NEW_NODE = ";"
-    BRANCHING = %w{( )}
     PROPERTY = %w([ ])
-    NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
     # This takes as argument an SGF and returns an SGF::Collection object
@@ -77,14 +74,7 @@ module SGF
     end
 
     def still_inside_node?
-      inside_a_node = false
-      while char = @sgf_stream.next_character
-        next if char[/\s/]
-        inside_a_node = !NODE_DELIMITERS.include?(char)
-        break
-      end
-      @sgf_stream.stream.pos -= 1 if char
-      inside_a_node
+      @sgf_stream.still_inside_node?
     end
 
     def parse_identity
@@ -160,6 +150,10 @@ class LaxErrorChecker
 end
 
 class SgfStream
+  NEW_NODE = ";"
+  BRANCHING = %w{( )}
+  NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
+
   attr_reader :stream
 
   def initialize sgf, error_checker
@@ -175,6 +169,17 @@ class SgfStream
 
   def next_character
     !@stream.eof? && @stream.sysread(1)
+  end
+
+  def still_inside_node?
+    inside_a_node = false
+    while char = next_character
+      next if char[/\s/]
+      inside_a_node = !NODE_DELIMITERS.include?(char)
+      break
+    end
+    @stream.pos -= 1 if char
+    inside_a_node
   end
 
   private
