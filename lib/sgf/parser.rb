@@ -7,6 +7,35 @@ module SGF
   #collection = parser.parse sgf_in_string_form
   class Parser
 
+    # Fields and where they're used:
+    #
+    # @sgf_stream
+    #   parse, parse_node_data, parse_identity, parse_comment,
+    #   parse_multi_property, parse_generic_property
+    #
+    # @collection
+    #   parse
+    #
+    # @root
+    #   parse
+    #
+    # @current_node
+    #   parse, open_branch, close_branch, create_new_node,
+    #   add_properties_to_current_node
+    #
+    # @branches
+    #   parse, open_branch, close_branch
+    #
+    # @node_properties
+    #   parse_node_data, add_properties_to_current_node
+    #
+    # @identity
+    #   parse_node_data, parse_identity, parse_property
+    #
+    # @property
+    #   parse_node_data, parse_property, parse_comment,
+    #   parse_multi_property, parse_generic_property, still_inside_comment
+
     PROPERTY = %w([ ])
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
