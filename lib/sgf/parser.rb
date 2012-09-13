@@ -126,20 +126,21 @@ module SGF
       while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
-      @property.gsub! "\\]", "]"
+      @property = format.transform @property
     end
 
     def parse_multi_property format
       while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
-      @property = @property.gsub("][", ",").split(",")
+      @property = format.transform @property
     end
 
     def parse_generic_property format
       while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
+      @property = format.transform @property
     end
   end
 
@@ -149,6 +150,10 @@ class CommentFormat
   def still_inside? char, property, sgf_stream
     char != "]" || (char == "]" && property[-1..-1] == "\\")
   end
+
+  def transform property
+    property.gsub "\\]", "]"
+  end
 end
 
 class MultiPropertyFormat
@@ -156,11 +161,19 @@ class MultiPropertyFormat
     return true if char != "]"
     sgf_stream.peek_skipping_whitespace == "["
   end
+
+  def transform property
+    property.gsub("][", ",").split(",")
+  end
 end
 
 class GenericPropertyFormat
   def still_inside? char, property, sgf_stream
     char != "]"
+  end
+  
+  def transform property
+    property
   end
 end
 
