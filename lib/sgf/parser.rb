@@ -108,7 +108,10 @@ module SGF
     def parse_property
       @property = ""
       format = lookup_format
-      parse_comment format
+      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
+        @property << char
+      end
+      @property = format.transform @property
     end
     
     def lookup_format
@@ -117,13 +120,6 @@ module SGF
         when *LIST_IDENTITIES then MultiPropertyFormat.new
         else GenericPropertyFormat.new
       end
-    end
-
-    def parse_comment format
-      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
-        @property << char
-      end
-      @property = format.transform @property
     end
   end
 
