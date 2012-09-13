@@ -90,103 +90,102 @@ module SGF
     end
   end
 
-end
+  class IdentityToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "["
+    end
 
-class IdentityToken
-  def still_inside? char, token_so_far, sgf_stream
-    char != "["
-  end
-
-  def transform token
-    token.gsub "\n", ""
-  end
-end
-
-class CommentToken
-  def still_inside? char, token_so_far, sgf_stream
-    char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
-  end
-
-  def transform token
-    token.gsub "\\]", "]"
-  end
-end
-
-class MultiPropertyToken
-  def still_inside? char, token_so_far, sgf_stream
-    return true if char != "]"
-    sgf_stream.peek_skipping_whitespace == "["
-  end
-
-  def transform token
-    token.gsub("][", ",").split(",")
-  end
-end
-
-class GenericPropertyToken
-  def still_inside? char, token_so_far, sgf_stream
-    char != "]"
-  end
-  
-  def transform token
-    token
-  end
-end
-
-class StrictErrorChecker
-  def check_for_errors_before_parsing string
-    unless string[/\A\s*\(\s*;/]
-      msg = "The first two non-whitespace characters of the string should be (;"
-      msg << " but they were #{string[0..1]} instead."
-      raise(SGF::MalformedDataError, msg)
+    def transform token
+      token.gsub "\n", ""
     end
   end
-end
 
-class LaxErrorChecker
-  def check_for_errors_before_parsing string
-    # just look the other way
-  end
-end
-
-class SgfStream
-  attr_reader :stream
-
-  def initialize sgf, error_checker
-    sgf = sgf.read if sgf.instance_of?(File)
-    sgf = File.read(sgf) if File.exist?(sgf)
-    error_checker.check_for_errors_before_parsing sgf
-    @stream = StringIO.new clean(sgf), 'r'
-  end
-
-  def eof?
-    @stream.eof?
-  end
-
-  def next_character
-    !@stream.eof? && @stream.sysread(1)
-  end
-
-  def peek_skipping_whitespace
-    while char = next_character
-      next if char[/\s/]
-      break
+  class CommentToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
     end
-    rewind if char
-    char
+
+    def transform token
+      token.gsub "\\]", "]"
+    end
   end
 
-  private
+  class MultiPropertyToken
+    def still_inside? char, token_so_far, sgf_stream
+      return true if char != "]"
+      sgf_stream.peek_skipping_whitespace == "["
+    end
 
-  def rewind
-    @stream.pos -= 1
+    def transform token
+      token.gsub("][", ",").split(",")
+    end
   end
 
-  def clean sgf
-    sgf.gsub! "\\\\n\\\\r", ''
-    sgf.gsub! "\\\\r\\\\n", ''
-    sgf.gsub! "\\\\r", ''
-    sgf.gsub! "\\\\n", ''
-    sgf
+  class GenericPropertyToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "]"
+    end
+    
+    def transform token
+      token
+    end
+  end
+
+  class StrictErrorChecker
+    def check_for_errors_before_parsing string
+      unless string[/\A\s*\(\s*;/]
+        msg = "The first two non-whitespace characters of the string should be (;"
+        msg << " but they were #{string[0..1]} instead."
+        raise(SGF::MalformedDataError, msg)
+      end
+    end
+  end
+
+  class LaxErrorChecker
+    def check_for_errors_before_parsing string
+      # just look the other way
+    end
+  end
+
+  class SgfStream
+    attr_reader :stream
+
+    def initialize sgf, error_checker
+      sgf = sgf.read if sgf.instance_of?(File)
+      sgf = File.read(sgf) if File.exist?(sgf)
+      error_checker.check_for_errors_before_parsing sgf
+      @stream = StringIO.new clean(sgf), 'r'
+    end
+
+    def eof?
+      @stream.eof?
+    end
+
+    def next_character
+      !@stream.eof? && @stream.sysread(1)
+    end
+
+    def peek_skipping_whitespace
+      while char = next_character
+        next if char[/\s/]
+        break
+      end
+      rewind if char
+      char
+    end
+
+    private
+
+    def rewind
+      @stream.pos -= 1
+    end
+
+    def clean sgf
+      sgf.gsub! "\\\\n\\\\r", ''
+      sgf.gsub! "\\\\r\\\\n", ''
+      sgf.gsub! "\\\\r", ''
+      sgf.gsub! "\\\\n", ''
+      sgf
+    end
   end
 end
