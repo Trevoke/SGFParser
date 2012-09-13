@@ -119,6 +119,16 @@ module SGF
 
 end
 
+class IdentityToken
+  def still_inside? char, token_so_far, sgf_stream
+    char != "["
+  end
+
+  def transform token
+    token
+  end
+end
+
 class CommentToken
   def still_inside? char, token_so_far, sgf_stream
     char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
