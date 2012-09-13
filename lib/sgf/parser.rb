@@ -22,6 +22,7 @@ module SGF
     def parse sgf, strict_parsing = true
       error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @sgf_stream = SgfStream.new(sgf, error_checker)
+      @assembler = CollectionAssembler.new
       @collection = Collection.new
       @current_node = @collection.root
       @branches = []
@@ -87,6 +88,11 @@ module SGF
         when *LIST_IDENTITIES then MultiPropertyToken.new
         else GenericPropertyToken.new
       end
+    end
+  end
+
+  class CollectionAssembler
+    def initialize
     end
   end
 
