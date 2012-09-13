@@ -33,6 +33,9 @@ module SGF
     #   parse_node_data, parse_property, parse_comment,
     #   parse_multi_property, parse_generic_property, still_inside_comment
 
+    NEW_NODE = ";"
+    BRANCHING = %w{( )}
+    NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
     PROPERTY = %w([ ])
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
@@ -79,7 +82,7 @@ module SGF
 
     def parse_node_data
       @node_properties = {}
-      while @sgf_stream.still_inside_node?
+      while still_inside_node?
         parse_identity
         parse_property
         @node_properties[@identity] = @property
@@ -122,7 +125,7 @@ module SGF
     end
 
     def parse_multi_property
-      while char = @sgf_stream.next_character and @sgf_stream.still_inside_multi_property? char
+      while char = @sgf_stream.next_character and still_inside_multi_property? char
         @property << char
       end
       @property = @property.gsub("][", ",").split(",")
@@ -132,6 +135,29 @@ module SGF
       while char = @sgf_stream.next_character and char != "]"
         @property << char
       end
+    end
+
+    def still_inside_node?
+      inside_a_node = false
+      while char = @sgf_stream.next_character
+        next if char[/\s/]
+        inside_a_node = !NODE_DELIMITERS.include?(char)
+        break
+      end
+      @sgf_stream.pos -= 1 if char
+      inside_a_node
+    end
+
+    def still_inside_multi_property? char
+      return true if char != "]"
+      inside_multi_property = false
+      while char = @sgf_stream.next_character
+        next if char[/\s/]
+        inside_multi_property = char == "["
+        break
+      end
+      @sgf_stream.pos -= 1 if char
+      inside_multi_property
     end
 
     def still_inside_comment? char
@@ -158,10 +184,6 @@ class LaxErrorChecker
 end
 
 class SgfStream
-  NEW_NODE = ";"
-  BRANCHING = %w{( )}
-  NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
-
   attr_reader :stream
 
   def initialize sgf, error_checker
@@ -175,31 +197,16 @@ class SgfStream
     @stream.eof?
   end
 
+  def pos
+    @stream.pos
+  end
+
+  def pos= new_pos
+    @stream.pos = new_pos
+  end
+
   def next_character
     !@stream.eof? && @stream.sysread(1)
-  end
-
-  def still_inside_node?
-    inside_a_node = false
-    while char = next_character
-      next if char[/\s/]
-      inside_a_node = !NODE_DELIMITERS.include?(char)
-      break
-    end
-    @stream.pos -= 1 if char
-    inside_a_node
-  end
-
-  def still_inside_multi_property? char
-    return true if char != "]"
-    inside_multi_property = false
-    while char = next_character
-      next if char[/\s/]
-      inside_multi_property = char == "["
-      break
-    end
-    @stream.pos -= 1 if char
-    inside_multi_property
   end
 
   private
