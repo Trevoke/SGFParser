@@ -28,10 +28,6 @@ module SGF
     #
     # @identity
     #   parse_node_data, parse_identity, parse_property
-    #
-    # @property
-    #   parse_node_data, parse_property, parse_comment,
-    #   parse_multi_property, parse_generic_property, still_inside_comment
 
     NEW_NODE = ";"
     BRANCHING = %w{( )}
@@ -85,8 +81,8 @@ module SGF
       @node_properties = {}
       while still_inside_node?
         parse_identity
-        parse_property
-        @node_properties[@identity] = @property
+        property = parse_property
+        @node_properties[@identity] = property
       end
     end
 
@@ -106,12 +102,12 @@ module SGF
     end
 
     def parse_property
-      @property = ""
+      property = ""
       format = lookup_format
-      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
-        @property << char
+      while char = @sgf_stream.next_character and format.still_inside? char, property, @sgf_stream
+        property << char
       end
-      @property = format.transform @property
+      format.transform property
     end
     
     def lookup_format
