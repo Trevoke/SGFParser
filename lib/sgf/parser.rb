@@ -108,9 +108,9 @@ module SGF
     def parse_property
       @property = ""
       case @identity.upcase
-        when "C" then parse_comment
-        when *LIST_IDENTITIES then parse_multi_property
-        else parse_generic_property
+        when "C" then parse_comment CommentFormat.new
+        when *LIST_IDENTITIES then parse_multi_property MultiPropertyFormat.new
+        else parse_generic_property GenericPropertyFormat.new
       end
     end
 
@@ -122,7 +122,7 @@ module SGF
     # so that the differences can eventually be extracted into different
     # classes.
 
-    def parse_comment
+    def parse_comment format
       while char = @sgf_stream.next_character and still_inside_comment? char
         @property << char
       end
@@ -133,7 +133,7 @@ module SGF
       char != "]" || (char == "]" && @property[-1..-1] == "\\")
     end
 
-    def parse_multi_property
+    def parse_multi_property format
       while char = @sgf_stream.next_character and still_inside_multi_property? char
         @property << char
       end
@@ -145,7 +145,7 @@ module SGF
       @sgf_stream.peek_skipping_whitespace == "["
     end
 
-    def parse_generic_property
+    def parse_generic_property format
       while char = @sgf_stream.next_character and still_inside_generic_property? char
         @property << char
       end
@@ -156,6 +156,15 @@ module SGF
     end
   end
 
+end
+
+class CommentFormat
+end
+
+class MultiPropertyFormat
+end
+
+class GenericPropertyFormat
 end
 
 class StrictErrorChecker
