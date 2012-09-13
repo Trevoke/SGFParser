@@ -107,12 +107,16 @@ module SGF
 
     def parse_property
       @property = ""
-      format = case @identity.upcase
+      format = lookup_format
+      parse_comment format
+    end
+    
+    def lookup_format
+      case @identity.upcase
         when "C" then CommentFormat.new
         when *LIST_IDENTITIES then MultiPropertyFormat.new
         else GenericPropertyFormat.new
       end
-      parse_comment format
     end
 
     def parse_comment format
