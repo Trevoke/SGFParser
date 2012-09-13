@@ -23,7 +23,6 @@ module SGF
       error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @sgf_stream = SgfStream.new(sgf, error_checker)
       @assembler = CollectionAssembler.new
-      @current_node = @assembler.collection.root
       @branches = []
       until @sgf_stream.eof?
         case @sgf_stream.next_character
@@ -42,17 +41,17 @@ module SGF
     private
 
     def open_branch
-      @branches.unshift @current_node
+      @branches.unshift @assembler.current_node
     end
 
     def close_branch
-      @current_node = @branches.shift
+      @assembler.current_node = @branches.shift
     end
 
     def create_new_node
       node = SGF::Node.new
-      @current_node.add_children node
-      @current_node = node
+      @assembler.current_node.add_children node
+      @assembler.current_node = node
     end
 
     def parse_node_data
@@ -70,7 +69,7 @@ module SGF
     end
 
     def add_properties_to_current_node
-      @current_node.add_properties @node_properties
+      @assembler.current_node.add_properties @node_properties
     end
 
     def read_token format
@@ -92,9 +91,11 @@ module SGF
 
   class CollectionAssembler
     attr_reader :collection
+    attr_accessor :current_node
 
     def initialize
       @collection = Collection.new
+      @current_node = @collection.root
     end
   end
 
