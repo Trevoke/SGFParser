@@ -137,13 +137,9 @@ module SGF
     end
 
     def parse_generic_property format
-      while char = @sgf_stream.next_character and still_inside_generic_property? char
+      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
-    end
-
-    def still_inside_generic_property? char
-      char != "]"
     end
   end
 
@@ -163,6 +159,9 @@ class MultiPropertyFormat
 end
 
 class GenericPropertyFormat
+  def still_inside? char, property, sgf_stream
+    char != "]"
+  end
 end
 
 class StrictErrorChecker
