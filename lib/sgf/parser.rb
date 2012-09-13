@@ -79,7 +79,7 @@ module SGF
       while still_inside_node?
         identity = parse_identity
         property_format = lookup_format identity
-        property = parse_property property_format
+        property = read_token property_format
         @node_properties[identity] = property
       end
     end
@@ -100,7 +100,7 @@ module SGF
       identity
     end
 
-    def parse_property format
+    def read_token format
       property = ""
       while char = @sgf_stream.next_character and format.still_inside? char, property, @sgf_stream
         property << char
