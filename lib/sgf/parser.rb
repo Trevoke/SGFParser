@@ -107,36 +107,15 @@ module SGF
 
     def parse_property
       @property = ""
-      case @identity.upcase
-        when "C" then parse_comment CommentFormat.new
-        when *LIST_IDENTITIES then parse_multi_property MultiPropertyFormat.new
-        else parse_generic_property GenericPropertyFormat.new
+      format = case @identity.upcase
+        when "C" then CommentFormat.new
+        when *LIST_IDENTITIES then MultiPropertyFormat.new
+        else GenericPropertyFormat.new
       end
+      parse_comment format
     end
-
-    # TODO the decision to parse a comment, a multi-property, or a generic
-    # property seems to be a meaningful domain concept. But right now it's
-    # only represented by the three parse_ methods and the three
-    # still_inside_ methods. Also, those methods share a lot of structure.
-    # Let's try to push the similarities of structure into single methods,
-    # so that the differences can eventually be extracted into different
-    # classes.
 
     def parse_comment format
-      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
-        @property << char
-      end
-      @property = format.transform @property
-    end
-
-    def parse_multi_property format
-      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
-        @property << char
-      end
-      @property = format.transform @property
-    end
-
-    def parse_generic_property format
       while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
