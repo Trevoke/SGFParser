@@ -150,14 +150,16 @@ module SGF
 
     def still_inside_multi_property? char
       return true if char != "]"
-      inside_multi_property = false
+      peek_at_next_non_whitespace == "["
+    end
+
+    def peek_at_next_non_whitespace
       while char = @sgf_stream.next_character
         next if char[/\s/]
-        inside_multi_property = char == "["
         break
       end
       @sgf_stream.rewind if char
-      inside_multi_property
+      char
     end
 
     def still_inside_comment? char
