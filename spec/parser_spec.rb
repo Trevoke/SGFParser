@@ -23,6 +23,12 @@ describe SGF::Parser do
     collection.root.children[0].pw.should eq "Bob"
   end
 
+  it "should apparently ignore line breaks in the middle of a property name -- is this right?" do
+    collection = parser.parse ";P\nB[Aldric]P\n\n\nW[Bob]", false
+    collection.root.children[0].pb.should eq "Aldric"
+    collection.root.children[0].pw.should eq "Bob"
+  end
+
   it "should parse two nodes with one property each" do
     collection = parser.parse ";PB[Aldric];PW[Bob]", false
     node = collection.root.children[0]
