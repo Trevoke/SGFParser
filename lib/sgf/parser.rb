@@ -90,6 +90,10 @@ module SGF
       end
     end
 
+    def still_inside_node?
+      !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
+    end
+
     def add_properties_to_current_node
       @current_node.add_properties @node_properties
     end
@@ -125,6 +129,10 @@ module SGF
       @property.gsub! "\\]", "]"
     end
 
+    def still_inside_comment? char
+      char != "]" || (char == "]" && @property[-1..-1] == "\\")
+    end
+
     def parse_multi_property
       while char = @sgf_stream.next_character and still_inside_multi_property? char
         @property << char
@@ -132,23 +140,15 @@ module SGF
       @property = @property.gsub("][", ",").split(",")
     end
 
-    def parse_generic_property
-      while char = @sgf_stream.next_character and char != "]"
-        @property << char
-      end
-    end
-
-    def still_inside_node?
-      !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
-    end
-
     def still_inside_multi_property? char
       return true if char != "]"
       @sgf_stream.peek_skipping_whitespace == "["
     end
 
-    def still_inside_comment? char
-      char != "]" || (char == "]" && @property[-1..-1] == "\\")
+    def parse_generic_property
+      while char = @sgf_stream.next_character and char != "]"
+        @property << char
+      end
     end
   end
 
