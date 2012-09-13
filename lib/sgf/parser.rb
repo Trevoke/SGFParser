@@ -188,10 +188,6 @@ class SgfStream
     @stream.eof?
   end
 
-  def rewind
-    @stream.pos -= 1
-  end
-
   def next_character
     !@stream.eof? && @stream.sysread(1)
   end
@@ -206,6 +202,10 @@ class SgfStream
   end
 
   private
+
+  def rewind
+    @stream.pos -= 1
+  end
 
   def clean sgf
     sgf.gsub! "\\\\n\\\\r", ''
