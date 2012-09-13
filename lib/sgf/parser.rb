@@ -123,22 +123,17 @@ module SGF
     # classes.
 
     def parse_comment format
-      while char = @sgf_stream.next_character and format.still_inside? char, @property
+      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
       @property.gsub! "\\]", "]"
     end
 
     def parse_multi_property format
-      while char = @sgf_stream.next_character and still_inside_multi_property? char
+      while char = @sgf_stream.next_character and format.still_inside? char, @property, @sgf_stream
         @property << char
       end
       @property = @property.gsub("][", ",").split(",")
-    end
-
-    def still_inside_multi_property? char
-      return true if char != "]"
-      @sgf_stream.peek_skipping_whitespace == "["
     end
 
     def parse_generic_property format
@@ -155,12 +150,16 @@ module SGF
 end
 
 class CommentFormat
-  def still_inside? char, property
+  def still_inside? char, property, sgf_stream
     char != "]" || (char == "]" && property[-1..-1] == "\\")
   end
 end
 
 class MultiPropertyFormat
+  def still_inside? char, property, sgf_stream
+    return true if char != "]"
+    sgf_stream.peek_skipping_whitespace == "["
+  end
 end
 
 class GenericPropertyFormat
