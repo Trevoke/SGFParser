@@ -106,6 +106,14 @@ module SGF
       end
     end
 
+    # TODO the decision to parse a comment, a multi-property, or a generic
+    # property seems to be a meaningful domain concept. But right now it's
+    # only represented by the three parse_ methods and the three
+    # still_inside_ methods. Also, those methods share a lot of structure.
+    # Let's try to push the similarities of structure into single methods,
+    # so that the differences can eventually be extracted into different
+    # classes.
+
     def parse_comment
       while char = @sgf_stream.next_character and still_inside_comment? char
         @property << char
