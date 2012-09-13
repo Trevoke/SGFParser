@@ -7,25 +7,6 @@ module SGF
   #collection = parser.parse sgf_in_string_form
   class Parser
 
-    # Fields and where they're used:
-    #
-    # @sgf_stream
-    #   parse, parse_node_data, parse_identity, parse_comment,
-    #   parse_multi_property, parse_generic_property
-    #
-    # @collection
-    #   parse
-    #
-    # @current_node
-    #   parse, open_branch, close_branch, create_new_node,
-    #   add_properties_to_current_node
-    #
-    # @branches
-    #   parse, open_branch, close_branch
-    #
-    # @node_properties
-    #   parse_node_data, add_properties_to_current_node
-
     NEW_NODE = ";"
     BRANCHING = %w{( )}
     END_OF_FILE = false
