@@ -144,7 +144,7 @@ module SGF
         inside_a_node = !NODE_DELIMITERS.include?(char)
         break
       end
-      @sgf_stream.pos -= 1 if char
+      @sgf_stream.rewind if char
       inside_a_node
     end
 
@@ -156,7 +156,7 @@ module SGF
         inside_multi_property = char == "["
         break
       end
-      @sgf_stream.pos -= 1 if char
+      @sgf_stream.rewind if char
       inside_multi_property
     end
 
@@ -197,12 +197,8 @@ class SgfStream
     @stream.eof?
   end
 
-  def pos
-    @stream.pos
-  end
-
-  def pos= new_pos
-    @stream.pos = new_pos
+  def rewind
+    @stream.pos -= 1
   end
 
   def next_character
