@@ -146,9 +146,13 @@ module SGF
     end
 
     def parse_generic_property
-      while char = @sgf_stream.next_character and char != "]"
+      while char = @sgf_stream.next_character and still_inside_generic_property? char
         @property << char
       end
+    end
+
+    def still_inside_generic_property? char
+      char != "]"
     end
   end
 
