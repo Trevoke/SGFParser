@@ -23,8 +23,7 @@ module SGF
       error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @sgf_stream = SgfStream.new(sgf, error_checker)
       @assembler = CollectionAssembler.new
-      @collection = Collection.new
-      @current_node = @collection.root
+      @current_node = @assembler.collection.root
       @branches = []
       until @sgf_stream.eof?
         case @sgf_stream.next_character
@@ -37,7 +36,7 @@ module SGF
           else next
         end
       end
-      @collection
+      @assembler.collection
     end
 
     private
@@ -92,7 +91,10 @@ module SGF
   end
 
   class CollectionAssembler
+    attr_reader :collection
+
     def initialize
+      @collection = Collection.new
     end
   end
 
