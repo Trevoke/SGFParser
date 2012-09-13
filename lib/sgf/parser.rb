@@ -95,9 +95,9 @@ module SGF
     def parse_identity
       identity = ""
       while char = @sgf_stream.next_character and char != "["
-        identity << char unless char == "\n"
+        identity << char
       end
-      identity
+      identity.gsub "\n", ""
     end
 
     def read_token format
