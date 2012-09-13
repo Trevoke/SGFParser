@@ -139,21 +139,12 @@ module SGF
     end
 
     def still_inside_node?
-      !NODE_DELIMITERS.include?(peek_at_next_non_whitespace)
+      !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
     end
 
     def still_inside_multi_property? char
       return true if char != "]"
-      peek_at_next_non_whitespace == "["
-    end
-
-    def peek_at_next_non_whitespace
-      while char = @sgf_stream.next_character
-        next if char[/\s/]
-        break
-      end
-      @sgf_stream.rewind if char
-      char
+      @sgf_stream.peek_skipping_whitespace == "["
     end
 
     def still_inside_comment? char
@@ -199,6 +190,15 @@ class SgfStream
 
   def next_character
     !@stream.eof? && @stream.sysread(1)
+  end
+
+  def peek_skipping_whitespace
+    while char = next_character
+      next if char[/\s/]
+      break
+    end
+    rewind if char
+    char
   end
 
   private
