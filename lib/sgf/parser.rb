@@ -139,12 +139,8 @@ module SGF
 
     def still_inside_node?
       inside_a_node = false
-      while char = @sgf_stream.next_character
-        next if char[/\s/]
-        inside_a_node = !NODE_DELIMITERS.include?(char)
-        break
-      end
-      @sgf_stream.rewind if char
+      char = peek_at_next_non_whitespace
+      inside_a_node = !NODE_DELIMITERS.include?(char) if char
       inside_a_node
     end
 
