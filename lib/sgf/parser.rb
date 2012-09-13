@@ -29,8 +29,8 @@ module SGF
         case @sgf_stream.next_character
           when "(" then open_branch
           when ";" then
-            create_new_node
             parse_node_data
+            create_new_node
             add_properties_to_current_node
           when ")" then close_branch
           else next
