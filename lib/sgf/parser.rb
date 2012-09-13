@@ -78,7 +78,7 @@ module SGF
       @node_properties = {}
       while still_inside_node?
         identity = parse_identity
-        property_format = lookup_format identity
+        property_format = property_token_type identity
         property = read_token property_format
         @node_properties[identity] = property
       end
@@ -108,18 +108,18 @@ module SGF
       format.transform property
     end
     
-    def lookup_format identity
+    def property_token_type identity
       case identity.upcase
-        when "C" then CommentFormat.new
-        when *LIST_IDENTITIES then MultiPropertyFormat.new
-        else GenericPropertyFormat.new
+        when "C" then CommentToken.new
+        when *LIST_IDENTITIES then MultiPropertyToken.new
+        else GenericPropertyToken.new
       end
     end
   end
 
 end
 
-class CommentFormat
+class CommentToken
   def still_inside? char, token_so_far, sgf_stream
     char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
   end
@@ -129,7 +129,7 @@ class CommentFormat
   end
 end
 
-class MultiPropertyFormat
+class MultiPropertyToken
   def still_inside? char, token_so_far, sgf_stream
     return true if char != "]"
     sgf_stream.peek_skipping_whitespace == "["
@@ -140,7 +140,7 @@ class MultiPropertyFormat
   end
 end
 
-class GenericPropertyFormat
+class GenericPropertyToken
   def still_inside? char, token_so_far, sgf_stream
     char != "]"
   end
