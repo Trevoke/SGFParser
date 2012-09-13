@@ -120,33 +120,33 @@ module SGF
 end
 
 class CommentFormat
-  def still_inside? char, property, sgf_stream
-    char != "]" || (char == "]" && property[-1..-1] == "\\")
+  def still_inside? char, token_so_far, sgf_stream
+    char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
   end
 
-  def transform property
-    property.gsub "\\]", "]"
+  def transform token
+    token.gsub "\\]", "]"
   end
 end
 
 class MultiPropertyFormat
-  def still_inside? char, property, sgf_stream
+  def still_inside? char, token_so_far, sgf_stream
     return true if char != "]"
     sgf_stream.peek_skipping_whitespace == "["
   end
 
-  def transform property
-    property.gsub("][", ",").split(",")
+  def transform token
+    token.gsub("][", ",").split(",")
   end
 end
 
 class GenericPropertyFormat
-  def still_inside? char, property, sgf_stream
+  def still_inside? char, token_so_far, sgf_stream
     char != "]"
   end
   
-  def transform property
-    property
+  def transform token
+    token
   end
 end
 
