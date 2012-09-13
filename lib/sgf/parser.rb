@@ -35,7 +35,8 @@ module SGF
 
     NEW_NODE = ";"
     BRANCHING = %w{( )}
-    NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
+    END_OF_FILE = false
+    NODE_DELIMITERS = [NEW_NODE].concat(BRANCHING).concat([END_OF_FILE])
     PROPERTY = %w([ ])
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
@@ -138,10 +139,7 @@ module SGF
     end
 
     def still_inside_node?
-      inside_a_node = false
-      char = peek_at_next_non_whitespace
-      inside_a_node = !NODE_DELIMITERS.include?(char) if char
-      inside_a_node
+      !NODE_DELIMITERS.include?(peek_at_next_non_whitespace)
     end
 
     def still_inside_multi_property? char
