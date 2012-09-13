@@ -123,14 +123,10 @@ module SGF
     # classes.
 
     def parse_comment format
-      while char = @sgf_stream.next_character and still_inside_comment? char
+      while char = @sgf_stream.next_character and format.still_inside? char, @property
         @property << char
       end
       @property.gsub! "\\]", "]"
-    end
-
-    def still_inside_comment? char
-      char != "]" || (char == "]" && @property[-1..-1] == "\\")
     end
 
     def parse_multi_property format
@@ -159,6 +155,9 @@ module SGF
 end
 
 class CommentFormat
+  def still_inside? char, property
+    char != "]" || (char == "]" && property[-1..-1] == "\\")
+  end
 end
 
 class MultiPropertyFormat
