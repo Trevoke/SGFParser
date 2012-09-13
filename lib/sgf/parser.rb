@@ -77,7 +77,7 @@ module SGF
     def parse_node_data
       @node_properties = {}
       while still_inside_node?
-        identity = parse_identity
+        identity = read_token IdentityToken.new
         property_format = property_token_type identity
         property = read_token property_format
         @node_properties[identity] = property
@@ -90,14 +90,6 @@ module SGF
 
     def add_properties_to_current_node
       @current_node.add_properties @node_properties
-    end
-
-    def parse_identity
-      identity = ""
-      while char = @sgf_stream.next_character and char != "["
-        identity << char
-      end
-      identity.gsub "\n", ""
     end
 
     def read_token format
@@ -125,7 +117,7 @@ class IdentityToken
   end
 
   def transform token
-    token
+    token.gsub "\n", ""
   end
 end
 
