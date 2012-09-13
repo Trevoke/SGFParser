@@ -81,7 +81,8 @@ module SGF
       @node_properties = {}
       while still_inside_node?
         parse_identity
-        property = parse_property
+        property_format = lookup_format @identity
+        property = parse_property property_format
         @node_properties[@identity] = property
       end
     end
@@ -101,17 +102,16 @@ module SGF
       end
     end
 
-    def parse_property
+    def parse_property format
       property = ""
-      format = lookup_format
       while char = @sgf_stream.next_character and format.still_inside? char, property, @sgf_stream
         property << char
       end
       format.transform property
     end
     
-    def lookup_format
-      case @identity.upcase
+    def lookup_format identity
+      case identity.upcase
         when "C" then CommentFormat.new
         when *LIST_IDENTITIES then MultiPropertyFormat.new
         else GenericPropertyFormat.new
