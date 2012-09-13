@@ -23,7 +23,6 @@ module SGF
       error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
       @sgf_stream = SgfStream.new(sgf, error_checker)
       @assembler = CollectionAssembler.new
-      @branches = []
       until @sgf_stream.eof?
         case @sgf_stream.next_character
           when "(" then open_branch
@@ -41,11 +40,11 @@ module SGF
     private
 
     def open_branch
-      @branches.unshift @assembler.current_node
+      @assembler.branches.unshift @assembler.current_node
     end
 
     def close_branch
-      @assembler.current_node = @branches.shift
+      @assembler.current_node = @assembler.branches.shift
     end
 
     def create_new_node
@@ -92,10 +91,12 @@ module SGF
   class CollectionAssembler
     attr_reader :collection
     attr_accessor :current_node
+    attr_reader :branches
 
     def initialize
       @collection = Collection.new
       @current_node = @collection.root
+      @branches = []
     end
   end
 
