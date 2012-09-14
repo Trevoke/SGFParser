@@ -28,7 +28,7 @@ module SGF
           when "(" then @assembler.open_branch
           when ";" then
             parse_node_data
-            create_node_with_properties @node_properties
+            @assembler.create_node_with_properties @node_properties
           when ")" then @assembler.close_branch
           else next
         end
@@ -37,13 +37,6 @@ module SGF
     end
 
     private
-
-    def create_node_with_properties properties
-      node = SGF::Node.new
-      @assembler.current_node.add_children node
-      @assembler.current_node = node
-      @assembler.current_node.add_properties properties
-    end
 
     def parse_node_data
       @node_properties = {}
@@ -78,7 +71,6 @@ module SGF
 
   class CollectionAssembler
     attr_reader :collection
-    attr_accessor :current_node
 
     def initialize
       @collection = Collection.new
@@ -92,6 +84,13 @@ module SGF
 
     def close_branch
       @current_node = @branches.shift
+    end
+
+    def create_node_with_properties properties
+      node = SGF::Node.new
+      @current_node.add_children node
+      @current_node = node
+      @current_node.add_properties properties
     end
   end
 
