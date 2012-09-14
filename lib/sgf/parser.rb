@@ -29,7 +29,7 @@ module SGF
           when ";" then
             parse_node_data
             create_new_node
-            add_properties_to_current_node
+            add_properties_to_current_node @node_properties
           when ")" then @assembler.close_branch
           else next
         end
@@ -45,8 +45,8 @@ module SGF
       @assembler.current_node = node
     end
 
-    def add_properties_to_current_node
-      @assembler.current_node.add_properties @node_properties
+    def add_properties_to_current_node node_properties
+      @assembler.current_node.add_properties node_properties
     end
 
     def parse_node_data
