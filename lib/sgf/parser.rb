@@ -41,23 +41,15 @@ module SGF
     def parse_node_data
       @node_properties = {}
       while still_inside_node?
-        identity = read_token IdentityToken.new
+        identity = @sgf_stream.read_token IdentityToken.new
         property_format = property_token_type identity
-        property = read_token property_format
+        property = @sgf_stream.read_token property_format
         @node_properties[identity] = property
       end
     end
 
     def still_inside_node?
       !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
-    end
-
-    def read_token format
-      property = ""
-      while char = @sgf_stream.next_character and format.still_inside? char, property, @sgf_stream
-        property << char
-      end
-      format.transform property
     end
     
     def property_token_type identity
@@ -167,6 +159,14 @@ module SGF
 
     def next_character
       !@stream.eof? && @stream.sysread(1)
+    end
+
+    def read_token format
+      property = ""
+      while char = next_character and format.still_inside? char, property, self
+        property << char
+      end
+      format.transform property
     end
 
     def peek_skipping_whitespace
