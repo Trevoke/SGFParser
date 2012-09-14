@@ -25,12 +25,12 @@ module SGF
       @assembler = CollectionAssembler.new
       until @sgf_stream.eof?
         case @sgf_stream.next_character
-          when "(" then open_branch
+          when "(" then @assembler.open_branch
           when ";" then
             parse_node_data
             create_new_node
             add_properties_to_current_node
-          when ")" then close_branch
+          when ")" then @assembler.close_branch
           else next
         end
       end
@@ -38,14 +38,6 @@ module SGF
     end
 
     private
-
-    def open_branch
-      @assembler.branches.unshift @assembler.current_node
-    end
-
-    def close_branch
-      @assembler.current_node = @assembler.branches.shift
-    end
 
     def create_new_node
       node = SGF::Node.new
@@ -91,12 +83,19 @@ module SGF
   class CollectionAssembler
     attr_reader :collection
     attr_accessor :current_node
-    attr_reader :branches
 
     def initialize
       @collection = Collection.new
       @current_node = @collection.root
       @branches = []
+    end
+
+    def open_branch
+      @branches.unshift @current_node
+    end
+
+    def close_branch
+      @current_node = @branches.shift
     end
   end
 
