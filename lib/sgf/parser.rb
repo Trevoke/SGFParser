@@ -45,6 +45,10 @@ module SGF
       @assembler.current_node = node
     end
 
+    def add_properties_to_current_node
+      @assembler.current_node.add_properties @node_properties
+    end
+
     def parse_node_data
       @node_properties = {}
       while still_inside_node?
@@ -57,10 +61,6 @@ module SGF
 
     def still_inside_node?
       !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
-    end
-
-    def add_properties_to_current_node
-      @assembler.current_node.add_properties @node_properties
     end
 
     def read_token format
