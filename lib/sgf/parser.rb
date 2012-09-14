@@ -28,8 +28,7 @@ module SGF
           when "(" then @assembler.open_branch
           when ";" then
             parse_node_data
-            create_new_node
-            add_properties_to_current_node @node_properties
+            create_node_with_properties @node_properties
           when ")" then @assembler.close_branch
           else next
         end
@@ -38,6 +37,11 @@ module SGF
     end
 
     private
+
+    def create_node_with_properties properties
+      create_new_node
+      add_properties_to_current_node properties
+    end
 
     def create_new_node
       node = SGF::Node.new
