@@ -39,18 +39,10 @@ module SGF
     private
 
     def create_node_with_properties properties
-      create_new_node
-      add_properties_to_current_node properties
-    end
-
-    def create_new_node
       node = SGF::Node.new
       @assembler.current_node.add_children node
       @assembler.current_node = node
-    end
-
-    def add_properties_to_current_node node_properties
-      @assembler.current_node.add_properties node_properties
+      @assembler.current_node.add_properties properties
     end
 
     def parse_node_data
