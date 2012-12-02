@@ -25,3 +25,7 @@ Gemfile.lock
 
 ## Rubymine
 .idea/*
+
+# ctags
+tags
+vendor/cache/
