@@ -9,8 +9,9 @@ module SGF
 
     NEW_NODE = ";"
     BRANCHING = %w{( )}
+    END_OF_FILE = false
+    NODE_DELIMITERS = [NEW_NODE].concat(BRANCHING).concat([END_OF_FILE])
     PROPERTY = %w([ ])
-    NODE_DELIMITERS = [NEW_NODE].concat BRANCHING
     LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
 
     # This takes as argument an SGF and returns an SGF::Collection object
@@ -19,50 +20,54 @@ module SGF
     # The second argument is optional, in case you don't want this to raise errors.
     # You probably shouldn't use it, but who's gonna stop you?
     def parse sgf, strict_parsing = true
-      @strict_parsing = strict_parsing
-      @stream = streamably_stringify sgf
-      @collection = Collection.new
-      @root = @collection.root
-      @current_node = @root
-      @branches = []
-      until @stream.eof?
-        case next_character
-          when "(" then open_branch
+      error_checker = strict_parsing ? StrictErrorChecker.new : LaxErrorChecker.new
+      @sgf_stream = SgfStream.new(sgf, error_checker)
+      @assembler = CollectionAssembler.new
+      until @sgf_stream.eof?
+        case @sgf_stream.next_character
+          when "(" then @assembler.open_branch
           when ";" then
-            create_new_node
             parse_node_data
-            add_properties_to_current_node
-          when ")" then close_branch
+            @assembler.create_node_with_properties @node_properties
+          when ")" then @assembler.close_branch
           else next
         end
       end
-      @collection
+      @assembler.collection
     end
 
     private
 
-    def streamably_stringify sgf
-      sgf = sgf.read if sgf.instance_of?(File)
-      sgf = File.read(sgf) if File.exist?(sgf)
-
-      check_for_errors_before_parsing sgf if @strict_parsing
-      StringIO.new clean(sgf), 'r'
-    end
-
-    def check_for_errors_before_parsing string
-      unless string[/\A\s*\(\s*;/]
-        msg = "The first two non-whitespace characters of the string should be (;"
-        msg << " but they were #{string[0..1]} instead."
-        raise(SGF::MalformedDataError, msg)
+    def parse_node_data
+      @node_properties = {}
+      while still_inside_node?
+        identity = @sgf_stream.read_token IdentityToken.new
+        property_format = property_token_type identity
+        property = @sgf_stream.read_token property_format
+        @node_properties[identity] = property
       end
     end
 
-    def clean sgf
-      sgf.gsub! "\\\\n\\\\r", ''
-      sgf.gsub! "\\\\r\\\\n", ''
-      sgf.gsub! "\\\\r", ''
-      sgf.gsub! "\\\\n", ''
-      sgf
+    def still_inside_node?
+      !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
+    end
+    
+    def property_token_type identity
+      case identity.upcase
+        when "C" then CommentToken.new
+        when *LIST_IDENTITIES then MultiPropertyToken.new
+        else GenericPropertyToken.new
+      end
+    end
+  end
+
+  class CollectionAssembler
+    attr_reader :collection
+
+    def initialize
+      @collection = Collection.new
+      @current_node = @collection.root
+      @branches = []
     end
 
     def open_branch
@@ -73,93 +78,118 @@ module SGF
       @current_node = @branches.shift
     end
 
-    def create_new_node
+    def create_node_with_properties properties
       node = SGF::Node.new
       @current_node.add_children node
       @current_node = node
+      @current_node.add_properties properties
+    end
+  end
+
+  class IdentityToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "["
     end
 
-    def parse_node_data
-      @node_properties = {}
-      while still_inside_node?
-        parse_identity
-        parse_property
-        @node_properties[@identity] = @property
-      end
+    def transform token
+      token.gsub "\n", ""
+    end
+  end
+
+  class CommentToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "]" || (char == "]" && token_so_far[-1..-1] == "\\")
     end
 
-    def add_properties_to_current_node
-      @current_node.add_properties @node_properties
+    def transform token
+      token.gsub "\\]", "]"
     end
+  end
 
-    def still_inside_node?
-      inside_a_node = false
-      while char = next_character
-        next if char[/\s/]
-        inside_a_node = !NODE_DELIMITERS.include?(char)
-        break
-      end
-      @stream.pos -= 1 if char
-      inside_a_node
-    end
-
-    def parse_identity
-      @identity = ""
-      while char = next_character and char != "["
-        @identity << char unless char == "\n"
-      end
-    end
-
-    def parse_property
-      @property = ""
-      case @identity.upcase
-        when "C" then parse_comment
-        when *LIST_IDENTITIES then parse_multi_property
-        else parse_generic_property
-      end
-    end
-
-    def parse_comment
-      while char = next_character and still_inside_comment? char
-        @property << char
-      end
-      @property.gsub! "\\]", "]"
-    end
-
-    def parse_multi_property
-      while char = next_character and still_inside_multi_property? char
-        @property << char
-      end
-      @property = @property.gsub("][", ",").split(",")
-    end
-
-    def parse_generic_property
-      while char = next_character and char != "]"
-        @property << char
-      end
-    end
-
-    def still_inside_comment? char
-      char != "]" || (char == "]" && @property[-1..-1] == "\\")
-    end
-
-    def still_inside_multi_property? char
+  class MultiPropertyToken
+    def still_inside? char, token_so_far, sgf_stream
       return true if char != "]"
-      inside_multi_property = false
-      while char = next_character
-        next if char[/\s/]
-        inside_multi_property = char == "["
-        break
+      sgf_stream.peek_skipping_whitespace == "["
+    end
+
+    def transform token
+      token.gsub("][", ",").split(",")
+    end
+  end
+
+  class GenericPropertyToken
+    def still_inside? char, token_so_far, sgf_stream
+      char != "]"
+    end
+    
+    def transform token
+      token
+    end
+  end
+
+  class StrictErrorChecker
+    def check_for_errors_before_parsing string
+      unless string[/\A\s*\(\s*;/]
+        msg = "The first two non-whitespace characters of the string should be (;"
+        msg << " but they were #{string[0..1]} instead."
+        raise(SGF::MalformedDataError, msg)
       end
-      @stream.pos -= 1 if char
-      inside_multi_property
+    end
+  end
+
+  class LaxErrorChecker
+    def check_for_errors_before_parsing string
+      # just look the other way
+    end
+  end
+
+  class SgfStream
+    attr_reader :stream
+
+    def initialize sgf, error_checker
+      sgf = sgf.read if sgf.instance_of?(File)
+      sgf = File.read(sgf) if File.exist?(sgf)
+      error_checker.check_for_errors_before_parsing sgf
+      @stream = StringIO.new clean(sgf), 'r'
+    end
+
+    def eof?
+      @stream.eof?
     end
 
     def next_character
       !@stream.eof? && @stream.sysread(1)
     end
 
+    def read_token format
+      property = ""
+      while char = next_character and format.still_inside? char, property, self
+        property << char
+      end
+      format.transform property
+    end
+
+    def peek_skipping_whitespace
+      while char = next_character
+        next if char[/\s/]
+        break
+      end
+      rewind if char
+      char
+    end
+
+    private
+
+    def rewind
+      @stream.pos -= 1
+    end
+
+    def clean sgf
+      sgf.gsub! "\\\\n\\\\r", ''
+      sgf.gsub! "\\\\r\\\\n", ''
+      sgf.gsub! "\\\\r", ''
+      sgf.gsub! "\\\\n", ''
+      sgf
+    end
   end
-
 end
-
