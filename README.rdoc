@@ -14,3 +14,12 @@ WARNING: An implementation requirement is to make sure any closing bracket ']' i
 I'm honestly hoping that this is and remains the fastest SGF parser in Ruby. On my desktop, loading the SGF library and parsing Kogo's Joseki dictionary takes a little under six seconds.
 
 Documentation available at the Github wiki: https://github.com/Trevoke/SGFParser/wiki
+
+Desired behavior:
+
+record = SGF.parse file/URI/IO
+record.class #=> SGF::Record
+record.pw #=> White Player
+record.pb #=> Black Player
+record.games #=> [ SGF::Game, ... ]
+main_branch = game_record.main_branch
