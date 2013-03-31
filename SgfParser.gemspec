@@ -18,8 +18,13 @@ Gem::Specification.new do |s|
   s.require_paths = %w(lib)
 
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rcov'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rdoc'
+  case RUBY_VERSION
+  when /^1\.8/
+    s.add_development_dependency 'rcov'
+  when /^1\.9/
+    s.add_development_dependency 'simplecov'
+  end
 end
 

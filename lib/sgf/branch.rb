@@ -1,4 +1,5 @@
 require 'delegate'
+require 'forwardable'
 module SGF
   class Branch
     include Enumerable
@@ -15,3 +16,4 @@ module SGF
     end
   end
 end
+

@@ -5,7 +5,9 @@ module SGF
 
     SGF::Gametree::PROPERTIES.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
-        @root[sgf_identity] ? @root[sgf_identity] : raise(SGF::NoIdentityError)
+        @root.properties.fetch :sgf_identity do
+          raise SGF::NoIdentityError
+        end
       end
     end
 
