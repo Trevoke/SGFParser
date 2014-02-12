@@ -18,7 +18,7 @@ class SGF::Parser
   # You probably shouldn't use it, but who's gonna stop you?
   def parse sgf, strict_parsing = true
     error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
-    @sgf_stream = SGF::SgfStream.new(sgf, error_checker)
+    @sgf_stream = SGF::Stream.new(sgf, error_checker)
     @assembler = SGF::CollectionAssembler.new
     until @sgf_stream.eof?
       case @sgf_stream.next_character
@@ -142,7 +142,7 @@ module SGF
     end
   end
 
-  class SgfStream
+  class Stream
     attr_reader :stream
 
     def initialize sgf, error_checker
