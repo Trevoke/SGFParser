@@ -1,5 +1,4 @@
 module SGF
-
   # Your basic node. It holds information about itself, its parent, and its children.
   class Node
     include Enumerable
@@ -11,7 +10,7 @@ module SGF
     # * children: [list, of, children] (empty array if nothing is passed)
     # Anything else passed to the hash will become an SGF identity/property pair on the node.
     def initialize args={}
-      opts = {children: [], parent: nil}
+      opts = { children: [], parent: nil }
       opts.merge! args
       @depth = 0
       @children = []
@@ -29,11 +28,11 @@ module SGF
       @parent.children.delete self if @parent
 
       case @parent = parent
-        when nil
-          set_depth 0
-        else
-          @parent.children << self
-          set_depth @parent.depth + 1
+      when nil
+        set_depth 0
+      else
+        @parent.children << self
+        set_depth @parent.depth + 1
       end
     end
 
@@ -57,7 +56,7 @@ module SGF
     # Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
     def add_children *nodes
       nodes.flatten.each do |node|
-        node.parent= self
+        node.parent = self
       end
     end
 
@@ -159,7 +158,5 @@ module SGF
         output
       end
     end
-
   end
-
 end

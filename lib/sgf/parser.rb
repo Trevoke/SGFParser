@@ -1,12 +1,10 @@
 require 'stringio'
 
 module SGF
-
-  #The parser returns a SGF::Collection representation of the SGF file
-  #parser = SGF::Parser.new
-  #collection = parser.parse sgf_in_string_form
+  # The parser returns a SGF::Collection representation of the SGF file
+  # parser = SGF::Parser.new
+  # collection = parser.parse sgf_in_string_form
   class Parser
-
     NEW_NODE = ";"
     BRANCHING = %w{( )}
     END_OF_FILE = false
@@ -25,12 +23,12 @@ module SGF
       @assembler = CollectionAssembler.new
       until @sgf_stream.eof?
         case @sgf_stream.next_character
-          when "(" then @assembler.open_branch
-          when ";" then
-            parse_node_data
-            @assembler.create_node_with_properties @node_properties
-          when ")" then @assembler.close_branch
-          else next
+        when "(" then @assembler.open_branch
+        when ";" then
+          parse_node_data
+          @assembler.create_node_with_properties @node_properties
+        when ")" then @assembler.close_branch
+        else next
         end
       end
       @assembler.collection
@@ -51,12 +49,12 @@ module SGF
     def still_inside_node?
       !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
     end
-    
+
     def property_token_type identity
       case identity.upcase
-        when "C" then CommentToken.new
-        when *LIST_IDENTITIES then MultiPropertyToken.new
-        else GenericPropertyToken.new
+      when "C" then CommentToken.new
+      when *LIST_IDENTITIES then MultiPropertyToken.new
+      else GenericPropertyToken.new
       end
     end
   end
@@ -121,7 +119,7 @@ module SGF
     def still_inside? char, token_so_far, sgf_stream
       char != "]"
     end
-    
+
     def transform token
       token
     end

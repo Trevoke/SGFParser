@@ -1,6 +1,5 @@
 module SGF
-
-  #Collection holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
+  # Collection holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
   class Collection
     include Enumerable
 
@@ -70,7 +69,5 @@ module SGF
       super(method_name, args) if output.nil?
       output
     end
-
   end # Collection
 end # SGF
-

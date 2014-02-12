@@ -1,11 +1,10 @@
 module SGF
   class Writer
-
-  def stringify_tree_from root_node
-    @indentation = 0
-    @sgf = ""
-    write_new_branch_from root_node
-  end
+    def stringify_tree_from root_node
+      @indentation = 0
+      @sgf = ""
+      write_new_branch_from root_node
+    end
 
     # Takes a node and a filename as arguments
     def save(root_node, filename)
@@ -24,7 +23,7 @@ module SGF
 
     def decide_what_comes_after node
       if node.children.size == 1
-      then write_tree_from node.children[0]
+        then write_tree_from node.children[0]
       else write_new_branch_from node
       end
     end
