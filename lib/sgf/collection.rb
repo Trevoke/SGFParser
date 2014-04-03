@@ -64,8 +64,7 @@ class SGF::Collection
   end
 
   def method_missing method_name, *args
-    output = @root.children[0].properties[method_name]
-    super(method_name, args) if output.nil?
-    output
+    super(method_name, args) if @root.children.empty? || !@root.children[0].properties.has_key?(method_name)
+    @root.children[0].properties[method_name]
   end
 end
