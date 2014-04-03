@@ -24,4 +24,8 @@ class SGF::CollectionAssembler
     @current_node = node
     @current_node.add_properties properties
   end
+
+  def add_error message
+    collection.errors << message
+  end
 end
