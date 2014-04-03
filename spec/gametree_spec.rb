@@ -12,7 +12,7 @@ describe SGF::Gametree do
 
   it 'should throw up if initialized with a non-Node argument' do
     expect { SGF::Gametree.new('I am a string') }.to raise_error(ArgumentError)
-    expect { SGF::Gametree.new(SGF::Node.new) }.to_not raise_error(ArgumentError)
+    expect { SGF::Gametree.new(SGF::Node.new) }.not_to raise_error
   end
 
   context 'game-level information' do
@@ -26,8 +26,8 @@ describe SGF::Gametree do
   end
 
   context 'meta information' do
-    its(:inspect) { should match /SGF::Game/ }
-    its(:inspect) { should match /#{game.object_id}/ }
+    its(:inspect) { should match(/SGF::Game/) }
+    its(:inspect) { should match(/#{game.object_id}/) }
   end
 
   context "When talking about nodes" do

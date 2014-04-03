@@ -18,10 +18,10 @@ describe SGF::Collection do
 
   context "inspect" do
     subject { collection.inspect }
-    it { should match /SGF::Collection/ }
-    it { should match /#{collection.object_id}/ }
-    it { should match /2 Games/ }
-    it { should match /62 Nodes/ }
+    it { should match(/SGF::Collection/) }
+    it { should match(/#{collection.object_id}/) }
+    it { should match(/2 Games/) }
+    it { should match(/62 Nodes/) }
   end
 
   it "should use preorder traversal for each" do
@@ -31,6 +31,11 @@ describe SGF::Collection do
     array[0].c.should eq "root"
     array[1].c.should eq "a"
     array[2].c.should eq "b"
+  end
+
+  it "should properly compare two collections" do
+    new_collection = get_collection_from 'spec/data/ff4_ex.sgf'
+    expect(collection).to eq new_collection
   end
 
 end

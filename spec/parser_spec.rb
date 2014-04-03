@@ -4,12 +4,25 @@ describe SGF::Parser do
 
   let(:parser) { SGF::Parser.new }
 
-  it "should give an error if the first two character are not (;" do
-    expect { parser.parse ';)' }.to raise_error SGF::MalformedDataError
-  end
+  describe "when given invalid SGF files" do
+    it "should give an error if the first two character are not (;" do
+      expect { parser.parse ';)' }.to raise_error SGF::MalformedDataError
+    end
 
-  it "should not give an error if it is told to sit down and shut up" do
-    expect { parser.parse ';)', false }.to_not raise_error
+    it "should not give an error if it is told to sit down and shut up" do
+      expect { parser.parse(';)', false) }.to_not raise_error
+    end
+
+    it "should properly parse a file that has many AB/AW/AE values in a single node" do
+      invalid_sgf = "(;AB[dd]AB[aa])"
+      collection = parser.parse invalid_sgf
+      node = SGF::Node.new AB: %w[dd aa]
+      expected = SGF::Collection.new
+      expected.root.add_children node
+#      binding.pry
+      expect(collection).to eq expected
+      expect(collection.errors).to include "Multiple AB identities are present in a single node. A property should only exist once per node."
+    end
   end
 
   it "should parse a simple node" do

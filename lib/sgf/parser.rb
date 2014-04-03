@@ -44,7 +44,12 @@ class SGF::Parser
       identity = @sgf_stream.read_token SGF::IdentityToken.new
       property_format = property_token_type identity
       property = @sgf_stream.read_token property_format
-      @node_properties[identity] = property
+      if @node_properties[identity]
+        @node_properties[identity].concat property
+        @assembler.add_error "Multiple #{identity} identities are present in a single node. A property should only exist once per node."
+      else
+        @node_properties[identity] = property
+      end
     end
   end
 
