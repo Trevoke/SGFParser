@@ -11,17 +11,17 @@ class SGF::Collection
   end
 
   def each
-    gametrees.each { |game| game.each { |node| yield node } }
+    gametrees.each do |game|
+      game.each do |node|
+        yield node
+      end
+    end
   end
 
   # Compares a tree to another tree, node by node.
   # Nodes must be the same (same properties, parents and children).
-  def == other_collection
-    one = []
-    two = []
-    each { |node| one << node }
-    other_collection.each { |node| two << node }
-    one == two
+  def == other
+    self.map { |node| node } == other.map { |node| node }
   end
 
   #Returns an array of the Game objects in this tree.
@@ -54,11 +54,9 @@ class SGF::Collection
   end
 
   def populate_game_array
-    games = []
-    @root.children.each do |first_node_of_tree|
-      games << SGF::Gametree.new(first_node_of_tree)
+    @root.children.map do |first_node_of_tree|
+      SGF::Gametree.new(first_node_of_tree)
     end
-    games
   end
 
   def method_missing method_name, *args
