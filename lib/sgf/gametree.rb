@@ -27,12 +27,6 @@ class SGF::Gametree
     @root.each &block
   end
 
-  def node_count
-    count = 0
-    each { count += 1 }
-    count
-  end
-
   def to_s
     "<SGF::Game:#{object_id}>"
   end

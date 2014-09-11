@@ -50,9 +50,7 @@ class SGF::Collection
   private
 
   def node_count
-    count = 0
-    gametrees.each { |game| count += game.node_count }
-    count
+    gametrees.inject(0) { |sum, game| sum + game.count }
   end
 
   def populate_game_array
