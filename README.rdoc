@@ -17,9 +17,9 @@ Documentation available at the Github wiki: https://github.com/Trevoke/SGFParser
 
 Desired behavior:
 
-record = SGF.parse file/URI/IO
-record.class #=> SGF::Record
-record.pw #=> White Player
-record.pb #=> Black Player
-record.games #=> [ SGF::Game, ... ]
-main_branch = game_record.main_branch
+  record = SGF.parse file/URI/IO
+  record.class #=> SGF::Record
+  record.pw #=> White Player
+  record.pb #=> Black Player
+  record.games #=> [ SGF::Game, ... ]
+  main_branch = game_record.main_branch
