@@ -5,14 +5,21 @@ describe SGF::Collection do
   let(:collection) { get_collection_from 'spec/data/ff4_ex.sgf' }
   subject { collection }
 
-  its(:gametrees) { should have(2).games }
+  it "has two games" do
+    expect(subject.gametrees.size).to eq 2
+  end
 
-  context 'data under the root' do
+  context 'on the gametree level' do
     subject { collection.root }
-    its(:children) { should have(2).nodes }
-    context 'another step down' do
+    it "should have two children" do
+      expect(subject.children.size).to eq 2
+    end
+
+    context 'in the first gametree' do
       subject { collection.root.children[0] }
-      its(:children) { should have(5).nodes }
+      it "should have five children" do
+        expect(subject.children.size).to eq 5
+      end
     end
   end
 

@@ -3,7 +3,10 @@ require 'spec_helper'
 module SGF
   describe Variation do
     subject { Variation.new }
-    its(:root) { should be_an_instance_of Node }
+    it 'begins with a Node' do
+      expect(subject.root).to be_an_instance_of Node
+    end
+
     it "accepts more nodes" do
       subject.append Node.new
       subject.size.should eq 2

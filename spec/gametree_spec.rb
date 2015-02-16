@@ -15,9 +15,9 @@ describe SGF::Gametree do
     expect { SGF::Gametree.new(SGF::Node.new) }.not_to raise_error
   end
 
-  context 'game-level information' do
-    its(:name) { should eq 'Gametree 1: properties' }
-    its(:data_entry) { should eq 'Arno Hollosi' }
+  it 'has game-level information' do
+    expect(subject.name).to eq 'Gametree 1: properties'
+    expect(subject.data_entry).to eq 'Arno Hollosi'
   end
 
   it 'should raise errors' do
@@ -25,13 +25,15 @@ describe SGF::Gametree do
     expect { subject.nonexistent_identity }.to raise_error(NoMethodError)
   end
 
-  context 'meta information' do
-    its(:inspect) { should match(/SGF::Game/) }
-    its(:inspect) { should match(/#{game.object_id}/) }
+  it 'has meta information' do
+    expect(subject.inspect).to match(/SGF::Game/)
+    expect(subject.inspect).to match(/#{game.object_id}/)
   end
 
   context "When talking about nodes" do
-    its(:current_node) { should eq root_node }
+    it "begins on the root node" do
+      expect(subject.current_node).to eq root_node
+    end
 
     it "should have a nice way to go to children[0]" do
       subject.next_node
