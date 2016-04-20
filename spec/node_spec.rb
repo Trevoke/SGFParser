@@ -98,6 +98,8 @@ describe SGF::Node do
       expect(node.re).to eq "This is also made up"
       node.re = "And that too"
       expect(node.re).to eq "And that too"
+      node[:RE] = 'kokolegorille'
+      expect(node[:RE]).to eq 'kokolegorille'
     end
 
     it "should implement [] as a shortcut to read properties" do

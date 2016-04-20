@@ -9,3 +9,9 @@ require 'sgf/collection'
 require 'sgf/parser'
 require 'sgf/gametree'
 require 'sgf/writer'
+
+module SGF
+  def self.parse(filename)
+    SGF::Parser.new.parse File.read(filename)
+  end
+end

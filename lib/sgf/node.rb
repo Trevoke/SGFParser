@@ -89,6 +89,10 @@ class SGF::Node
     @properties[flexible(identity)]
   end
 
+  def []= identity, new_value
+    @properties[flexible(identity)] = new_value
+  end
+
   def to_s
     out = "#<#{self.class}:#{self.object_id}, "
     out << (@parent ? "Has a parent, " : "Has no parent, ")
@@ -152,9 +156,7 @@ class SGF::Node
     if property[/(.*?)=$/]
       @properties[$1] = args[0]
     else
-      output = @properties[property]
-      super(method_name, args) if output.nil?
-      output
+      @properties.fetch(property, nil) || super(method_name, args)
     end
   end
 end
