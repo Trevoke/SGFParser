@@ -25,19 +25,19 @@ describe SGF::Collection do
 
   context "inspect" do
     subject { collection.inspect }
-    it { should match(/SGF::Collection/) }
-    it { should match(/#{collection.object_id}/) }
-    it { should match(/2 Games/) }
-    it { should match(/62 Nodes/) }
+    it { is_expected.to match(/SGF::Collection/) }
+    it { is_expected.to match(/#{collection.object_id}/) }
+    it { is_expected.to match(/2 Games/) }
+    it { is_expected.to match(/62 Nodes/) }
   end
 
   it "should use preorder traversal for each" do
     collection = get_collection_from 'spec/data/example1.sgf'
     array = []
     collection.each { |node| array << node }
-    array[0].c.should eq "root"
-    array[1].c.should eq "a"
-    array[2].c.should eq "b"
+    expect(array[0].c).to eq "root"
+    expect(array[1].c).to eq "a"
+    expect(array[2].c).to eq "b"
   end
 
   it "should properly compare two collections" do

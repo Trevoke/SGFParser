@@ -37,13 +37,13 @@ describe SGF::Gametree do
 
     it "should have a nice way to go to children[0]" do
       subject.next_node
-      subject.current_node.should eq subject.root.children[0]
+      expect(subject.current_node).to eq subject.root.children[0]
     end
 
     it "should have a way of setting an arbitrary node to the current node" do
       subject.current_node = subject.root.children[3]
-      subject.current_node.properties.keys.sort.should eq %w(B C N)
-      subject.current_node.children.size.should eq 6
+      expect(subject.current_node.properties.keys).to match_array %w(B C N)
+      expect(subject.current_node.children.size).to eq 6
     end
 
   end
@@ -53,9 +53,9 @@ describe SGF::Gametree do
       game = get_first_game_from 'spec/data/example1.sgf'
       array = []
       game.each { |node| array << node }
-      array[0].c.should eq "root"
-      array[1].c.should eq "a"
-      array[2].c.should eq "b"
+      expect(array[0].c).to eq "root"
+      expect(array[1].c).to eq "a"
+      expect(array[2].c).to eq "b"
     end
 
     it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
@@ -63,7 +63,7 @@ describe SGF::Gametree do
       game.root.add_children SGF::Node.new(B: "dd")
       nodes = []
       game.each { |node| nodes << node; nil }
-      nodes.size.should eq 2
+      expect(nodes.size).to eq 2
     end
   end
 
@@ -72,8 +72,8 @@ describe SGF::Gametree do
     it "should return a node-only gametree if slice is [0..0]" do
       game = SGF::Gametree.new root_node
       slice = game.slice(0..0)
-      slice.should be_instance_of SGF::Gametree
-      slice.root.should eq root_node
+      expect(slice).to be_instance_of SGF::Gametree
+      expect(slice.root).to eq root_node
     end
 
     it "should slice through a one-branch list" do
@@ -87,12 +87,12 @@ describe SGF::Gametree do
       child1.add_children child2
       child2.add_children child3
       slice = game.slice(1..3)
-      slice.should be_instance_of SGF::Gametree
+      expect(slice).to be_instance_of SGF::Gametree
       root = slice.root
-      root.b.should eq 'qq'
-      root.parent.should be_nil
-      root.children[0].a.should eq 'rn'
-      root.children[0].children[0].b.should eq 'nr'
+      expect(root.b).to eq 'qq'
+      expect(root.parent).to be_nil
+      expect(root.children[0].a).to eq 'rn'
+      expect(root.children[0].children[0].b).to eq 'nr'
     end
 
   end

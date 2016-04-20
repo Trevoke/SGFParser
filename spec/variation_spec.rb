@@ -9,7 +9,7 @@ module SGF
 
     it "accepts more nodes" do
       subject.append Node.new
-      subject.size.should eq 2
+      expect(subject.size).to eq 2
     end
   end
 end

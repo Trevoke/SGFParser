@@ -32,17 +32,17 @@ describe SGF::Writer do
 
   it "should indent a simple SGF nicely" do
     sgf = save_to_temp_file_and_read '(;FF[4])'
-    sgf.should eq "\n(\n  ;FF[4]\n)"
+    expect(sgf).to eq "\n(\n  ;FF[4]\n)"
   end
 
   it "should indent a one-node SGF with two properties" do
     sgf = save_to_temp_file_and_read '(;FF[4]PW[Cho Chikun])'
-    sgf.should eq "\n(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
+    expect(sgf).to eq "\n(\n  ;FF[4]\n  PW[Cho Chikun]\n)"
   end
 
   it "should indent two nodes on same column" do
     sgf = save_to_temp_file_and_read '(;FF[4];PB[qq])'
-    sgf.should eq "\n(\n  ;FF[4]\n  ;PB[qq]\n)"
+    expect(sgf).to eq "\n(\n  ;FF[4]\n  ;PB[qq]\n)"
   end
 
   it "should indent branches further" do
@@ -58,7 +58,7 @@ describe SGF::Writer do
     ;PB[qa]
   )
 )}
-    sgf.should eq expected
+    expect(sgf).to eq expected
   end
 
   it "should indent two gametrees" do
@@ -73,7 +73,7 @@ describe SGF::Writer do
   ;FF[4]
   ;PB[dd]
 )}
-    sgf.should eq expected
+    expect(sgf).to eq expected
   end
 
   private
@@ -81,7 +81,7 @@ describe SGF::Writer do
   def parse_save_load_and_compare_to_saved string
     collection = parse_and_save string
     collection2 = get_collection_from TEMP_FILE
-    collection2.should eq collection
+    expect(collection2).to eq collection
   end
 
   def save_to_temp_file_and_read string
