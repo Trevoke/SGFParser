@@ -26,7 +26,9 @@ class SGF::Collection
 
   #Returns an array of the Game objects in this tree.
   def gametrees
-    populate_game_array
+    @root.children.map do |first_node_of_tree|
+      SGF::Gametree.new(first_node_of_tree)
+    end
   end
 
   def to_s
@@ -51,12 +53,6 @@ class SGF::Collection
 
   def node_count
     gametrees.inject(0) { |sum, game| sum + game.count }
-  end
-
-  def populate_game_array
-    @root.children.map do |first_node_of_tree|
-      SGF::Gametree.new(first_node_of_tree)
-    end
   end
 
   def method_missing method_name, *args

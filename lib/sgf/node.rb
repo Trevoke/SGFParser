@@ -3,6 +3,7 @@ class SGF::Node
   include Enumerable
 
   attr_accessor :children, :properties
+  attr_reader :parent, :depth
 
   # Creates a new node. You can pass in a hash. There are two special keys, parent and children.
   # * parent: parent_node (nil by default)
@@ -13,13 +14,10 @@ class SGF::Node
     opts.merge! args
     @depth = 0
     @children = []
+    @properties = {}
     set_parent opts.delete :parent
     add_children opts.delete :children
     add_properties opts
-  end
-
-  def parent
-    @parent
   end
 
   # Set the given node as a parent and self as one of that node's children
@@ -41,10 +39,6 @@ class SGF::Node
     set_parent nil
   end
 
-  def depth
-    @depth
-  end
-
   def depth= new_depth
     @depth = new_depth
     update_depth_of_children
@@ -62,7 +56,6 @@ class SGF::Node
   # Takes a hash {identity => property} and adds those to the current node.
   # If a property already exists, it will append to it.
   def add_properties hash
-    @properties ||= {}
     hash.each do |identity, property|
       @properties[flexible identity] ||= property.class.new
       @properties[flexible identity].concat property
@@ -112,13 +105,6 @@ class SGF::Node
     "#{whitespace};#{properties.join("\n#{whitespace}")}"
   end
 
-  def stringify_identity_and_property(identity, property)
-    new_property = property.instance_of?(Array) ? property.join("][") : property
-    new_id = flexible identity
-    new_property = new_property.gsub("]", "\\]") if new_id == "C"
-    "#{new_id}[#{new_property}]"
-  end
-
   private
 
   def flexible id
@@ -159,4 +145,12 @@ class SGF::Node
       @properties.fetch(property, nil) || super(method_name, args)
     end
   end
+
+  def stringify_identity_and_property(identity, property)
+    new_property = property.instance_of?(Array) ? property.join("][") : property
+    new_id = flexible identity
+    new_property = new_property.gsub("]", "\\]") if new_id == "C"
+    "#{new_id}[#{new_property}]"
+  end
+
 end
