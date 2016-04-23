@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SGF::Collection do
+RSpec.describe SGF::Collection do
 
   let(:collection) { get_collection_from 'spec/data/ff4_ex.sgf' }
   subject { collection }

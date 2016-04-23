@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module SGF
-  describe Variation do
+  RSpec.describe Variation do
     subject { Variation.new }
     it 'begins with a Node' do
       expect(subject.root).to be_an_instance_of Node

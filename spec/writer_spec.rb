@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SGF::Writer do
+RSpec.describe SGF::Writer do
 
   let(:parser) { SGF::Parser.new }
 

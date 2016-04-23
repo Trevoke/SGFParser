@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SGF::Gametree do
+RSpec.describe SGF::Gametree do
 
   let(:game) { get_first_game_from 'spec/data/ff4_ex.sgf' }
   let(:root_node) {

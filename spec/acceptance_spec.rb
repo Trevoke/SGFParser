@@ -1,10 +1,11 @@
 require 'rspec'
+require_relative '../lib/sgf'
 
 def full_path_to_file(relative_file_path)
   File.expand_path(File.join(File.dirname(__FILE__), relative_file_path))
 end
 
-describe 'End To End' do
+RSpec.describe 'End To End' do
   let(:new_file) { full_path_to_file('./simple_changed.sgf') }
 
   after do

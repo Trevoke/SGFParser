@@ -15,6 +15,7 @@ class SGF::Node
     @depth = 0
     @children = []
     @properties = {}
+    @parent = nil
     set_parent opts.delete :parent
     add_children opts.delete :children
     add_properties opts
@@ -25,8 +26,7 @@ class SGF::Node
     @parent.children.delete self if @parent
 
     case @parent = parent
-    when nil
-      set_depth 0
+    when nil then set_depth 0
     else
       @parent.children << self
       set_depth @parent.depth + 1

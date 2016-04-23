@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SGF::Node do
+RSpec.describe SGF::Node do
 
   let(:node) { SGF::Node.new }
   subject { node }

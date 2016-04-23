@@ -43,6 +43,7 @@ GEM
     slop (3.6.0)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES
