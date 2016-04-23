@@ -1,19 +1,15 @@
 require 'rspec'
 require_relative '../lib/sgf'
 
-def full_path_to_file(relative_file_path)
-  File.expand_path(File.join(File.dirname(__FILE__), relative_file_path))
-end
-
 RSpec.describe 'End To End' do
-  let(:new_file) { full_path_to_file('./simple_changed.sgf') }
+  let(:new_file) { full_path_to_file('./simple_changed.sgf', starting_point: __FILE__) }
 
   after do
     File.delete(new_file)
   end
 
   it 'should modify an object and save the changes' do
-    collection = SGF.parse(full_path_to_file('./data/simple.sgf'))
+    collection = SGF.parse(full_path_to_file('./data/simple.sgf', starting_point: __FILE__))
     game = collection.gametrees.first
     game.current_node[:PB] = 'kokolegorille'
 

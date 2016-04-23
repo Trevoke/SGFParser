@@ -105,3 +105,7 @@ def get_collection_from file
   parser = SGF::Parser.new
   parser.parse File.read(file)
 end
+
+def full_path_to_file(relative_file_path, starting_point:)
+  File.expand_path(File.join(File.dirname(starting_point), relative_file_path))
+end
