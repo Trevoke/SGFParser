@@ -29,3 +29,7 @@ Gemfile.lock
 # ctags
 tags
 vendor/cache/
+
+# rspec
+
+.spec-examples.txt

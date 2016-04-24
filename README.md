@@ -29,30 +29,3 @@ main_branch = game_record.main_branch
 
 # SGF Parsing warning
 WARNING: An implementation requirement is to make sure any closing bracket ']' inside a comment is escaped: '\\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
-
-# The day I implemented the observer pattern
-
-This project has been a thorn in my side. I think I've known that the observer pattern was the right call for years but didn't want to implement it. Not using it has led to code which *obviously* violated the Law of Demeter, so I'm going to give in and set it up. Not quite sure what the implementation will look like; I think I'll try to wrap the Observable behavior in some fashion.
-
-Anyway, on to what changes need to be propagated.
-
-note: tried to sort this by "which changes need to be propagated", and switched to a list of "when X happens, what objects need to care and why?"
-
-The key change that drives updates is between node relationships.
-
-When a node gets a new child:
-- Change depth property for child
-- If node is collection root, then update gametrees
-
-Anything for gametrees at all?
-
-DONE When a node loses a child:
-- That child's depth should be updated accordingly
-- The observer relationship between the two should stop
-
-DONE When a node's parent changes:
-- That node's depth changes
-- The node stops caring about changes from the parent
-
-DONE When a node's depth property changes:
-- Trigger a depth change in its children
