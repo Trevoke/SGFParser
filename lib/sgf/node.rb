@@ -1,6 +1,7 @@
+require 'observer'
 # Your basic node. It holds information about itself, its parent, and its children.
 class SGF::Node
-  include Enumerable
+  include Enumerable, Observable
 
   attr_accessor :children, :properties
   attr_reader :parent, :depth
@@ -9,26 +10,30 @@ class SGF::Node
   # * parent: parent_node (nil by default)
   # * children: [list, of, children] (empty array if nothing is passed)
   # Anything else passed to the hash will become an SGF identity/property pair on the node.
-  def initialize args={}
-    opts = { children: [], parent: nil }
-    opts.merge! args
+  def initialize children: [], parent: nil, **opts
+    # opts = { children: [], parent: nil }
+    # opts.merge! args
     @depth = 0
     @children = []
     @properties = {}
     @parent = nil
-    set_parent opts.delete :parent
-    add_children opts.delete :children
+    set_parent parent #opts.delete :parent
+    add_children children #opts.delete :children
     add_properties opts
   end
 
   # Set the given node as a parent and self as one of that node's children
   def parent= parent
-    @parent.children.delete self if @parent
+    if @parent
+      @parent.children.delete self
+      @parent.delete_observer self
+    end
 
     case @parent = parent
     when nil then set_depth 0
     else
       @parent.children << self
+      @parent.add_observer self
       set_depth @parent.depth + 1
     end
   end
@@ -41,15 +46,17 @@ class SGF::Node
 
   def depth= new_depth
     @depth = new_depth
-    update_depth_of_children
+    changed
+    notify_observers :depth_change, @depth
   end
 
   alias :set_depth :depth=
 
-  # Takes an arbitrary number of child nodes, adds them to the list of children, and make this node their parent.
+  # Takes an arbitrary number of child nodes, adds them to the list of children,
+  # and make this node their parent.
   def add_children *nodes
     nodes.flatten.each do |node|
-      node.parent = self
+      node.set_parent self
     end
   end
 
@@ -105,6 +112,13 @@ class SGF::Node
     "#{whitespace};#{properties.join("\n#{whitespace}")}"
   end
 
+  # Observer pattern
+  def update(message, data)
+    case message
+      when :depth_change then set_depth(data + 1)
+    end
+  end
+
   private
 
   def flexible id
@@ -112,17 +126,12 @@ class SGF::Node
   end
 
   def update_human_readable_methods
-    SGF::Node::PROPERTIES.each do |human_readable_method, sgf_identity|
-      next if defined? human_readable_method.to_sym
+    SGF::Node::PROPERTIES.reject do
+      |method_name, sgf_identity| defined? method_name
+    end.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
         @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError)
       end
-    end
-  end
-
-  def update_depth_of_children
-    each_child do |node|
-      node.each { |x| x.depth = x.parent.depth + 1 }
     end
   end
 

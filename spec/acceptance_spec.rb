@@ -5,7 +5,7 @@ RSpec.describe 'End To End' do
   let(:new_file) { full_path_to_file('./simple_changed.sgf', starting_point: __FILE__) }
 
   after do
-    File.delete(new_file)
+    File.delete(new_file) if File.exist?(new_file)
   end
 
   it 'should modify an object and save the changes' do
@@ -17,5 +17,11 @@ RSpec.describe 'End To End' do
     collection.save(new_file)
     expect(game.current_node[:PB]).to eq 'kokolegorille'
     expect(SGF.parse(new_file).gametrees.first.current_node[:PB]).to eq 'kokolegorille'
+  end
+
+  it 'throws an error if asked to open a non-existing file'do
+    expect do
+      SGF.parse('some_file.sgf')
+    end.to raise_error(SGF::FileDoesNotExistError)
   end
 end

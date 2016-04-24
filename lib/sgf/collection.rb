@@ -2,12 +2,15 @@
 class SGF::Collection
   include Enumerable
 
-  attr_accessor :root, :current_node, :errors
+  attr_accessor :root, :current_node, :errors, :gametrees
 
-  def initialize
-    @root = SGF::Node.new
+  def initialize(root = SGF::Node.new)
+    @root = root
     @current_node = @root
     @errors = []
+    @gametrees = @root.children.map do |root_of_tree|
+      SGF::Gametree.new(root_of_tree)
+    end
   end
 
   def each
@@ -18,17 +21,17 @@ class SGF::Collection
     end
   end
 
+  def <<(gametree)
+    unless gametree.instance_of?(SGF::Gametree)
+      raise ArgumentError, "Expected instance of class SGF::Gametree but was instance of #{gametree.class}"
+    end
+    gametrees << gametree
+  end
+
   # Compares a tree to another tree, node by node.
   # Nodes must be the same (same properties, parents and children).
   def == other
     self.map { |node| node } == other.map { |node| node }
-  end
-
-  #Returns an array of the Game objects in this tree.
-  def gametrees
-    @root.children.map do |first_node_of_tree|
-      SGF::Gametree.new(first_node_of_tree)
-    end
   end
 
   def to_s

@@ -7,19 +7,19 @@ RSpec.describe SGF::Node do
 
   context 'inspect' do
     subject { node.inspect }
-    it { is_expected.to match /#{node.object_id}/ }
-    it { is_expected.to match /SGF::Node/ }
-    it { is_expected.to match /Has no parent/ }
+    it { is_expected.to match(/#{node.object_id}/) }
+    it { is_expected.to match(/SGF::Node/) }
+    it { is_expected.to match(/Has no parent/) }
 
     it "should give you a relatively useful inspect" do
       node.add_properties({C: "Oh hi", PB: "Dosaku", AE: "[dd][gh]"})
-      is_expected.to match /3 Properties/
+      is_expected.to match(/3 Properties/)
 
       node.add_children SGF::Node.new, SGF::Node.new
-      expect(node.inspect).to match /2 Children/
+      expect(node.inspect).to match(/2 Children/)
 
       node.parent = SGF::Node.new
-      expect(node.inspect).to match /Has a parent/
+      expect(node.inspect).to match(/Has a parent/)
     end
 
   end
@@ -172,6 +172,25 @@ RSpec.describe SGF::Node do
       expect(link1.depth).to eq 1
       expect(link2.depth).to eq 2
       expect(link3.depth).to eq 1
+    end
+  end
+
+  context "self-consistency" do
+    it "should only track  changes from its current parent" do
+      link1 = SGF::Node.new
+      link2 = SGF::Node.new
+
+      link3 = SGF::Node.new
+      link1.add_children link2
+      node.parent = link2
+      expect(node.depth).to eq 2
+
+      link1.depth = 2
+      expect(node.depth).to eq 4
+
+      node.parent = link3
+      link1.depth = 6
+      expect(node.depth).to eq 1
     end
   end
 end

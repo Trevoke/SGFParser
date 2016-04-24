@@ -22,7 +22,7 @@ RSpec.describe SGF::Gametree do
 
   it 'should raise errors' do
     expect { subject.opening }.to raise_error(SGF::NoIdentityError)
-    expect { subject.nonexistent_identity }.to raise_error(NoMethodError)
+    expect { subject.nonexistent_identity }.to raise_error(SGF::NoIdentityError)
   end
 
   it 'has meta information' do

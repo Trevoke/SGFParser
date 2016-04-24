@@ -2,7 +2,7 @@ require_relative 'node'
 require_relative 'collection'
 
 class SGF::CollectionAssembler
-  attr_reader :collection
+#  attr_reader :collection
 
   def initialize
     @collection = SGF::Collection.new
@@ -27,5 +27,9 @@ class SGF::CollectionAssembler
 
   def add_error message
     collection.errors << message
+  end
+
+  def collection
+    SGF::Collection.new @collection.root
   end
 end

@@ -1,7 +1,11 @@
 module SGF
+  class FileDoesNotExistError < StandardError ; end
   def self.parse(filename)
     SGF::Parser.new.parse File.read(filename)
+  rescue Errno::ENOENT
+    raise FileDoesNotExistError
   end
+
 end
 
 require_relative 'sgf/error'

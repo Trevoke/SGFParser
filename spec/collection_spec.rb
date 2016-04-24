@@ -45,4 +45,21 @@ RSpec.describe SGF::Collection do
     expect(collection).to eq new_collection
   end
 
+  context "gametrees" do
+    it "always returns the same objects for the same gametrees" do
+      expect(subject.gametrees).to eq subject.gametrees
+    end
+
+    it "knows if you've added a new gametree" do
+      expect do
+        subject << SGF::Gametree.new(SGF::Node.new)
+      end.to change { subject.gametrees.count }.by(1)
+    end
+  end
+
+  it "barfs if you try to add a non-gametree object" do
+    expect do
+      subject << Object.new
+    end.to raise_error(ArgumentError)
+  end
 end

@@ -3,11 +3,13 @@ class SGF::Gametree
 
   SGF::Gametree::PROPERTIES.each do |human_readable_method, sgf_identity|
     define_method(human_readable_method.to_sym) do
-      @root[sgf_identity] ? @root[sgf_identity] : raise(SGF::NoIdentityError)
+      @root[sgf_identity] || raise(SGF::NoIdentityError)
     end
   end
 
-  attr_accessor :current_node, :root
+  attr_reader :root
+
+  attr_accessor :current_node
 
   # Takes a SGF::Node as an argument. It will be a problem if that node isn't
   # really the first node of of a game (ie: no FF property)
@@ -57,7 +59,6 @@ class SGF::Gametree
   def method_missing method_name, *args
     human_readable_identity = method_name.to_s.downcase
     identity = SGF::Gametree::PROPERTIES[human_readable_identity]
-    return @root[identity] if identity
-    super(method_name, args)
+    return @root[identity] || raise(SGF::NoIdentityError)
   end
 end
