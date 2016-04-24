@@ -16,9 +16,11 @@ RSpec.describe SGF::Parser do
     it "should properly parse a file that has many AB/AW/AE values in a single node" do
       invalid_sgf = "(;AB[dd]AB[aa])"
       collection = parser.parse invalid_sgf
+
       node = SGF::Node.new AB: %w[dd aa]
       expected = SGF::Collection.new
       expected.root.add_children node
+
       expect(collection).to eq expected
       expect(collection.errors).to include "Multiple AB identities are present in a single node. A property should only exist once per node."
     end

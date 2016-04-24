@@ -1,12 +1,15 @@
-# Collection holds most of the logic, for now. It has all the nodes, can iterate over them, and can even save to a file!
+# Collection holds most of the logic, for now.
+# It has all the nodes, can iterate over them, and can even save to a file!
 class SGF::Collection
-  include Enumerable
+  include Enumerable, Observable
 
-  attr_accessor :root, :current_node, :errors, :gametrees
+  attr_accessor :current_node, :errors, :gametrees
+  attr_reader :root
 
   def initialize(root = SGF::Node.new)
     @root = root
     @current_node = @root
+    @root.add_observer(self)
     @errors = []
     @gametrees = @root.children.map do |root_of_tree|
       SGF::Gametree.new(root_of_tree)
@@ -25,7 +28,7 @@ class SGF::Collection
     unless gametree.instance_of?(SGF::Gametree)
       raise ArgumentError, "Expected instance of class SGF::Gametree but was instance of #{gametree.class}"
     end
-    gametrees << gametree
+    @root.add_children gametree.root
   end
 
   # Compares a tree to another tree, node by node.
@@ -50,6 +53,15 @@ class SGF::Collection
   # Saves the Collection as an SGF file. Takes a filename as argument.
   def save filename
     SGF::Writer.new.save(@root, filename)
+  end
+
+  def update(message, data)
+    case message
+      when :new_children
+        data.each do |new_gametree_root|
+          @gametrees << SGF::Gametree.new(new_gametree_root)
+        end
+    end
   end
 
   private

@@ -58,6 +58,8 @@ class SGF::Node
     nodes.flatten.each do |node|
       node.set_parent self
     end
+    changed
+    notify_observers :new_children, nodes.flatten
   end
 
   # Takes a hash {identity => property} and adds those to the current node.

@@ -26,7 +26,7 @@ class SGF::Gametree
 
   # Iterate through all the nodes in preorder fashion
   def each &block
-    @root.each &block
+    @root.each(&block)
   end
 
   def to_s

@@ -44,16 +44,15 @@ When a node gets a new child:
 - Change depth property for child
 - If node is collection root, then update gametrees
 
-When a node loses a child:
+Anything for gametrees at all?
+
+DONE When a node loses a child:
 - That child's depth should be updated accordingly
 - The observer relationship between the two should stop
 
-When a node's parent changes:
+DONE When a node's parent changes:
 - That node's depth changes
 - The node stops caring about changes from the parent
 
-When a node's depth property changes:
+DONE When a node's depth property changes:
 - Trigger a depth change in its children
-
-When a node's properties change:
-- Update human readable methods
