@@ -18,6 +18,12 @@ According to the standard, An SGF file holds a `Collection` of one or more `Game
 
 In other words: FILE (1 ↔ ∞) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
 
+## Bringing in the code
+Simplicity itself:
+```ruby
+require sgf
+```
+
 ## Basics of our data structure
 
 In this implementation, when you parse a file, you get a `Collection` back. This object has a root `Node` used as the top-level node for all gametrees. The children of that node are the root nodes of the actual games.
