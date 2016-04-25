@@ -1,3 +1,6 @@
+== 3.0.1
+- Update date in gemspec
+
 == 3.0.0
 - Rename Tree to Collection
 - Rename Game to Gametree
@@ -9,4 +12,4 @@
 == 2.1.0
 - Adding children and adding parents all works beautifully
 - Node depth is set properly and updated properly
-- Node.new takes an optional hash of properties with special keys :children and :parent 
+- Node.new takes an optional hash of properties with special keys :children and :parent
