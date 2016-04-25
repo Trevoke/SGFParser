@@ -26,7 +26,7 @@ RSpec.describe SGF::Gametree do
   end
 
   it 'has meta information' do
-    expect(subject.inspect).to match(/SGF::Game/)
+    expect(subject.inspect).to match(/SGF::Gametree/)
     expect(subject.inspect).to match(/#{game.object_id}/)
   end
 

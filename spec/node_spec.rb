@@ -26,12 +26,12 @@ RSpec.describe SGF::Node do
 
   it "should properly show a string version of the node" do
     subject.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
-    expect(subject.to_str).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
+    expect(subject.to_s).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
   it "should properly show a string version of the node if identities are symbols" do
     subject.add_properties({C: "Oh hi]", PB: "Dosaku"})
-    expect(subject.to_str).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
+    expect(subject.to_s).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
   context "Heredity" do

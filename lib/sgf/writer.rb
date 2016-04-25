@@ -1,22 +1,30 @@
 class SGF::Writer
+  # Takes a node and a filename as arguments
+  def save(root_node, filename)
+    #TODO - accept any I/O object?
+    stringify_tree_from root_node
+    File.open(filename, 'w') { |f| f << @sgf }
+  end
+
   def stringify_tree_from root_node
     @indentation = 0
     @sgf = ""
     write_new_branch_from root_node
-  end
-
-  # Takes a node and a filename as arguments
-  def save(root_node, filename)
-    #TODO - accept any I/O object
-    stringify_tree_from root_node
-
-    File.open(filename, 'w') { |f| f << @sgf }
+    @sgf
   end
 
   private
 
+  def write_new_branch_from node
+    node.each_child do |child_node|
+      open_branch
+      write_tree_from child_node
+      close_branch
+    end
+  end
+
   def write_tree_from node
-    @sgf << "\n" << node.to_str(@indentation)
+    @sgf << "\n" << node.to_s(@indentation)
     decide_what_comes_after node
   end
 
@@ -24,14 +32,6 @@ class SGF::Writer
     if node.children.size == 1
       then write_tree_from node.children[0]
     else write_new_branch_from node
-    end
-  end
-
-  def write_new_branch_from node
-    node.each_child do |child_node|
-      open_branch
-      write_tree_from child_node
-      close_branch
     end
   end
 

@@ -37,16 +37,14 @@ class SGF::Collection
     self.map { |node| node } == other.map { |node| node }
   end
 
-  def to_s
+  def inspect
     out = "#<SGF::Collection:#{self.object_id}, "
     out << "#{gametrees.count} Games, "
     out << "#{node_count} Nodes"
     out << ">"
   end
 
-  alias :inspect :to_s
-
-  def to_str
+  def to_s
     SGF::Writer.new.stringify_tree_from @root
   end
 

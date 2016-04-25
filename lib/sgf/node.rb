@@ -95,7 +95,7 @@ class SGF::Node
     @properties[flexible(identity)] = new_value
   end
 
-  def to_s
+  def inspect
     out = "#<#{self.class}:#{self.object_id}, "
     out << (@parent ? "Has a parent, " : "Has no parent, ")
     out << "#{@children.size} Children, "
@@ -103,9 +103,7 @@ class SGF::Node
     out << ">"
   end
 
-  alias :inspect :to_s
-
-  def to_str(indent = 0)
+  def to_s(indent = 0)
     properties = []
     @properties.each do |identity, property|
       properties << stringify_identity_and_property(identity, property)
@@ -132,7 +130,7 @@ class SGF::Node
       |method_name, sgf_identity| defined? method_name
     end.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
-        @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError)
+        @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
       end
     end
   end

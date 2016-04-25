@@ -1,9 +1,11 @@
+require_relative 'writer'
+
 class SGF::Gametree
   include Enumerable
 
   SGF::Gametree::PROPERTIES.each do |human_readable_method, sgf_identity|
     define_method(human_readable_method.to_sym) do
-      @root[sgf_identity] || raise(SGF::NoIdentityError)
+      @root[sgf_identity] || raise(SGF::NoIdentityError, "This gametree does not have '#{human_readable_method}' available")
     end
   end
 
@@ -29,13 +31,11 @@ class SGF::Gametree
     @root.each(&block)
   end
 
-  def to_s
-    "<SGF::Game:#{object_id}>"
+  def inspect
+    "<SGF::Gametree:#{object_id}>"
   end
 
-  alias :inspect :to_s
-
-  def to_str
+  def to_s
     SGF::Writer.new.stringify_tree_from @root
   end
 
@@ -57,8 +57,8 @@ class SGF::Gametree
   private
 
   def method_missing method_name, *args
-    human_readable_identity = method_name.to_s.downcase
-    identity = SGF::Gametree::PROPERTIES[human_readable_identity]
-    return @root[identity] || raise(SGF::NoIdentityError)
+    human_readable_method = method_name.to_s.downcase
+    sgf_identity = SGF::Gametree::PROPERTIES[human_readable_method]
+    return @root[sgf_identity] || raise(SGF::NoIdentityError, "This gametree does not have '#{human_readable_method}' available")
   end
 end

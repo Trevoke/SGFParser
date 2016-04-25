@@ -10,13 +10,15 @@ Are you using this gem? Is there functionality you wish it had? Is something har
 
 # Supported versions
 SGF: FF4 - may support earlier ones as well, but untested.
-Ruby: >=1.9
+Ruby: >=2.1
 
 
 # Intro to SGF
 According to the standard, An SGF file holds a `Collection` of one or more `Gametree` objects. Each of those is made of a tree of `Node` objects.
 
 In other words: FILE (1 ↔ ∞) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
+
+## Basics of our data structure
 
 In this implementation, when you parse a file, you get a `Collection` back. This object has a root `Node` used as the top-level node for all gametrees. The children of that node are the root nodes of the actual games.
 
@@ -25,6 +27,8 @@ Assuming a common SGF file with a single game, you could get to the game by doin
 ```ruby
 SGF.parse(file).gametrees.first # => <SGF::Game:70180384181460>
 ```
+
+## Basics of properties
 
 Some properties belong on the root node of a game only, such as the identity of the players. For convenience, some human-readable methods are defined on the gametree object itself to reach this information, for instance
 
@@ -37,6 +41,8 @@ Calling a property that is not defined in the current tree will result in an err
 ```ruby
 gametree.black_octisquares # => SGF::NoIdentityError
 ```
+
+## Basics of navigating
 
 Since a game is a tree (each node can be the source of many variations), a convenience method is defined to help you traverse the main branch one node at a time.
 
@@ -67,6 +73,24 @@ Node at depth 7 has 3 properties
 Node at depth 8 has 4 properties
 ... And so on
 =end
+```
+
+## Basics of saving
+
+There is `SGF::Writer`, which you can use starting from any node. There is also a convenience method on collection:
+
+```ruby
+collection.save(filename) # => Shiny new text file
+SGF::Writer.new.stringify_tree_from(node) # => Shiny string
+SGF::Writer.new.save(node, filename) # => File with tree starting at node
+```
+
+If you need a raw SGF version of your data, you can use `to_s`:
+
+```ruby
+node.to_s
+gametree.to_s
+collection.to_s
 ```
 
 # SGF Parsing warning (À bon entendeur…)
