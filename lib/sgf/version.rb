@@ -1,3 +1,3 @@
 module SGF
-  VERSION = "3.0.0alpha"
+  VERSION = "3.0.0"
 end
