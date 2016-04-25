@@ -1,6 +1,10 @@
-== 3.0.0alpha
+== 3.0.0
 - Rename Tree to Collection
 - Rename Game to Gametree
+- `SGF.parse` takes a filename and creates a collection
+- Collection has `errors` properties collecting parsing problems
+- Fix a bug preventing `node[:prop] = new_value` from working
+- Fix a bug causing a collection to always generate new gametree objects
 
 == 2.1.0
 - Adding children and adding parents all works beautifully
