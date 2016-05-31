@@ -31,7 +31,13 @@ In this implementation, when you parse a file, you get a `Collection` back. This
 Assuming a common SGF file with a single game, you could get to the game by doing this:
 
 ```ruby
-SGF.parse(file).gametrees.first # => <SGF::Game:70180384181460>
+SGF.parse(filename).gametrees.first # => <SGF::Game:70180384181460>
+```
+
+If you have a string, instead, then:
+
+```ruby
+SGF::Parser.new.parse sgf_string
 ```
 
 ## Basics of properties
