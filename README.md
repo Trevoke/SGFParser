@@ -16,7 +16,7 @@ Ruby: >=2.1
 # Intro to SGF
 According to the standard, An SGF file holds a `Collection` of one or more `Gametree` objects. Each of those is made of a tree of `Node` objects.
 
-In other words: FILE (1 ↔ ∞) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
+In other words: FILE (1 ↔ 1) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
 
 ## Bringing in the code
 Simplicity itself:
