@@ -1,7 +1,7 @@
 # SGFParser
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Trevoke/SGFParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Build status {<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />}[http://travis-ci.org/Trevoke/SGFParser]
+Build status [<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />](http://travis-ci.org/Trevoke/SGFParser)
 
 # Intro
 I'm hoping that this is and remains the fastest SGF parser in Ruby. On my desktop, loading the SGF library and parsing Kogo's Joseki dictionary takes a little under six seconds. It's a 3MB file and the average SGF is maybe 10k, so on average it's rather snappy.
@@ -21,7 +21,7 @@ In other words: FILE (1 ↔ 1) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
 ## Bringing in the code
 Simplicity itself:
 ```ruby
-require sgf
+require 'sgf'
 ```
 
 ## Basics of our data structure
