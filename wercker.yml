@@ -1,11 +1,11 @@
-box: wercker/ruby
+box: ruby
 # Build definition
 build:
   # The steps that will be executed on build
   steps:
     # A step that executes `bundle install` command
-    - bundle-install 
-    
+    - bundle-install
+
     # A custom script step, name value is used in the UI
     # and the code value contains the command that get executed
     - script:
@@ -14,7 +14,7 @@ build:
           echo "ruby version $(ruby --version) running"
           echo "from location $(which ruby)"
           echo -p "gem list: $(gem list)"
-    
+
     # Add more steps here:
     - script:
         name: rspec
