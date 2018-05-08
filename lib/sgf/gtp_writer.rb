@@ -4,26 +4,14 @@ class SGF::GtpWriter < SGF::Writer
 
   def gtp_move(node)
     pps = node.properties
-    if pps.keys == ["FF"]
-      return ""
-    elsif pps.size > 1
-      if pps['SZ']
-        return "boardsize #{pps['SZ']}\nclear_board"
-      else
-        #raise "i dont know what to do with this node #{node.to_s}, properties.size == #{pps.size}"
-        return ""
-      end
-    elsif pps.keys != ["B"] and pps.keys != ["W"]
-      raise "unknown keys found #{pps.keys}"
-    end
+    return "boardsize #{pps['SZ']}\nclear_board" if pps['SZ']
+    return "" if pps.size > 1 || (pps.keys != ["B"] && pps.keys != ["W"])
 
     if pps.values == [""]
       gtp_pos = "pass"
     else
       pos = pps.values.first.bytes
-      if pos.size != 2
-        raise "unrecognizable position #{pps.values}"
-      end
+      raise "unrecognizable position #{pps.values}" if pos.size != 2
       x = (pos[0] > 104 ? pos[0]+1 : pos[0]).chr.upcase
       gtp_pos = "#{x}#{pos[1] - 96}"
     end
