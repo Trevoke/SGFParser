@@ -25,6 +25,14 @@ RSpec.describe SGF::GtpWriter do
       string = save_to_temp_file_and_read(sgf)
       expect(string).to eq File.read('spec/data/12098710-203-Patrice-shigazaru.gtp')
     end
+    context "we want to turn the board upside down" do
+      it "parses and reprint in GTP" do
+        sgf = File.read('spec/data/12098710-203-Patrice-shigazaru.sgf')
+        subject.upside_down = true
+        string = save_to_temp_file_and_read(sgf)
+        expect(string).to eq File.read('spec/data/12098710-203-Patrice-shigazaru-upside-down.gtp')
+      end
+    end
   end
 
   private

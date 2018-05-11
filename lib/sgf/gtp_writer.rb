@@ -1,11 +1,20 @@
 # frozen_string_literal: true
 
 class SGF::GtpWriter < SGF::Writer
+  attr_writer :upside_down
+
+  def initialize
+    @upside_down = false
+  end
+
   private
 
   def gtp_move(node)
     pps = node.properties
-    return "boardsize #{pps['SZ']}\nclear_board" if pps['SZ']
+    if pps['SZ']
+      @boardsize = pps['SZ'].to_i
+      return "boardsize #{pps['SZ']}\nclear_board"
+    end
     return "" if pps.size > 1 || (pps.keys != ["B"] && pps.keys != ["W"])
 
     if pps.values == [""]
@@ -14,7 +23,12 @@ class SGF::GtpWriter < SGF::Writer
       pos = pps.values.first.bytes
       raise "unrecognizable position #{pps.values}" if pos.size != 2
       x = (pos[0] > 104 ? pos[0] + 1 : pos[0]).chr.upcase
-      gtp_pos = "#{x}#{pos[1] - 96}"
+      y = if @upside_down && @boardsize
+        (1 + @boardsize) - (pos[1] - 96)
+      else
+        pos[1] - 96
+      end
+      gtp_pos = "#{x}#{y}"
     end
     "play #{pps.keys.first} #{gtp_pos}"
   end
