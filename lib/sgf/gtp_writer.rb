@@ -13,15 +13,23 @@ class SGF::GtpWriter < SGF::Writer
     pps = node.properties
     if pps['SZ']
       @boardsize = pps['SZ'].to_i
-      return "boardsize #{pps['SZ']}\nclear_board"
+      out = []
+      out << "komi #{pps['KM']}" if pps['KM']
+      out << "boardsize #{pps['SZ']}\nclear_board"
+      pps['AB'].each {|pos| out << to_play("B", pos) } if pps['AB']
+      out.join("\n")
+    elsif pps.size > 1 || (pps.keys != ["B"] && pps.keys != ["W"])
+      ""
+    else
+      to_play(pps.keys.first, pps.values.first)
     end
-    return "" if pps.size > 1 || (pps.keys != ["B"] && pps.keys != ["W"])
+  end
 
-    if pps.values == [""]
+  def to_play(color, pos)
+    if pos == ""
       gtp_pos = "pass"
     else
-      pos = pps.values.first.bytes
-      raise "unrecognizable position #{pps.values}" if pos.size != 2
+      pos = pos.bytes
       x = (pos[0] > 104 ? pos[0] + 1 : pos[0]).chr.upcase
       y = if @upside_down && @boardsize
         (1 + @boardsize) - (pos[1] - 96)
@@ -30,7 +38,7 @@ class SGF::GtpWriter < SGF::Writer
       end
       gtp_pos = "#{x}#{y}"
     end
-    "play #{pps.keys.first} #{gtp_pos}"
+    "play #{color} #{gtp_pos}"
   end
 
   def write_tree_from(node)
