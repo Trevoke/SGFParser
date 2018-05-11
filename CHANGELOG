@@ -1,3 +1,6 @@
+== 3.0.2
+- Allow writing SGF file out to GTP
+
 == 3.0.1
 - Update date in gemspec
 
