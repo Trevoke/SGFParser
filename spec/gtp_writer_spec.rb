@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'byebug'
 
 RSpec.describe SGF::GtpWriter do
-
   let(:parser) { SGF::Parser.new }
 
   TEMP_FILE = 'spec/data/temp.gtp'
@@ -28,15 +29,14 @@ RSpec.describe SGF::GtpWriter do
 
   private
 
-  def save_to_temp_file_and_read string
+  def save_to_temp_file_and_read(string)
     parse_and_save string
     File.read TEMP_FILE
   end
 
-  def parse_and_save string
+  def parse_and_save(string)
     collection = parser.parse string
     subject.save(collection.root, TEMP_FILE)
     collection
   end
-
 end
