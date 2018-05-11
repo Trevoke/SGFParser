@@ -1,6 +1,8 @@
 
+komi 0.5
 boardsize 19
 clear_board
+play B Q16
 play W D4
 play B R4
 play W D16

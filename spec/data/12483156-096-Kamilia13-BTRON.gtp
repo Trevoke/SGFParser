@@ -1,6 +1,12 @@
+
 komi 0.5
 boardsize 19
 clear_board
+play B K10
+play B D16
+play B Q4
+play B Q16
+play B D4
 play W R14
 play B Q14
 play W Q13
