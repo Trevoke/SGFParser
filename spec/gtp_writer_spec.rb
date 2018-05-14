@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'byebug'
 
 RSpec.describe SGF::GtpWriter do
   let(:parser) { SGF::Parser.new }
