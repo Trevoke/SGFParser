@@ -46,7 +46,8 @@ class SGF::GtpWriter < SGF::Writer
 
   def write_tree_from(node)
     return unless node
-    @sgf << "\n" << gtp_move(node)
+    @sgf << "\n" unless @sgf.empty?
+    @sgf << gtp_move(node)
     write_tree_from node.children[0]
   end
 
