@@ -17,11 +17,14 @@ class SGF::GtpWriter < SGF::Writer
       out << "komi #{pps['KM']}" if pps['KM']
       out << "boardsize #{pps['SZ']}\nclear_board"
       pps['AB'].each {|pos| out << to_play("B", pos) } if pps['AB']
+      pps['AW'].each {|pos| out << to_play("W", pos) } if pps['AW']
       out.join("\n")
-    elsif pps.size > 1 || (pps.keys != ["B"] && pps.keys != ["W"])
-      ""
+    elsif pps['B']
+      to_play('B', pps['B'])
+    elsif pps['W']
+      to_play('W', pps['W'])
     else
-      to_play(pps.keys.first, pps.values.first)
+      ""
     end
   end
 
