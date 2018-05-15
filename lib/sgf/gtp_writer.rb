@@ -33,7 +33,10 @@ class SGF::GtpWriter < SGF::Writer
       gtp_pos = "pass"
     else
       pos = pos.bytes
+      # for some reason, GTP skip the letter `I` in the coordinate.
+      # so we +1 we get [A-H+J-T] for 19x19 board
       x = (pos[0] > 104 ? pos[0] + 1 : pos[0]).chr.upcase
+      # y coordinate is numerical, substract the ascii value of `a` is giving us the number we want.
       y = if @upside_down && @boardsize
         (1 + @boardsize) - (pos[1] - 96)
       else
