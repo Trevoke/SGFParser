@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../lib/sgf'
 require 'fileutils'
 require 'pry' if ENV['PRY']
