@@ -29,8 +29,8 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-# The settings below are suggested to provide a good initial experience
-# with RSpec, but feel free to customize to your heart's content.
+  # The settings below are suggested to provide a good initial experience
+  # with RSpec, but feel free to customize to your heart's content.
 
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
@@ -42,7 +42,7 @@ RSpec.configure do |config|
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
-  config.example_status_persistence_file_path = ".spec-examples.txt"
+  config.example_status_persistence_file_path = '.spec-examples.txt'
 
   # Limits the available syntax to the non-monkey patched syntax that is
   # recommended. For more details, see:
@@ -83,27 +83,26 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 end
 
+ONE_LINE_SIMPLE_SAMPLE_SGF = '(;FF[4]AP[Primiview:3.1]GM[1]SZ[19](;DD[kq:os][dq:hs]AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj][gd:md][fh:ij][kj:nh]LN[pj:pd][nf:ff][ih:fj][kh:nj]C[Arrows, lines and dimmed points.])(;B[qd]N[Style & text type]))(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])'
 
-ONE_LINE_SIMPLE_SAMPLE_SGF= "(;FF[4]AP[Primiview:3.1]GM[1]SZ[19](;DD[kq:os][dq:hs]AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj][gd:md][fh:ij][kj:nh]LN[pj:pd][nf:ff][ih:fj][kh:nj]C[Arrows, lines and dimmed points.])(;B[qd]N[Style & text type]))(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])"
-
-SIMPLIFIED_SAMPLE_SGF= <<EOF
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19]
-  (;DD[kq:os][dq:hs]
-    AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj]
-    [gd:md][fh:ij][kj:nh]
-    LN[pj:pd][nf:ff][ih:fj][kh:nj]
-    C[Arrows, lines and dimmed points.])
-  (;B[qd]N[Style & text type])
-)
-(;FF[4]AP[Primiview:3.1]GM[1]SZ[19])
+SIMPLIFIED_SAMPLE_SGF = <<~EOF
+  (;FF[4]AP[Primiview:3.1]GM[1]SZ[19]
+    (;DD[kq:os][dq:hs]
+      AR[aa:sc][sa:ac][aa:sa][aa:ac][cd:cj]
+      [gd:md][fh:ij][kj:nh]
+      LN[pj:pd][nf:ff][ih:fj][kh:nj]
+      C[Arrows, lines and dimmed points.])
+    (;B[qd]N[Style & text type])
+  )
+  (;FF[4]AP[Primiview:3.1]GM[1]SZ[19])
 EOF
 
-def get_first_game_from file
+def get_first_game_from(file)
   collection = get_collection_from file
   collection.gametrees.first
 end
 
-def get_collection_from file
+def get_collection_from(file)
   parser = SGF::Parser.new
   parser.parse File.read(file)
 end

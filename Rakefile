@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'rake'
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
 desc 'Default: run specs.'
-task :default => :spec
+task default: :spec
 
-desc "Run specs"
+desc 'Run specs'
 RSpec::Core::RakeTask.new do |spec|
-  spec.pattern = "./spec/**/*_spec.rb"
+  spec.pattern = './spec/**/*_spec.rb'
 end
 
 RSpec::Core::RakeTask.new(:coverage) do |spec|
@@ -19,7 +21,7 @@ end
 
 require 'rdoc/task'
 RDoc::Task.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+  version = File.exist?('VERSION') ? File.read('VERSION') : ''
 
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "SgfParser #{version}"
@@ -27,52 +29,52 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-desc "Handle gem version"
+desc 'Handle gem version'
 namespace 'version' do
-  desc "Bump major version number"
-  task "bump:major" do
+  desc 'Bump major version number'
+  task 'bump:major' do
     bump :major
   end
-  desc "Bump minor version number"
-  task "bump:minor" do
+  desc 'Bump minor version number'
+  task 'bump:minor' do
     bump :minor
   end
-  desc "Bump patch version number"
-  task "bump:patch" do
+  desc 'Bump patch version number'
+  task 'bump:patch' do
     bump :patch
   end
-  desc "write out a specified version (rake version:write[\"x.y.z\"])"
-  task "write", :version do |task, args|
+  desc 'write out a specified version (rake version:write["x.y.z"])'
+  task 'write', :version do |_task, args|
     change_version_to(args.version)
   end
 end
 
-VERSION_ASSIGNMENT_REGEXP = /\A\s*?VERSION\s*?=\s*?['"](.*?)['"]\s*?\z/mx
+VERSION_ASSIGNMENT_REGEXP = /\A\s*?VERSION\s*?=\s*?['"](.*?)['"]\s*?\z/mx.freeze
 
-def bump bit_to_increment
+def bump(bit_to_increment)
   change_version_to incremented_version(bit_to_increment)
 end
 
 def change_version_to(new_version)
-  File.open(version_file, 'w') { |f| f << new_version_file( new_version ) }
+  File.open(version_file, 'w') { |f| f << new_version_file(new_version) }
   puts "New version is now #{new_version}"
 end
 
-def incremented_version bit_to_increment
+def incremented_version(bit_to_increment)
   version = {}
   version[:major], version[:minor], version[:patch] = current_version.split('.')
   version[bit_to_increment] = version[bit_to_increment].to_i + 1
   "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
 end
 
-def new_version_file new_version
+def new_version_file(new_version)
   lines_of_version_file.map do |line|
-    is_line_with_version_assignment?(line) ? %Q{  VERSION = "#{new_version}"\n} : line
+    is_line_with_version_assignment?(line) ? %(  VERSION = "#{new_version}"\n) : line
   end.join
 end
 
 def current_version
-  array_of_value_versions = lines_of_version_file.grep(VERSION_ASSIGNMENT_REGEXP) { $1 }
+  array_of_value_versions = lines_of_version_file.grep(VERSION_ASSIGNMENT_REGEXP) { Regexp.last_match(1) }
   raise_too_many_lines_matched if array_of_value_versions.size > 1
   raise_no_lines_matched if array_of_value_versions.empty?
   array_of_value_versions.first
@@ -88,12 +90,12 @@ def version_file
   file_array.first
 end
 
-def is_line_with_version_assignment? line
+def is_line_with_version_assignment?(line)
   !!(line[VERSION_ASSIGNMENT_REGEXP])
 end
 
 def raise_too_many_files_found
-  raise ArgumentError, "There are two files called version.rb and I do not know which one to use. Override the version_file method in your Rakefile and provide the correct path."
+  raise ArgumentError, 'There are two files called version.rb and I do not know which one to use. Override the version_file method in your Rakefile and provide the correct path.'
 end
 
 def raise_too_many_lines_matched
@@ -101,5 +103,5 @@ def raise_too_many_lines_matched
 end
 
 def raise_no_lines_matched
-  raise ArgumentError, "I did not find anything in the version file matching a version assignment."
+  raise ArgumentError, 'I did not find anything in the version file matching a version assignment.'
 end

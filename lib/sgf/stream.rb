@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 class SGF::Stream
   attr_reader :stream
 
-  def initialize sgf, error_checker
+  def initialize(sgf, error_checker)
     sgf = sgf.read if sgf.instance_of?(File)
     sgf = File.read(sgf) if File.exist?(sgf)
     error_checker.check_for_errors_before_parsing sgf
@@ -18,10 +20,10 @@ class SGF::Stream
     !stream.eof? && stream.sysread(1)
   end
 
-  def read_token format
-    property = ""
-    while char = next_character and format.still_inside? char, property, self
-      property << char
+  def read_token(format)
+    property = ''
+    while (char = next_character) && format.still_inside?(char, property, self)
+      property += char
     end
     format.transform property
   end
@@ -29,6 +31,7 @@ class SGF::Stream
   def peek_skipping_whitespace
     while char = next_character
       next if char[/\s/]
+
       break
     end
     rewind if char
@@ -41,10 +44,10 @@ class SGF::Stream
     stream.pos -= 1
   end
 
-  def clean sgf
-    sgf.gsub("\\\\n\\\\r", '')
-    .gsub("\\\\r\\\\n", '')
-    .gsub("\\\\r", '')
-    .gsub("\\\\n", '')
+  def clean(sgf)
+    sgf.gsub('\\\\n\\\\r', '')
+       .gsub('\\\\r\\\\n', '')
+       .gsub('\\\\r', '')
+       .gsub('\\\\n', '')
   end
 end

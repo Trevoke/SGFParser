@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SGF::Variation
   attr_reader :root
   def initialize
@@ -5,12 +7,10 @@ class SGF::Variation
     @size = 1
   end
 
-  def append node
+  def append(node)
     @root.add_children node
     @size += 1
   end
 
-  def size
-    @size
-  end
+  attr_reader :size
 end

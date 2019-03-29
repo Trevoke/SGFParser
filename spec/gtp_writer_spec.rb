@@ -10,41 +10,41 @@ RSpec.describe SGF::GtpWriter do
 
   after { FileUtils.rm_f TEMP_FILE }
 
-  context "the file was modified and saved by sabaki" do
+  context 'the file was modified and saved by sabaki' do
     let(:file) { '12098710-071-Patrice-shigazaru' }
-    it "parses and reprint in GTP" do
+    it 'parses and reprint in GTP' do
       subject.upside_down = false
       generate_gtp_and_compare
     end
   end
 
-  context "the file is coming straight from OGS." do
+  context 'the file is coming straight from OGS.' do
     let(:file) { '12098710-203-Patrice-shigazaru' }
-    it "parses and reprint in GTP" do
+    it 'parses and reprint in GTP' do
       subject.upside_down = false
       generate_gtp_and_compare
     end
 
-    context "we want to turn the board upside down" do
+    context 'we want to turn the board upside down' do
       let(:file) { '12098710-203-Patrice-shigazaru' }
       let(:suffix) { '-upside-down' }
-      it "parses and reprint in GTP" do
+      it 'parses and reprint in GTP' do
         subject.upside_down = true
         generate_gtp_and_compare
       end
     end
 
-    context "there is an handicap" do
+    context 'there is an handicap' do
       let(:file) { '12822671-151-MasterSpark-shigazaru' }
-      it "parses and reprint in GTP" do
+      it 'parses and reprint in GTP' do
         subject.upside_down = true
         generate_gtp_and_compare
       end
     end
 
-    context "there are 5 handicaps" do
+    context 'there are 5 handicaps' do
       let(:file) { '12483156-096-Kamilia13-BTRON' }
-      it "parses and reprint in GTP" do
+      it 'parses and reprint in GTP' do
         subject.upside_down = true
         generate_gtp_and_compare
       end

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
-#Thankfully, whitespace doesn't matter in SGF, unless you're inside a comment.
-#This makes it possible to indent an SGF file and let it be somewhat human-readable.
+# frozen_string_literal: true
+
+# Thankfully, whitespace doesn't matter in SGF, unless you're inside a comment.
+# This makes it possible to indent an SGF file and let it be somewhat human-readable.
 
 require_relative '../lib/sgf'
 

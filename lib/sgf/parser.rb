@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'collection_assembler'
 require_relative 'parsing_tokens'
 require_relative 'error_checkers'
@@ -7,29 +9,29 @@ require_relative 'stream'
 # parser = SGF::Parser.new
 # collection = parser.parse sgf_in_string_form
 class SGF::Parser
-  NEW_NODE = ";"
-  BRANCHING = %w{( )}
+  NEW_NODE = ';'
+  BRANCHING = %w[( )].freeze
   END_OF_FILE = false
   NODE_DELIMITERS = [NEW_NODE].concat(BRANCHING).concat([END_OF_FILE])
-  PROPERTY = %w([ ])
-  LIST_IDENTITIES = %w(AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW)
+  PROPERTY = %w([ ]).freeze
+  LIST_IDENTITIES = %w[AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW].freeze
 
   # This takes as argument an SGF and returns an SGF::Collection object
   # It accepts a local path (String), a stringified SGF (String),
   # or a file handler (File).
   # The second argument is optional, in case you don't want this to raise errors.
   # You probably shouldn't use it, but who's gonna stop you?
-  def parse sgf, strict_parsing = true
+  def parse(sgf, strict_parsing = true)
     error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
     @sgf_stream = SGF::Stream.new(sgf, error_checker)
     @assembler = SGF::CollectionAssembler.new
     until @sgf_stream.eof?
       case @sgf_stream.next_character
-      when "(" then @assembler.open_branch
-      when ";" then
+      when '(' then @assembler.open_branch
+      when ';' then
         parse_node_data
         @assembler.create_node_with_properties @node_properties
-      when ")" then @assembler.close_branch
+      when ')' then @assembler.close_branch
       else next
       end
     end
@@ -57,9 +59,9 @@ class SGF::Parser
     !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
   end
 
-  def property_token_type identity
+  def property_token_type(identity)
     case identity.upcase
-    when "C" then SGF::CommentToken.new
+    when 'C' then SGF::CommentToken.new
     when *LIST_IDENTITIES then SGF::MultiPropertyToken.new
     else SGF::GenericPropertyToken.new
     end

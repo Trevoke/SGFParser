@@ -1,29 +1,30 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe SGF::Collection do
-
   let(:collection) { get_collection_from 'spec/data/ff4_ex.sgf' }
   subject { collection }
 
-  it "has two games" do
+  it 'has two games' do
     expect(subject.gametrees.size).to eq 2
   end
 
   context 'on the gametree level' do
     subject { collection.root }
-    it "should have two children" do
+    it 'should have two children' do
       expect(subject.children.size).to eq 2
     end
 
     context 'in the first gametree' do
       subject { collection.root.children[0] }
-      it "should have five children" do
+      it 'should have five children' do
         expect(subject.children.size).to eq 5
       end
     end
   end
 
-  context "inspect" do
+  context 'inspect' do
     subject { collection.inspect }
     it { is_expected.to match(/SGF::Collection/) }
     it { is_expected.to match(/#{collection.object_id}/) }
@@ -31,22 +32,22 @@ RSpec.describe SGF::Collection do
     it { is_expected.to match(/62 Nodes/) }
   end
 
-  it "should use preorder traversal for each" do
+  it 'should use preorder traversal for each' do
     collection = get_collection_from 'spec/data/example1.sgf'
     array = []
     collection.each { |node| array << node }
-    expect(array[0].c).to eq "root"
-    expect(array[1].c).to eq "a"
-    expect(array[2].c).to eq "b"
+    expect(array[0].c).to eq 'root'
+    expect(array[1].c).to eq 'a'
+    expect(array[2].c).to eq 'b'
   end
 
-  it "should properly compare two collections" do
+  it 'should properly compare two collections' do
     new_collection = get_collection_from 'spec/data/ff4_ex.sgf'
     expect(collection).to eq new_collection
   end
 
-  context "gametrees" do
-    it "always returns the same objects for the same gametrees" do
+  context 'gametrees' do
+    it 'always returns the same objects for the same gametrees' do
       expect(subject.gametrees).to eq subject.gametrees
     end
 
@@ -57,7 +58,7 @@ RSpec.describe SGF::Collection do
     end
   end
 
-  it "barfs if you try to add a non-gametree object" do
+  it 'barfs if you try to add a non-gametree object' do
     expect do
       subject << Object.new
     end.to raise_error(ArgumentError)

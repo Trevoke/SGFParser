@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'observer'
 # Your basic node. It holds information about itself, its parent, and its children.
 class SGF::Node
-  include Enumerable, Observable
+  include Observable
+  include Enumerable
 
   attr_accessor :children, :properties
   attr_reader :parent, :depth
@@ -10,20 +13,20 @@ class SGF::Node
   # * parent: parent_node (nil by default)
   # * children: [list, of, children] (empty array if nothing is passed)
   # Anything else passed to the hash will become an SGF identity/property pair on the node.
-  def initialize children: [], parent: nil, **opts
+  def initialize(children: [], parent: nil, **opts)
     # opts = { children: [], parent: nil }
     # opts.merge! args
     @depth = 0
     @children = []
     @properties = {}
     @parent = nil
-    set_parent parent #opts.delete :parent
-    add_children children #opts.delete :children
+    set_parent parent # opts.delete :parent
+    add_children children # opts.delete :children
     add_properties opts
   end
 
   # Set the given node as a parent and self as one of that node's children
-  def parent= parent
+  def parent=(parent)
     if @parent
       @parent.children.delete self
       @parent.delete_observer self
@@ -38,23 +41,23 @@ class SGF::Node
     end
   end
 
-  alias :set_parent :parent=
+  alias set_parent parent=
 
   def remove_parent
     set_parent nil
   end
 
-  def depth= new_depth
+  def depth=(new_depth)
     @depth = new_depth
     changed
     notify_observers :depth_change, @depth
   end
 
-  alias :set_depth :depth=
+  alias set_depth depth=
 
   # Takes an arbitrary number of child nodes, adds them to the list of children,
   # and make this node their parent.
-  def add_children *nodes
+  def add_children(*nodes)
     nodes.flatten.each do |node|
       node.set_parent self
     end
@@ -64,7 +67,7 @@ class SGF::Node
 
   # Takes a hash {identity => property} and adds those to the current node.
   # If a property already exists, it will append to it.
-  def add_properties hash
+  def add_properties(hash)
     hash.each do |identity, property|
       @properties[flexible identity] ||= property.class.new
       @properties[flexible identity].concat property
@@ -72,7 +75,7 @@ class SGF::Node
     update_human_readable_methods
   end
 
-  def each &block
+  def each(&block)
     preorder self, &block
   end
 
@@ -82,25 +85,25 @@ class SGF::Node
   end
 
   # Compare to another node.
-  def == other_node
+  def ==(other_node)
     @properties == other_node.properties
   end
 
   # Syntactic sugar for node.properties["XX"]
-  def [] identity
+  def [](identity)
     @properties[flexible(identity)]
   end
 
-  def []= identity, new_value
+  def []=(identity, new_value)
     @properties[flexible(identity)] = new_value
   end
 
   def inspect
-    out = "#<#{self.class}:#{self.object_id}, "
-    out << (@parent ? "Has a parent, " : "Has no parent, ")
-    out << "#{@children.size} Children, "
-    out << "#{@properties.keys.size} Properties"
-    out << ">"
+    out = "#<#{self.class}:#{object_id}, "
+    out += (@parent ? 'Has a parent, ' : 'Has no parent, ')
+    out += "#{@children.size} Children, "
+    out += "#{@properties.keys.size} Properties"
+    out += '>'
   end
 
   def to_s(indent = 0)
@@ -115,27 +118,27 @@ class SGF::Node
   # Observer pattern
   def update(message, data)
     case message
-      when :depth_change then set_depth(data + 1)
+    when :depth_change then set_depth(data + 1)
     end
   end
 
   private
 
-  def flexible id
+  def flexible(id)
     id.to_s.upcase
   end
 
   def update_human_readable_methods
-    SGF::Node::PROPERTIES.reject do
-      |method_name, sgf_identity| defined? method_name
+    SGF::Node::PROPERTIES.reject do |method_name, _sgf_identity|
+      defined? method_name
     end.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
-        @properties[sgf_identity] ? @properties[sgf_identity] : raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
+        @properties[sgf_identity] || raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
       end
     end
   end
 
-  def preorder node=self, &block
+  def preorder(node = self, &block)
     yield node
     node.each_child do |child|
       preorder child, &block
@@ -146,20 +149,19 @@ class SGF::Node
     ' ' * indent
   end
 
-  def method_missing method_name, *args
+  def method_missing(method_name, *args)
     property = flexible(method_name)
     if property[/(.*?)=$/]
-      @properties[$1] = args[0]
+      @properties[Regexp.last_match(1)] = args[0]
     else
       @properties.fetch(property, nil) || super(method_name, args)
     end
   end
 
   def stringify_identity_and_property(identity, property)
-    new_property = property.instance_of?(Array) ? property.join("][") : property
+    new_property = property.instance_of?(Array) ? property.join('][') : property
     new_id = flexible identity
-    new_property = new_property.gsub("]", "\\]") if new_id == "C"
+    new_property = new_property.gsub(']', '\\]') if new_id == 'C'
     "#{new_id}[#{new_property}]"
   end
-
 end

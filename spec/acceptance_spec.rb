@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rspec'
 require_relative '../lib/sgf'
 
@@ -19,7 +21,7 @@ RSpec.describe 'End To End' do
     expect(SGF.parse(new_file).gametrees.first.current_node[:PB]).to eq 'kokolegorille'
   end
 
-  it 'throws an error if asked to open a non-existing file'do
+  it 'throws an error if asked to open a non-existing file' do
     expect do
       SGF.parse('some_file.sgf')
     end.to raise_error(SGF::FileDoesNotExistError)

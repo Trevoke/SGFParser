@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe SGF::Node do
-
   let(:node) { SGF::Node.new }
   subject { node }
 
@@ -11,8 +12,8 @@ RSpec.describe SGF::Node do
     it { is_expected.to match(/SGF::Node/) }
     it { is_expected.to match(/Has no parent/) }
 
-    it "should give you a relatively useful inspect" do
-      node.add_properties({C: "Oh hi", PB: "Dosaku", AE: "[dd][gh]"})
+    it 'should give you a relatively useful inspect' do
+      node.add_properties(C: 'Oh hi', PB: 'Dosaku', AE: '[dd][gh]')
       is_expected.to match(/3 Properties/)
 
       node.add_children SGF::Node.new, SGF::Node.new
@@ -21,42 +22,40 @@ RSpec.describe SGF::Node do
       node.parent = SGF::Node.new
       expect(node.inspect).to match(/Has a parent/)
     end
-
   end
 
-  it "should properly show a string version of the node" do
-    subject.add_properties({"C" => "Oh hi]", "PB" => "Dosaku"})
+  it 'should properly show a string version of the node' do
+    subject.add_properties('C' => 'Oh hi]', 'PB' => 'Dosaku')
     expect(subject.to_s).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
-  it "should properly show a string version of the node if identities are symbols" do
-    subject.add_properties({C: "Oh hi]", PB: "Dosaku"})
+  it 'should properly show a string version of the node if identities are symbols' do
+    subject.add_properties(C: 'Oh hi]', PB: 'Dosaku')
     expect(subject.to_s).to eq ";C[Oh hi\\]]\nPB[Dosaku]"
   end
 
-  context "Heredity" do
-
+  context 'Heredity' do
     let(:parent) { SGF::Node.new }
     let(:child1) { SGF::Node.new }
     let(:child3) { SGF::Node.new }
     let(:child2) { SGF::Node.new }
 
-    it "should link to a parent" do
+    it 'should link to a parent' do
       subject.parent = parent
       expect(subject.parent).to eq parent
     end
 
-    it "should link to children" do
+    it 'should link to children' do
       node.add_children child1, child2, child3
       expect(node.children).to eq [child1, child2, child3]
     end
 
-    it "should link to children, who should get new parents" do
+    it 'should link to children, who should get new parents' do
       node.add_children child1, child2, child3
       node.children.each { |child| expect(child.parent).to eq node }
     end
 
-    it "should not be the child of many nodes" do
+    it 'should not be the child of many nodes' do
       parent2 = SGF::Node.new
       parent.add_children node
       parent2.add_children node
@@ -65,67 +64,63 @@ RSpec.describe SGF::Node do
       expect(parent.children).to_not include(node)
     end
 
-    it "should become a child of its new parent" do
+    it 'should become a child of its new parent' do
       node.parent = parent
       expect(parent.children).to include node
     end
-
   end
 
-  context "Properties" do
-
-    it "should store properties" do
-      node.add_properties PB: "Dosaku"
-      expect(node.properties).to eq({"PB" => "Dosaku"})
+  context 'Properties' do
+    it 'should store properties' do
+      node.add_properties PB: 'Dosaku'
+      expect(node.properties).to eq('PB' => 'Dosaku')
     end
 
-    it "should allow concatenation of properties" do
-      node.add_properties "TC" => "Hello,"
-      node.add_properties "TC" => " world!"
-      expect(node.properties["TC"]).to eq "Hello, world!"
+    it 'should allow concatenation of properties' do
+      node.add_properties 'TC' => 'Hello,'
+      node.add_properties 'TC' => ' world!'
+      expect(node.properties['TC']).to eq 'Hello, world!'
     end
 
-    it "should give you the properties based on method given" do
-      node.add_properties "PW" => "The Tick"
-      node.add_properties "PB" => "Batmanuel"
-      expect(node.pw).to eq "The Tick"
-      expect(node.pb).to eq "Batmanuel"
+    it 'should give you the properties based on method given' do
+      node.add_properties 'PW' => 'The Tick'
+      node.add_properties 'PB' => 'Batmanuel'
+      expect(node.pw).to eq 'The Tick'
+      expect(node.pb).to eq 'Batmanuel'
     end
 
-    it "should allow you to change a property completely" do
-      node.add_properties "RE" => "This is made up"
-      node.properties["RE"] = "This is also made up"
-      expect(node.re).to eq "This is also made up"
-      node.re = "And that too"
-      expect(node.re).to eq "And that too"
+    it 'should allow you to change a property completely' do
+      node.add_properties 'RE' => 'This is made up'
+      node.properties['RE'] = 'This is also made up'
+      expect(node.re).to eq 'This is also made up'
+      node.re = 'And that too'
+      expect(node.re).to eq 'And that too'
       node[:RE] = 'kokolegorille'
       expect(node[:RE]).to eq 'kokolegorille'
     end
 
-    it "should implement [] as a shortcut to read properties" do
-      node.add_properties "PB" => "Dosaku"
-      expect(node["PB"]).to eq "Dosaku"
-      expect(node[:PB]).to eq "Dosaku"
+    it 'should implement [] as a shortcut to read properties' do
+      node.add_properties 'PB' => 'Dosaku'
+      expect(node['PB']).to eq 'Dosaku'
+      expect(node[:PB]).to eq 'Dosaku'
     end
-
   end
 
-  context "Node depth" do
-
-    it "should get a node depth number one more by the parent when attached to a parent" do
+  context 'Node depth' do
+    it 'should get a node depth number one more by the parent when attached to a parent' do
       child = SGF::Node.new
       node.add_children child
       expect(node.depth).to eq 0
       expect(child.depth).to eq 1
     end
 
-    it "should properly set depth if a parent is passed to initializer" do
+    it 'should properly set depth if a parent is passed to initializer' do
       node2 = SGF::Node.new parent: node
       expect(node2.parent).to eq node
       expect(node2.depth).to eq 1
     end
 
-    it "should properly update depth when parentage changes" do
+    it 'should properly update depth when parentage changes' do
       link1 = SGF::Node.new
       link2 = SGF::Node.new
       link2.parent = link1
@@ -138,7 +133,7 @@ RSpec.describe SGF::Node do
       expect(link2.depth).to eq 2
     end
 
-    it "should properly update depth if parent is set to nil / parent is removed" do
+    it 'should properly update depth if parent is set to nil / parent is removed' do
       parent = SGF::Node.new
       child = SGF::Node.new
 
@@ -160,7 +155,7 @@ RSpec.describe SGF::Node do
       expect(child.depth).to eq 1
     end
 
-    it "should properly update depth when childhood changes" do
+    it 'should properly update depth when childhood changes' do
       link1 = SGF::Node.new
       link2 = SGF::Node.new
       link3 = SGF::Node.new
@@ -175,8 +170,8 @@ RSpec.describe SGF::Node do
     end
   end
 
-  context "self-consistency" do
-    it "should only track  changes from its current parent" do
+  context 'self-consistency' do
+    it 'should only track  changes from its current parent' do
       link1 = SGF::Node.new
       link2 = SGF::Node.new
 
