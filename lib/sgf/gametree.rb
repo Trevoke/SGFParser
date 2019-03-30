@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'writer'
 
 class SGF::Gametree
@@ -15,7 +17,7 @@ class SGF::Gametree
 
   # Takes a SGF::Node as an argument. It will be a problem if that node isn't
   # really the first node of of a game (ie: no FF property)
-  def initialize node
+  def initialize(node)
     raise ArgumentError, "Expected SGF::Node argument but received #{node.class}" unless node.instance_of? SGF::Node
     @root = node
     @current_node = node
@@ -27,7 +29,7 @@ class SGF::Gametree
   end
 
   # Iterate through all the nodes in preorder fashion
-  def each &block
+  def each(&block)
     @root.each(&block)
   end
 
@@ -39,7 +41,7 @@ class SGF::Gametree
     SGF::Writer.new.stringify_tree_from @root
   end
 
-  def slice range
+  def slice(range)
     new_root = nil
     each do |node|
       if node.depth == range.begin
@@ -56,9 +58,9 @@ class SGF::Gametree
 
   private
 
-  def method_missing method_name, *args
+  def method_missing(method_name, *args)
     human_readable_method = method_name.to_s.downcase
     sgf_identity = SGF::Gametree::PROPERTIES[human_readable_method]
-    return @root[sgf_identity] || raise(SGF::NoIdentityError, "This gametree does not have '#{human_readable_method}' available")
+    @root[sgf_identity] || raise(SGF::NoIdentityError, "This gametree does not have '#{human_readable_method}' available")
   end
 end

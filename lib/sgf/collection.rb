@@ -47,7 +47,7 @@ module SGF
       out = "#<SGF::Collection:#{object_id}, "
       out += "#{gametrees.count} Games, "
       out += "#{node_count} Nodes"
-      out += '>'
+      out + '>'
     end
 
     def to_s
@@ -75,8 +75,15 @@ module SGF
     end
 
     def method_missing(method_name, *args)
-      super(method_name, args) if @root.children.empty? || !@root.children[0].properties.key?(method_name)
-      @root.children[0].properties[method_name]
+      if @root.children.empty? || !@root.children[0].properties.key?(method_name)
+        super
+      else
+        @root.children[0].properties[method_name]
+      end
+    end
+
+    def respond_to_missing?(name, _include_private = false)
+      @root.children[0].properties.key?(name)
     end
   end
 end
