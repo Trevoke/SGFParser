@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe SGF::Gametree do
-
   let(:game) { get_first_game_from 'spec/data/ff4_ex.sgf' }
-  let(:root_node) {
-    SGF::Node.new({FF: '4', AP: 'Primiview:3.1',
-                   GM: '1', SZ: '19', GN: 'Gametree 1: properties',
-                   US: 'Arno Hollosi'})
-  }
+  let(:root_node) do
+    SGF::Node.new(FF: '4', AP: 'Primiview:3.1',
+                  GM: '1', SZ: '19', GN: 'Gametree 1: properties',
+                  US: 'Arno Hollosi')
+  end
   subject { game }
 
   it 'should throw up if initialized with a non-Node argument' do
@@ -30,59 +31,57 @@ RSpec.describe SGF::Gametree do
     expect(subject.inspect).to match(/#{game.object_id}/)
   end
 
-  context "When talking about nodes" do
-    it "begins on the root node" do
+  context 'When talking about nodes' do
+    it 'begins on the root node' do
       expect(subject.current_node).to eq root_node
     end
 
-    it "should have a nice way to go to children[0]" do
+    it 'should have a nice way to go to children[0]' do
       subject.next_node
       expect(subject.current_node).to eq subject.root.children[0]
     end
 
-    it "should have a way of setting an arbitrary node to the current node" do
+    it 'should have a way of setting an arbitrary node to the current node' do
       subject.current_node = subject.root.children[3]
-      expect(subject.current_node.properties.keys).to match_array %w(B C N)
+      expect(subject.current_node.properties.keys).to match_array %w[B C N]
       expect(subject.current_node.children.size).to eq 6
     end
-
   end
 
-  context "blocks" do
-    it "should use preorder traversal for each" do
+  context 'blocks' do
+    it 'should use preorder traversal for each' do
       game = get_first_game_from 'spec/data/example1.sgf'
       array = []
       game.each { |node| array << node }
-      expect(array[0].c).to eq "root"
-      expect(array[1].c).to eq "a"
-      expect(array[2].c).to eq "b"
+      expect(array[0].c).to eq 'root'
+      expect(array[1].c).to eq 'a'
+      expect(array[2].c).to eq 'b'
     end
 
     it "should go through all nodes, even if block returns 'nil' (puts, anyone?)" do
       game = SGF::Gametree.new root_node
-      game.root.add_children SGF::Node.new(B: "dd")
+      game.root.add_children SGF::Node.new(B: 'dd')
       nodes = []
       game.each { |node| nodes << node; nil }
       expect(nodes.size).to eq 2
     end
   end
 
-  context "Slices" do
-
-    it "should return a node-only gametree if slice is [0..0]" do
+  context 'Slices' do
+    it 'should return a node-only gametree if slice is [0..0]' do
       game = SGF::Gametree.new root_node
       slice = game.slice(0..0)
       expect(slice).to be_instance_of SGF::Gametree
       expect(slice.root).to eq root_node
     end
 
-    it "should slice through a one-branch list" do
+    it 'should slice through a one-branch list' do
       node = SGF::Node.new
       game = SGF::Gametree.new node
       node.pw = 'Aldric'
-      child1 = SGF::Node.new b: "qq"
-      child2 = SGF::Node.new a: "rn"
-      child3 = SGF::Node.new b: "nr"
+      child1 = SGF::Node.new b: 'qq'
+      child2 = SGF::Node.new a: 'rn'
+      child3 = SGF::Node.new b: 'nr'
       node.add_children child1
       child1.add_children child2
       child2.add_children child3
@@ -94,6 +93,5 @@ RSpec.describe SGF::Gametree do
       expect(root.children[0].a).to eq 'rn'
       expect(root.children[0].children[0].b).to eq 'nr'
     end
-
   end
 end

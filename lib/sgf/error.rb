@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SGF
   class MalformedDataError < StandardError
     # error raised by parser

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'node'
 require_relative 'collection'
 
@@ -18,15 +20,14 @@ class SGF::CollectionAssembler
     @current_node = @branches.shift
   end
 
-  def create_node_with_properties properties
+  def create_node_with_properties(properties)
     node = SGF::Node.new
     @current_node.add_children node
     @current_node = node
     @current_node.add_properties properties
   end
 
-  def add_error message
+  def add_error(message)
     collection.errors << message
   end
-
 end
