@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# typed: strict
 # frozen_string_literal: true
 
 # Thankfully, whitespace doesn't matter in SGF, unless you're inside a comment.

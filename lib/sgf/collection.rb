@@ -1,3 +1,4 @@
+# typed: true
 # frozen_string_literal: true
 
 # Collection holds most of the logic, for now.
