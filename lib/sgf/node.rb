@@ -85,8 +85,8 @@ class SGF::Node
   end
 
   # Compare to another node.
-  def ==(other)
-    @properties == other.properties
+  def ==(other_node)
+    @properties == other_node.properties
   end
 
   # Syntactic sugar for node.properties["XX"]
@@ -103,11 +103,14 @@ class SGF::Node
     out += (@parent ? 'Has a parent, ' : 'Has no parent, ')
     out += "#{@children.size} Children, "
     out += "#{@properties.keys.size} Properties"
-    out + '>'
+    out += '>'
   end
 
   def to_s(indent = 0)
-    properties = @properties.map(&method(:stringify_identity_and_property))
+    properties = []
+    @properties.each do |identity, property|
+      properties << stringify_identity_and_property(identity, property)
+    end
     whitespace = leading_whitespace(indent)
     "#{whitespace};#{properties.join("\n#{whitespace}")}"
   end
@@ -126,9 +129,9 @@ class SGF::Node
   end
 
   def update_human_readable_methods
-    SGF::Node::PROPERTIES
-      .reject { |method_name, _sgf_identity| defined? method_name }
-      .each do |human_readable_method, sgf_identity|
+    SGF::Node::PROPERTIES.reject do |method_name, _sgf_identity|
+      defined? method_name
+    end.each do |human_readable_method, sgf_identity|
       define_method(human_readable_method.to_sym) do
         @properties[sgf_identity] || raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
       end
@@ -146,17 +149,12 @@ class SGF::Node
     ' ' * indent
   end
 
-  def respond_to_missing(name, _include_private=false)
-    prop = flexible(name)
-    @properties[prop] || @properties["#{prop}="]
-  end
-
   def method_missing(method_name, *args)
     property = flexible(method_name)
     if property[/(.*?)=$/]
       @properties[Regexp.last_match(1)] = args[0]
     else
-      @properties.fetch(property) { super(method_name, args) }
+      @properties.fetch(property, nil) || super(method_name, args)
     end
   end
 
