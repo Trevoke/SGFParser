@@ -9,6 +9,8 @@ module SGF
     include Observable
     include Enumerable
 
+    extend ::T::Sig
+
     attr_accessor :current_node, :errors, :gametrees
     attr_reader :root
 
@@ -22,14 +24,23 @@ module SGF
       end
     end
 
-    def each
+    sig {
+      params(
+        _block: T.proc.params(arg0: SGF::Node).void
+      ).returns(SGF::Collection)
+    }
+    def each(&_block)
       gametrees.each do |game|
         game.each do |node|
           yield node
         end
       end
+      self
     end
 
+    sig {
+      params(gametree: SGF::Gametree).returns(SGF::Collection)
+    }
     def <<(gametree)
       unless gametree.instance_of?(SGF::Gametree)
         raise ArgumentError, "Expected instance of class SGF::Gametree but was instance of #{gametree.class}"

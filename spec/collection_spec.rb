@@ -58,10 +58,4 @@ RSpec.describe SGF::Collection do
       end.to change { subject.gametrees.count }.by(1)
     end
   end
-
-  it 'barfs if you try to add a non-gametree object' do
-    expect do
-      subject << Object.new
-    end.to raise_error(ArgumentError)
-  end
 end

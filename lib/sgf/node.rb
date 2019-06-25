@@ -1,4 +1,4 @@
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 require 'observer'
@@ -133,7 +133,7 @@ class SGF::Node
     SGF::Node::PROPERTIES.reject do |method_name, _sgf_identity|
       defined? method_name
     end.each do |human_readable_method, sgf_identity|
-      define_method(human_readable_method.to_sym) do
+      Module.define_method(human_readable_method.to_sym) do
         @properties[sgf_identity] || raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
       end
     end

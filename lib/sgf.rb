@@ -1,6 +1,8 @@
 # typed: true
 # frozen_string_literal: true
 
+require 'sorbet-runtime'
+
 module SGF
   class FileDoesNotExistError < StandardError; end
   def self.parse(filename)
