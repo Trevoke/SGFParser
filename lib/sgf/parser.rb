@@ -10,18 +10,28 @@ require_relative 'stream'
 # parser = SGF::Parser.new
 # collection = parser.parse sgf_in_string_form
 class SGF::Parser
+  extend ::T::Sig
+
   NEW_NODE = ';'
   BRANCHING = %w[( )].freeze
   END_OF_FILE = false
   NODE_DELIMITERS = [NEW_NODE].concat(BRANCHING).concat([END_OF_FILE])
   PROPERTY = %w([ ]).freeze
   LIST_IDENTITIES = %w[AW AB AE AR CR DD LB LN MA SL SQ TR VW TB TW].freeze
+  private_constant :NEW_NODE, :BRANCHING, :END_OF_FILE,
+                   :NODE_DELIMITERS, :PROPERTY, :LIST_IDENTITIES
 
   # This takes as argument an SGF and returns an SGF::Collection object
   # It accepts a local path (String), a stringified SGF (String),
   # or a file handler (File).
   # The second argument is optional, in case you don't want this to raise errors.
   # You probably shouldn't use it, but who's gonna stop you?
+  sig {
+    params(
+      sgf: T.any(String, File),
+      strict_parsing: T::Boolean
+    ).returns(SGF::Collection)
+  }
   def parse(sgf, strict_parsing = true)
     error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
     @sgf_stream = SGF::Stream.new(sgf, error_checker)
@@ -41,6 +51,7 @@ class SGF::Parser
 
   private
 
+  sig { void }
   def parse_node_data
     @node_properties = {}
     while still_inside_node?
@@ -56,10 +67,15 @@ class SGF::Parser
     end
   end
 
+  sig { returns(T::Boolean) }
   def still_inside_node?
     !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
   end
 
+  sig {
+    params(identity: String)
+      .returns(T.any(SGF::CommentToken, SGF::MultiPropertyToken, SGF::GenericPropertyToken))
+  }
   def property_token_type(identity)
     case identity.upcase
     when 'C' then SGF::CommentToken.new
