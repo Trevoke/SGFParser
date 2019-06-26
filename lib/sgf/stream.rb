@@ -4,6 +4,8 @@
 require 'stringio'
 
 class SGF::Stream
+  extend ::T::Sig
+
   attr_reader :stream
 
   def initialize(sgf, error_checker)
@@ -13,14 +15,24 @@ class SGF::Stream
     @stream = StringIO.new clean(sgf), 'r'
   end
 
+  sig { returns(T::Boolean) }
   def eof?
     stream.eof?
   end
 
+  sig { returns(T.any(FalseClass, String)) }
   def next_character
     !stream.eof? && stream.sysread(1)
   end
 
+  sig {
+    params(
+      format: T.any(SGF::CommentToken,
+                    SGF::MultiPropertyToken,
+                    SGF::GenericPropertyToken,
+                    SGF::IdentityToken)
+      ).returns(T.any(String, T::Array[String]))
+  }
   def read_token(format)
     property = ''
     while (char = next_character) && format.still_inside?(char, property, self)
@@ -29,6 +41,7 @@ class SGF::Stream
     format.transform property
   end
 
+  sig { returns(T.any(FalseClass, String)) }
   def peek_skipping_whitespace
     while char = next_character
       next if char[/\s/]
@@ -41,10 +54,12 @@ class SGF::Stream
 
   private
 
+  sig { void }
   def rewind
     stream.pos -= 1
   end
 
+  sig { params(sgf: String).returns(String) }
   def clean(sgf)
     sgf.gsub('\\\\n\\\\r', '')
        .gsub('\\\\r\\\\n', '')
