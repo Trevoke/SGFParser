@@ -66,7 +66,7 @@ module SGF
     end
 
     # Saves the Collection as an SGF file. Takes a filename as argument.
-    sig { params(filename: String).returns(File) }
+    sig { params(filename: String).returns(T.nilable(IO)) }
     def save(filename)
       SGF::Writer.new.save(@root, filename)
     end
