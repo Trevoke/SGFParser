@@ -8,6 +8,10 @@ module SGF
 
   class FileDoesNotExistError < StandardError; end
 
+  sig {
+    params(filename: String)
+      .returns(T.any(T.noreturn, SGF::Collection))
+  }
   def self.parse(filename)
     SGF::Parser.new.parse File.read(filename)
   rescue Errno::ENOENT

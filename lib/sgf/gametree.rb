@@ -28,8 +28,14 @@ module SGF
     end
 
     # Iterate through all the nodes in preorder fashion
+    sig {
+      params(
+        block: T.proc.params(arg0: SGF::Node).void
+      ).returns(SGF::Gametree)
+    }
     def each(&block)
       @root.each(&block)
+      self
     end
 
     sig { returns(String) }
