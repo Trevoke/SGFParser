@@ -16,15 +16,20 @@ class SGF::Node
   # * parent: parent_node (nil by default)
   # * children: [list, of, children] (empty array if nothing is passed)
   # Anything else passed to the hash will become an SGF identity/property pair on the node.
+  sig {
+    params(
+      children: T::Array[SGF::Node],
+      parent: T.nilable(SGF::Node),
+      #opts: T::Hash[Symbol, String]
+    ).void
+  }
   def initialize(children: [], parent: nil, **opts)
-    # opts = { children: [], parent: nil }
-    # opts.merge! args
     @depth = 0
     @children = []
     @properties = {}
     @parent = nil
-    self.parent = parent # opts.delete :parent
-    add_children children # opts.delete :children
+    self.parent = parent
+    add_children children
     add_properties opts
   end
 
