@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-support/all/rspec-support.rbi
 #
-# rspec-support-3.7.1
+# rspec-support-3.8.2
 module RSpec
   extend RSpec::Support::Warnings
 end
@@ -60,6 +60,7 @@ module RSpec::Support::Ruby
 end
 module RSpec::Support::RubyFeatures
   def caller_locations_supported?; end
+  def fork_supported?; end
   def kw_args_supported?; end
   def module_prepends_supported?; end
   def module_refinement_supported?; end
@@ -67,6 +68,7 @@ module RSpec::Support::RubyFeatures
   def required_kw_args_supported?; end
   def ripper_supported?; end
   def self.caller_locations_supported?; end
+  def self.fork_supported?; end
   def self.kw_args_supported?; end
   def self.module_prepends_supported?; end
   def self.module_refinement_supported?; end
@@ -140,6 +142,7 @@ class RSpec::Support::ObjectFormatter
   def self.default_instance; end
   def self.format(object); end
   def self.prepare_for_inspection(object); end
+  def sort_hash_keys(input_hash); end
   def truncate_string(str, start_index, end_index); end
   def with_entering_structure(structure); end
 end
@@ -147,6 +150,7 @@ class RSpec::Support::ObjectFormatter::InspectableItem < Struct
   def inspect; end
   def pretty_print(pp); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
   def text; end
@@ -161,6 +165,7 @@ class RSpec::Support::ObjectFormatter::BaseInspector < Struct
   def pretty_print(pp); end
   def self.[](*arg0); end
   def self.can_inspect?(_object); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -201,6 +206,7 @@ module RSpec::Support::FuzzyMatcher
 end
 class RSpec::Support::MethodSignature
   def arbitrary_kw_args?; end
+  def classify_arity(arity = nil); end
   def classify_parameters; end
   def could_contain_kw_args?(args); end
   def description; end

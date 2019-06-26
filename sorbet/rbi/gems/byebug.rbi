@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/byebug/all/byebug.rbi
 #
-# byebug-10.0.2
+# byebug-11.0.1
 module Byebug
   def add_catchpoint(arg0); end
   def breakpoints; end
@@ -432,9 +432,12 @@ class Byebug::ConditionCommand < Byebug::Command
 end
 class Byebug::ContinueCommand < Byebug::Command
   def execute; end
+  def modifier; end
   def self.description; end
   def self.regexp; end
   def self.short_description; end
+  def unconditionally?; end
+  def until_line?; end
   include Byebug::Helpers::ParseHelper
 end
 class Byebug::DebugCommand < Byebug::Command
@@ -743,6 +746,24 @@ class Byebug::ShowCommand < Byebug::Command
   def self.help; end
   def self.regexp; end
   def self.short_description; end
+end
+class Byebug::SkipCommand < Byebug::Command
+  def auto_run; end
+  def execute; end
+  def initialize_attributes; end
+  def keep_execution; end
+  def reset_attributes; end
+  def self.description; end
+  def self.file_line; end
+  def self.file_line=(arg0); end
+  def self.file_path; end
+  def self.file_path=(arg0); end
+  def self.previous_autolist; end
+  def self.regexp; end
+  def self.restore_autolist; end
+  def self.setup_autolist(value); end
+  def self.short_description; end
+  include Byebug::Helpers::ParseHelper
 end
 class Byebug::SourceCommand < Byebug::Command
   def execute; end

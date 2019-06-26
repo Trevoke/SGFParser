@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/parallel/all/parallel.rbi
 #
-# parallel-1.12.1
+# parallel-1.17.0
 module Parallel
   def self.add_progress_bar!(job_factory, options); end
   def self.all?(*args, &block); end
@@ -17,6 +17,7 @@ module Parallel
   def self.each(array, options = nil, &block); end
   def self.each_with_index(array, options = nil, &block); end
   def self.extract_count_from_options(options); end
+  def self.flat_map(*args, &block); end
   def self.handle_exception(exception, results); end
   def self.in_processes(options = nil, &block); end
   def self.in_threads(options = nil); end

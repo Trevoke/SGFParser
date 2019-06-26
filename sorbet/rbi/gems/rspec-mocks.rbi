@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-mocks/all/rspec-mocks.rbi
 #
-# rspec-mocks-3.7.0
+# rspec-mocks-3.8.1
 module RSpec
 end
 module RSpec::Mocks
@@ -236,6 +236,7 @@ class RSpec::Mocks::Proxy::SpecificMessage < Struct
   def object; end
   def object=(_); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end

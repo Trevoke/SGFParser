@@ -7,13 +7,13 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/pry-byebug/all/pry-byebug.rbi
 #
-# pry-byebug-3.6.0
+# pry-byebug-3.7.0
 module PryByebug
-  def check_file_context(target, e = nil); end
+  def check_file_context(target, msg = nil); end
   def current_remote_server; end
   def current_remote_server=(arg0); end
   def file_context?(target); end
-  def self.check_file_context(target, e = nil); end
+  def self.check_file_context(target, msg = nil); end
   def self.file_context?(target); end
 end
 module Byebug
@@ -72,7 +72,7 @@ module PryByebug::Helpers::Breakpoints
   def current_file; end
   def max_width; end
   def print_breakpoints_header; end
-  def print_full_breakpoint(br); end
+  def print_full_breakpoint(breakpoint); end
   def print_short_breakpoint(breakpoint); end
 end
 class PryByebug::ContinueCommand < Pry::ClassCommand

@@ -7,7 +7,10 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rdoc/all/rdoc.rbi
 #
-# rdoc-6.0.4
+# rdoc-6.1.1
+module RDoc
+  def self.load_yaml; end
+end
 class RDoc::I18n::Text
   def each_line(raw, &block); end
   def emit_empty_line_event(line, line_no); end
@@ -18,9 +21,6 @@ class RDoc::I18n::Text
   def translate(locale); end
 end
 module RDoc::I18n
-end
-module RDoc
-  def self.load_yaml; end
 end
 class RDoc::Error < RuntimeError
 end

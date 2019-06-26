@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/docile/all/docile.rbi
 #
-# docile-1.3.0
+# docile-1.3.2
 module Docile
   def dsl_eval(dsl, *args, &block); end
   def dsl_eval_immutable(dsl, *args, &block); end

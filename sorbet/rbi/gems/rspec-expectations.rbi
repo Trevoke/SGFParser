@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-expectations/all/rspec-expectations.rbi
 #
-# rspec-expectations-3.7.0
+# rspec-expectations-3.8.4
 module RSpec
 end
 module RSpec::Matchers
@@ -148,6 +148,7 @@ class RSpec::Matchers::Composable::DescribableItem < Struct
   def item=(_); end
   def pretty_print(pp); end
   def self.[](*arg0); end
+  def self.inspect; end
   def self.members; end
   def self.new(*arg0); end
 end
@@ -331,6 +332,7 @@ class RSpec::Expectations::Configuration
   def include_chain_clauses_in_custom_matcher_descriptions=(arg0); end
   def include_chain_clauses_in_custom_matcher_descriptions?; end
   def initialize; end
+  def max_formatted_output_length=(length); end
   def on_potential_false_positives; end
   def on_potential_false_positives=(behavior); end
   def reset_syntaxes_to_default; end

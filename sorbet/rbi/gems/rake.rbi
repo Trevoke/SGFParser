@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rake/all/rake.rbi
 #
-# rake-12.3.1
+# rake-12.3.2
 module Rake
   def self.add_rakelib(*files); end
   def self.application; end
@@ -133,6 +133,7 @@ module Rake::FileUtilsExt
   def chown_R(*args, &block); end
   def copy(*args, &block); end
   def cp(*args, &block); end
+  def cp_lr(*args, &block); end
   def cp_r(*args, &block); end
   def install(*args, &block); end
   def link(*args, &block); end
@@ -182,10 +183,12 @@ class Rake::FileList
   def add_matching(pattern); end
   def all?(*args, &block); end
   def any?(*args, &block); end
+  def append(*args, &block); end
   def assoc(*args, &block); end
   def at(*args, &block); end
   def bsearch(*args, &block); end
   def bsearch_index(*args, &block); end
+  def chain(*args, &block); end
   def chunk(*args, &block); end
   def chunk_while(*args, &block); end
   def clear(*args, &block); end
@@ -203,6 +206,7 @@ class Rake::FileList
   def delete_at(*args, &block); end
   def delete_if(*args, &block); end
   def detect(*args, &block); end
+  def difference(*args, &block); end
   def dig(*args, &block); end
   def drop(*args, &block); end
   def drop_while(*args, &block); end
@@ -223,6 +227,8 @@ class Rake::FileList
   def ext(newext = nil); end
   def fetch(*args, &block); end
   def fill(*args, &block); end
+  def filter!(*args, &block); end
+  def filter(*args, &block); end
   def find(*args, &block); end
   def find_all(*args, &block); end
   def find_index(*args, &block); end
@@ -266,6 +272,7 @@ class Rake::FileList
   def pathmap(spec = nil, &block); end
   def permutation(*args, &block); end
   def pop(*args, &block); end
+  def prepend(*args, &block); end
   def product(*args, &block); end
   def push(*args, &block); end
   def rassoc(*args, &block); end
@@ -305,6 +312,7 @@ class Rake::FileList
   def sort_by(*args, &block); end
   def sub!(pat, rep); end
   def sub(pat, rep); end
+  def sum(*args, &block); end
   def take(*args, &block); end
   def take_while(*args, &block); end
   def to_a; end
@@ -313,6 +321,7 @@ class Rake::FileList
   def to_s; end
   def to_set(*args, &block); end
   def transpose(*args, &block); end
+  def union(*args, &block); end
   def uniq!(*args, &block); end
   def uniq(*args, &block); end
   def unshift(*args, &block); end
@@ -512,6 +521,7 @@ class Rake::Task
   def name; end
   def name_with_args; end
   def needed?; end
+  def prereqs; end
   def prerequisite_tasks; end
   def prerequisites; end
   def reenable; end
@@ -563,6 +573,7 @@ module Rake::DSL
   def chown_R(*args, &block); end
   def copy(*args, &block); end
   def cp(*args, &block); end
+  def cp_lr(*args, &block); end
   def cp_r(*args, &block); end
   def desc(description); end
   def directory(*args, &block); end

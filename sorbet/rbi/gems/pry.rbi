@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/pry/all/pry.rbi
 #
-# pry-0.11.3
+# pry-0.12.2
 class Pry
   def add_sticky_local(name, &block); end
   def backtrace; end
@@ -48,6 +48,7 @@ class Pry
   def input; end
   def input=(value); end
   def input_array; end
+  def input_ring; end
   def last_dir; end
   def last_dir=(arg0); end
   def last_exception; end
@@ -62,6 +63,7 @@ class Pry
   def output; end
   def output=(value); end
   def output_array; end
+  def output_ring; end
   def pager; end
   def pager=(value); end
   def pop_prompt; end
@@ -97,7 +99,7 @@ class Pry
   def self.config; end
   def self.config=(arg0); end
   def self.configure; end
-  def self.critical_section(&block); end
+  def self.critical_section; end
   def self.current; end
   def self.current_line; end
   def self.current_line=(arg0); end
@@ -125,6 +127,7 @@ class Pry
   def self.input=(value); end
   def self.last_internal_error; end
   def self.last_internal_error=(arg0); end
+  def self.lazy(&block); end
   def self.line_buffer; end
   def self.line_buffer=(arg0); end
   def self.load_file_at_toplevel(file); end
@@ -213,15 +216,14 @@ module Pry::Platform
   def mri?; end
   def mri_19?; end
   def mri_2?; end
-  def rbx?; end
   def windows?; end
   def windows_ansi?; end
   extend Pry::Platform
 end
 module Pry::Helpers
-  def self.tablify(things, line_length); end
-  def self.tablify_or_one_line(heading, things); end
-  def self.tablify_to_screen_width(things, options = nil); end
+  def self.tablify(things, line_length, config = nil); end
+  def self.tablify_or_one_line(heading, things, config = nil); end
+  def self.tablify_to_screen_width(things, options, config = nil); end
 end
 module Pry::Helpers::BaseHelpers
   def colorize_code(code); end
@@ -229,13 +231,21 @@ module Pry::Helpers::BaseHelpers
   def find_command(name, set = nil); end
   def heading(text); end
   def highlight(string, regexp, highlight_color = nil); end
+  def jruby?; end
+  def jruby_19?; end
+  def linux?; end
+  def mac_osx?; end
+  def mri?; end
+  def mri_19?; end
+  def mri_2?; end
   def not_a_real_file?(file); end
   def safe_send(obj, method, *args, &block); end
   def silence_warnings; end
-  def stagger_output(text, out = nil); end
+  def stagger_output(text, _out = nil); end
   def use_ansi_codes?; end
+  def windows?; end
+  def windows_ansi?; end
   extend Pry::Helpers::BaseHelpers
-  include Pry::Platform
 end
 class Pry::Hooks
   def add_hook(event_name, hook_name, callable = nil, &block); end
@@ -249,7 +259,7 @@ class Pry::Hooks
   def hook_exists?(event_name, hook_name); end
   def hooks; end
   def initialize; end
-  def initialize_copy(orig); end
+  def initialize_copy(_orig); end
   def merge!(other); end
   def merge(other); end
 end
@@ -372,6 +382,7 @@ end
 class Pry::Slop::InvalidCommandError < Pry::Slop::Error
 end
 class Pry::REPL
+  def calculate_overhang(current_prompt, original_val, indented_val); end
   def coolline_available?; end
   def epilogue; end
   def handle_read_errors; end
@@ -392,14 +403,6 @@ class Pry::REPL
   def start; end
   extend Pry::Forwardable
 end
-module Pry::RbxPath
-  def convert_path_to_full(path); end
-  def is_core_path?(path); end
-  def rvm_ruby?(path); end
-  def self.convert_path_to_full(path); end
-  def self.is_core_path?(path); end
-  def self.rvm_ruby?(path); end
-end
 class Pry::Code
   def <<(line, lineno = nil); end
   def ==(other); end
@@ -419,7 +422,7 @@ class Pry::Code
   def length; end
   def max_lineno_width; end
   def method_missing(name, *args, &block); end
-  def nesting_at(line_number, top_module = nil); end
+  def nesting_at(line_number); end
   def print_to_output(output, color = nil); end
   def push(line, lineno = nil); end
   def raw; end
@@ -440,6 +443,7 @@ class Pry::Code::LOC
   def add_marker(marker_lineno); end
   def colorize(code_type); end
   def dup; end
+  def handle_multiline_entries_from_edit_command(line, max_width); end
   def indent(distance); end
   def initialize(line, lineno); end
   def line; end
@@ -469,23 +473,15 @@ class Pry::CodeFile
   def readable?(path); end
   def type_from_filename(filename, default = nil); end
 end
-class Pry::HistoryArray
+class Pry::Ring
   def <<(value); end
-  def [](index_or_range, size = nil); end
-  def convert_index(n); end
-  def convert_range(range); end
+  def [](index); end
+  def clear; end
   def count; end
-  def each; end
-  def empty?; end
-  def initialize(size); end
-  def inspect; end
-  def length; end
+  def initialize(max_size); end
   def max_size; end
-  def pop!; end
   def size; end
   def to_a; end
-  def to_h; end
-  include Enumerable
 end
 module Pry::Helpers::OptionsHelpers
   def method_object; end
@@ -572,7 +568,6 @@ module Pry::Helpers::Text
   def bright_cyan_on_red(text); end
   def bright_cyan_on_white(text); end
   def bright_cyan_on_yellow(text); end
-  def bright_default(text); end
   def bright_green(text); end
   def bright_green_on_black(text); end
   def bright_green_on_blue(text); end
@@ -721,12 +716,23 @@ class Pry::Helpers::Table
   def column_count=(n); end
   def columns; end
   def fits_on_line?(line_length); end
-  def initialize(items, args = nil); end
+  def initialize(items, args, config = nil); end
   def items; end
   def items=(items); end
   def rows_to_s(style = nil); end
   def to_a; end
   def to_s; end
+end
+module Pry::Helpers::Platform
+  def self.jruby?; end
+  def self.jruby_19?; end
+  def self.linux?; end
+  def self.mac_osx?; end
+  def self.mri?; end
+  def self.mri_19?; end
+  def self.mri_2?; end
+  def self.windows?; end
+  def self.windows_ansi?; end
 end
 class Pry::CodeObject
   def _pry_; end
@@ -796,7 +802,7 @@ class Pry::Method
   def respond_to?(method_name, include_all = nil); end
   def ruby_source; end
   def self.all_from_class(klass, include_super = nil); end
-  def self.all_from_common(obj, method_type = nil, include_super = nil); end
+  def self.all_from_common(obj, _method_type = nil, include_super = nil); end
   def self.all_from_obj(obj, include_super = nil); end
   def self.from_binding(b); end
   def self.from_class(klass, name, target = nil); end
@@ -857,7 +863,7 @@ class Pry::Method::WeirdMethodLocator
   def valid_file?(file); end
 end
 class Pry::Method::Disowned < Pry::Method
-  def initialize(receiver, method_name, binding = nil); end
+  def initialize(receiver, method_name); end
   def method_missing(meth_name, *args, &block); end
   def name; end
   def owner; end
@@ -957,6 +963,7 @@ class Pry::History
   def history_file_path; end
   def history_line_count; end
   def initialize(options = nil); end
+  def invalid_readline_line?(line); end
   def load; end
   def loader; end
   def loader=(arg0); end
@@ -994,7 +1001,7 @@ class Pry::Command
   def command_set; end
   def command_set=(arg0); end
   def commands; end
-  def complete(search); end
+  def complete(_search); end
   def context; end
   def context=(arg0); end
   def correct_arg_arity(arity, args); end
@@ -1041,10 +1048,8 @@ class Pry::Command
   def self.source; end
   def self.source_file; end
   def self.source_line; end
-  def self.source_location; end
   def self.subclass(match, description, options, helpers, &block); end
   def source; end
-  def source_location; end
   def state; end
   def target; end
   def target=(arg0); end
@@ -1057,6 +1062,7 @@ class Pry::Command
   extend Pry::Helpers::DocumentationHelpers
   include Pry::Helpers::BaseHelpers
   include Pry::Helpers::CommandHelpers
+  include Pry::Helpers::Text
 end
 class Pry::BlockCommand < Pry::Command
   def call(*args); end
@@ -1093,9 +1099,7 @@ class Pry::CommandSet
   def [](pattern); end
   def []=(pattern, command); end
   def add_command(command); end
-  def after_command(search, &block); end
   def alias_command(match, action, options = nil); end
-  def before_command(search, &block); end
   def block_command(match, description = nil, options = nil, &block); end
   def command(match, description = nil, options = nil, &block); end
   def complete(search, context = nil); end
@@ -1115,7 +1119,6 @@ class Pry::CommandSet
   def keys; end
   def list_commands; end
   def process_line(val, context = nil); end
-  def random_hook_name; end
   def rename_command(new_match, search, options = nil); end
   def run_command(context, match, *args); end
   def to_h; end
@@ -1188,6 +1191,11 @@ class Pry::Command::Help < Pry::ClassCommand
   def sorted_group_names(groups); end
   def visible_commands; end
 end
+class Pry::Command::GemStat < Pry::ClassCommand
+  def format_dependencies(rdeps); end
+  def format_gem(h); end
+  def process(name); end
+end
 class Pry::Command::Exit < Pry::ClassCommand
   def process; end
   def process_pop_and_return; end
@@ -1209,6 +1217,9 @@ class Pry::Command::Gist < Pry::ClassCommand
 end
 class Pry::Command::Stat < Pry::ClassCommand
   def options(opt); end
+  def process; end
+end
+class Pry::Command::ClearScreen < Pry::ClassCommand
   def process; end
 end
 class Pry::Command::ListInspectors < Pry::ClassCommand
@@ -1269,9 +1280,6 @@ module Pry::Command::Edit::FileAndLineLocator
   def self.from_code_object(code_object, filename_argument); end
   def self.from_exception(exception, backtrace_level); end
   def self.from_filename_argument(filename_argument); end
-end
-class Pry::Command::SimplePrompt < Pry::ClassCommand
-  def process; end
 end
 class Pry::Command::CodeCollector
   def _pry_; end
@@ -1507,6 +1515,7 @@ class Pry::Command::Cat::ExceptionFormatter < Pry::Command::Cat::AbstractFormatt
   def initialize(exception, _pry_, opts); end
   def opts; end
   def start_and_end_line_for_code_window; end
+  include Pry::Helpers::Text
 end
 class Pry::Command::Cat::FileFormatter < Pry::Command::Cat::AbstractFormatter
   def _pry_; end
@@ -1543,17 +1552,11 @@ end
 class Pry::Command::Reset < Pry::ClassCommand
   def process; end
 end
-class Pry::Command::ListPrompts < Pry::ClassCommand
-  def process; end
-  def prompt_map; end
-  def selected_prompt?(prompt); end
-  def selected_text; end
-end
 class Pry::Command::DisablePry < Pry::ClassCommand
   def process; end
 end
 class Pry::Command::ImportSet < Pry::ClassCommand
-  def process(command_set_name); end
+  def process(_command_set_name); end
 end
 class Pry::Command::FixIndent < Pry::ClassCommand
   def process; end
@@ -1567,7 +1570,7 @@ class Pry::Command::Wtf < Pry::ClassCommand
   def with_line_numbers(bt); end
 end
 class Pry::Command::WatchExpression < Pry::ClassCommand
-  def add_expression(arguments); end
+  def add_expression(_arguments); end
   def add_hook; end
   def delete(index); end
   def eval_and_print_changed(output); end
@@ -1589,7 +1592,7 @@ class Pry::Command::WatchExpression::Expression
   def value; end
 end
 class Pry::Command::AmendLine < Pry::ClassCommand
-  def amended_input(string); end
+  def amend_input; end
   def delete_from_array(array, range); end
   def insert_into_array(array, range); end
   def line_count; end
@@ -1629,8 +1632,10 @@ class Pry::Command::JumpTo < Pry::ClassCommand
   def process(break_level); end
 end
 class Pry::Command::ChangePrompt < Pry::ClassCommand
+  def change_prompt(prompt); end
+  def list_prompts; end
+  def options(opt); end
   def process(prompt); end
-  def prompt_map; end
 end
 class Pry::Command::SwitchTo < Pry::ClassCommand
   def process(selection); end
@@ -1668,7 +1673,7 @@ class Pry::PluginManager
 end
 class Pry::PluginManager::NoPlugin
   def initialize(name); end
-  def method_missing(*args); end
+  def method_missing(*_args); end
 end
 class Pry::PluginManager::Plugin
   def activate!; end
@@ -1700,6 +1705,11 @@ end
 class Pry::BasicObject < BasicObject
   include Kernel
 end
+class Pry::Config < Pry::BasicObject
+  def self.shortcuts; end
+  extend Pry::Config::Behavior::Builder
+  include Pry::Config::Behavior
+end
 module Pry::Config::Behavior
   def ==(other); end
   def [](key); end
@@ -1730,6 +1740,7 @@ end
 class Pry::Config::Behavior::ReservedKeyError < RuntimeError
 end
 module Pry::Config::Behavior::Builder
+  def assign(attributes, default = nil); end
   def from_hash(attributes, default = nil); end
 end
 module Pry::Config::Memoization
@@ -1771,7 +1782,7 @@ class Pry::Config::Default
   def print; end
   def prompt; end
   def prompt_name; end
-  def prompt_safe_objects; end
+  def prompt_safe_contexts; end
   def quiet; end
   def requires; end
   def should_load_local_rc; end
@@ -1789,10 +1800,9 @@ end
 module Pry::Config::Convenience
   def config_shortcut(*names); end
 end
-class Pry::Config < Pry::BasicObject
-  def self.shortcuts; end
-  extend Pry::Config::Behavior::Builder
-  include Pry::Config::Behavior
+class Pry::Config::Lazy
+  def call; end
+  def initialize(&block); end
 end
 class Pry::CLI
   def self.add_option_processor(&block); end
@@ -1881,7 +1891,6 @@ class Pry::Editor
   def open_editor(editor_invocation); end
   def open_editor_on_jruby(editor_invocation); end
   def start_line_syntax_for_editor(file_name, line_number); end
-  include Pry::Helpers::BaseHelpers
   include Pry::Helpers::CommandHelpers
 end
 module Pry::Rubygem
@@ -1927,7 +1936,11 @@ class Pry::LastException < BasicObject
   def respond_to_missing?(name, include_all = nil); end
   def wrapped_exception; end
 end
-class Pry::Prompt
+module Pry::Prompt
+  def self.[](prompt_name); end
+  def self.add(prompt_name, description = nil, separators = nil); end
+  def self.all; end
+  def self.prompt_name(name); end
 end
 class Pry::Inspector
 end
