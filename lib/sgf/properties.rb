@@ -4,7 +4,8 @@
 module SGF
   #  http://www.red-bean.com/sgf/proplist.html
   class Gametree
-    PROPERTIES = {
+    extend ::T::Sig
+    PROPERTIES = T.let({
       annotator: 'AN',
       black_octisquares: 'BO', # Octi
       black_rank: 'BR',
@@ -38,11 +39,12 @@ module SGF
       white_octisquares: 'WO', # Octi
       white_rank: 'WR',
       white_team: 'WT'
-    }.freeze
+    }.freeze, Hash)
   end
 
   class Node
-    PROPERTIES = {
+    extend ::T::Sig
+    PROPERTIES = T.let({
       black_move: 'B',
       black_time_left: 'BL',
       bad_move: 'BM',
@@ -85,6 +87,6 @@ module SGF
       game: 'GM',
       style: 'ST',
       size: 'SZ'
-    }.freeze
+    }.freeze, Hash)
   end
 end

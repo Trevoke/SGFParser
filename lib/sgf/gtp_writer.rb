@@ -2,6 +2,9 @@
 # frozen_string_literal: true
 
 class SGF::GtpWriter < SGF::Writer
+
+  extend T::Sig
+
   attr_writer :upside_down
 
   def initialize
@@ -10,6 +13,7 @@ class SGF::GtpWriter < SGF::Writer
 
   private
 
+  sig { params(node: SGF::Node).returns(String) }
   def gtp_move(node)
     pps = node.properties
     if pps['SZ']
@@ -29,6 +33,7 @@ class SGF::GtpWriter < SGF::Writer
     end
   end
 
+  sig { params(color: String, pos: String).returns(String) }
   def to_play(color, pos)
     if pos == ''
       gtp_pos = 'pass'
@@ -48,6 +53,7 @@ class SGF::GtpWriter < SGF::Writer
     "play #{color} #{gtp_pos}"
   end
 
+  sig { params(node: T.any(SGF::Node, NilClass)).returns(T.untyped) }
   def write_tree_from(node)
     return unless node
 

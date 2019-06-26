@@ -7,6 +7,8 @@ class SGF::Node
   include Observable
   include Enumerable
 
+  extend ::T::Sig
+
   attr_accessor :children, :properties
   attr_reader :parent, :depth
 
@@ -27,27 +29,34 @@ class SGF::Node
   end
 
   # Set the given node as a parent and self as one of that node's children
+  sig { params(parent: T.any(SGF::Node, NilClass)).returns(SGF::Node) }
   def parent=(parent)
     if @parent
       @parent.children.delete self
       @parent.delete_observer self
     end
 
-    case @parent = parent
-    when nil then set_depth 0
-    else
+    @parent = parent
+
+    if @parent
       @parent.children << self
       @parent.add_observer self
       set_depth @parent.depth + 1
+    else
+      set_depth 0
     end
+
+    self
   end
 
   alias set_parent parent=
 
+  sig { returns(SGF::Node) }
   def remove_parent
-    set_parent nil
+    set_parent(nil)
   end
 
+  sig { params(new_depth: Integer).returns(T::Boolean) }
   def depth=(new_depth)
     @depth = new_depth
     changed
@@ -58,6 +67,7 @@ class SGF::Node
 
   # Takes an arbitrary number of child nodes, adds them to the list of children,
   # and make this node their parent.
+  # sig { params(nodes: T::Array[SGF::Node]).returns(T::Boolean) }
   def add_children(*nodes)
     nodes.flatten.each do |node|
       node.set_parent self
@@ -68,6 +78,7 @@ class SGF::Node
 
   # Takes a hash {identity => property} and adds those to the current node.
   # If a property already exists, it will append to it.
+  # sig { params(hash: Hash).returns(T.untyped) }
   def add_properties(hash)
     hash.each do |identity, property|
       @properties[flexible identity] ||= property.class.new
@@ -119,7 +130,8 @@ class SGF::Node
   # Observer pattern
   def update(message, data)
     case message
-    when :depth_change then set_depth(data + 1)
+    when :depth_change then
+      set_depth(data + 1)
     end
   end
 

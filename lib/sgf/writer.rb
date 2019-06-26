@@ -33,8 +33,9 @@ class SGF::Writer
 
   def decide_what_comes_after(node)
     if node.children.size == 1
-      then write_tree_from node.children[0]
-    else write_new_branch_from node
+      write_tree_from node.children[0]
+    else
+      write_new_branch_from node
     end
   end
 

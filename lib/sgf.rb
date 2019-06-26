@@ -4,7 +4,10 @@
 require 'sorbet-runtime'
 
 module SGF
+  extend T::Sig
+
   class FileDoesNotExistError < StandardError; end
+
   def self.parse(filename)
     SGF::Parser.new.parse File.read(filename)
   rescue Errno::ENOENT
