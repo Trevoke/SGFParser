@@ -43,6 +43,7 @@ module SGF
     }
     def <<(gametree)
       @root.add_children gametree.root
+      self
     end
 
     # Compares a tree to another tree, node by node.
