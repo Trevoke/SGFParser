@@ -84,12 +84,13 @@ class SGF::Node
 
   # Takes a hash {identity => property} and adds those to the current node.
   # If a property already exists, it will append to it.
-  # sig { params(hash: Hash).returns(T.untyped) }
+  sig { params(hash: Hash).returns(SGF::Node) }
   def add_properties(hash)
     hash.each do |identity, property|
       @properties[flexible identity] ||= property.class.new
       @properties[flexible identity].concat property
     end
+    self
   end
 
   def each(&block)
@@ -99,7 +100,7 @@ class SGF::Node
   # Iterate through and yield each child.
   sig {
     params(
-      _block: T.proc.params(arg0: SGF::Node).returns(T.untyped)
+      _block: T.proc.params(arg0: SGF::Node).void
     ).returns(T::Array[SGF::Node])
   }
   def each_child(&_block)

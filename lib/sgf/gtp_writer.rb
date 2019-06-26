@@ -53,7 +53,7 @@ class SGF::GtpWriter < SGF::Writer
     "play #{color} #{gtp_pos}"
   end
 
-  sig { params(node: T.any(SGF::Node, NilClass)).returns(T.untyped) }
+  sig { params(node: T.any(SGF::Node, NilClass)).void }
   def write_tree_from(node)
     return unless node
 
