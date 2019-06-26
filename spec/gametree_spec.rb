@@ -12,24 +12,10 @@ RSpec.describe SGF::Gametree do
   end
   subject { game }
 
-  it 'should throw up if initialized with a non-Node argument' do
-    expect { SGF::Gametree.new('I am a string') }.to raise_error(ArgumentError)
-    expect { SGF::Gametree.new(SGF::Node.new) }.not_to raise_error
-  end
-
-  it 'has game-level information' do
-    expect(subject.name).to eq 'Gametree 1: properties'
-    expect(subject.data_entry).to eq 'Arno Hollosi'
-  end
-
-  it 'should raise errors' do
-    expect { subject.opening }.to raise_error(SGF::NoIdentityError)
-    expect { subject.nonexistent_identity }.to raise_error(SGF::NoIdentityError)
-  end
-
-  it 'has meta information' do
-    expect(subject.inspect).to match(/SGF::Gametree/)
-    expect(subject.inspect).to match(/#{game.object_id}/)
+  it 'has game-level information available through the root' do
+    # TODO - this should be "game_name" and "data_entry"
+    expect(subject.root['GN']).to eq 'Gametree 1: properties'
+    expect(subject.root['US']).to eq 'Arno Hollosi'
   end
 
   context 'When talking about nodes' do

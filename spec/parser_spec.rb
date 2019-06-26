@@ -106,15 +106,15 @@ RSpec.describe SGF::Parser do
     file = File.open 'spec/data/simple.sgf'
     collection = parser.parse file
     game = collection.gametrees.first
-    expect(game.white_player).to eq 'redrose'
-    expect(game.black_player).to eq 'tartrate'
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
   end
 
   it 'should parse a file if given a local path as input' do
     local_path = 'spec/data/simple.sgf'
     collection = parser.parse local_path
     game = collection.gametrees.first
-    expect(game.white_player).to eq 'redrose'
-    expect(game.black_player).to eq 'tartrate'
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
   end
 end

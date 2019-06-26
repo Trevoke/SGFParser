@@ -33,7 +33,7 @@ class SGF::Writer
 
   sig { params(node: SGF::Node).void }
   def write_tree_from(node)
-    @sgf << "\n" << node.to_s(@indentation)
+    @sgf = @sgf + "\n" + node.to_s(@indentation)
     decide_what_comes_after node
   end
 
@@ -56,7 +56,7 @@ class SGF::Writer
   def close_branch
     @indentation -= 2
     @indentation = @indentation < 0 ? 0 : @indentation
-    @sgf << "\n" << whitespace << ')'
+    @sgf = @sgf + "\n" + whitespace + ')'
   end
 
   sig { returns(String) }

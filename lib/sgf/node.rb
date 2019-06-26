@@ -90,7 +90,6 @@ class SGF::Node
       @properties[flexible identity] ||= property.class.new
       @properties[flexible identity].concat property
     end
-    update_human_readable_methods
   end
 
   def each(&block)
@@ -114,7 +113,7 @@ class SGF::Node
   end
 
   # Syntactic sugar for node.properties["XX"]
-  sig { params(identity: T.any(Symbol, String)).returns(T.any(String, T::Array, NilClass))}
+  sig { params(identity: T.any(NilClass, Symbol, String)).returns(T.any(String, T::Array, NilClass))}
   def [](identity)
     @properties[flexible(identity)]
   end
@@ -159,19 +158,9 @@ class SGF::Node
 
   private
 
-  sig { params(id: T.any(String, Symbol)).returns(String) }
+  sig { params(id: T.any(NilClass, String, Symbol)).returns(String) }
   def flexible(id)
     id.to_s.upcase
-  end
-
-  def update_human_readable_methods
-    SGF::Node::PROPERTIES.reject do |method_name, _sgf_identity|
-      defined? method_name
-    end.each do |human_readable_method, sgf_identity|
-      Module.define_method(human_readable_method.to_sym) do
-        @properties[sgf_identity] || raise(SGF::NoIdentityError, "This node does not have #{sgf_identity} available")
-      end
-    end
   end
 
   sig {
