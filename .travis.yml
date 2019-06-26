@@ -2,3 +2,6 @@ language: ruby
 rbenv:
   - 2.4.4
 install: gem install bundler -N && bundle install --jobs=3 --retry=3
+script:
+  - bundle exec srb tc
+  - bundle exec rake
