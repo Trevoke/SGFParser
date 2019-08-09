@@ -1,10 +1,8 @@
 # SGFParser
 
-[![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Trevoke/SGFParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />](http://travis-ci.org/Trevoke/SGFParser) [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Trevoke/SGFParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Maintainability](https://api.codeclimate.com/v1/badges/cf8235d1d5ef230a4cf0/maintainability)](https://codeclimate.com/github/Trevoke/SGFParser/maintainability)
 
-Build status [<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />](http://travis-ci.org/Trevoke/SGFParser)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/cf8235d1d5ef230a4cf0/maintainability)](https://codeclimate.com/github/Trevoke/SGFParser/maintainability)
 
 # Intro
 I'm hoping that this is and remains the fastest SGF parser in Ruby. On my desktop, loading the SGF library and parsing Kogo's Joseki dictionary takes a little under six seconds. It's a 3MB file and the average SGF is maybe 10k, so on average it's rather snappy.
