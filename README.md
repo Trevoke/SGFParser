@@ -108,3 +108,8 @@ collection.to_s
 
 # SGF Parsing warning (À bon entendeur…)
 WARNING: An implementation requirement is to make sure any closing bracket ']' inside a comment is escaped: '\\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
+
+## Addenda
+
+### Branch name
+The branch used for publishing the gem is the `congruence` branch. We chose this word because it has strong connotations for proper integration. This branch is congruent. It means all changes brought into this branch are congruent.
