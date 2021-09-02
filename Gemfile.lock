@@ -26,7 +26,7 @@ GEM
       pry (~> 0.10)
     rainbow (3.0.0)
     rake (13.0.1)
-    rdoc (6.1.1)
+    rdoc (6.3.2)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
       rspec-expectations (~> 3.8.0)
@@ -57,6 +57,13 @@ GEM
       sorbet-static (= 0.5.6134)
     sorbet-runtime (0.4.4314)
     sorbet-static (0.5.6134-universal-darwin-14)
+    sorbet-static (0.5.6134-universal-darwin-15)
+    sorbet-static (0.5.6134-universal-darwin-16)
+    sorbet-static (0.5.6134-universal-darwin-17)
+    sorbet-static (0.5.6134-universal-darwin-18)
+    sorbet-static (0.5.6134-universal-darwin-19)
+    sorbet-static (0.5.6134-universal-darwin-20)
+    sorbet-static (0.5.6134-x86_64-linux)
     unicode-display_width (1.6.0)
 
 PLATFORMS
