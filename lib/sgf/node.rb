@@ -1,4 +1,3 @@
-# typed: true
 # frozen_string_literal: true
 
 require 'observer'
@@ -6,8 +5,6 @@ require 'observer'
 class SGF::Node
   include Observable
   include Enumerable
-
-  extend ::T::Sig
 
   attr_accessor :children, :properties
   attr_reader :parent, :depth
@@ -20,16 +17,16 @@ class SGF::Node
     # opts = { children: [], parent: nil }
     # opts.merge! args
     @depth = 0
+    @parent = nil
     @children = []
     @properties = {}
-    @parent = nil
+    remove_parent
     self.parent = parent # opts.delete :parent
     add_children children # opts.delete :children
     add_properties opts
   end
 
   # Set the given node as a parent and self as one of that node's children
-  sig { params(parent: T.nilable(SGF::Node)).returns(SGF::Node) }
   def parent=(parent)
     if @parent
       @parent.remove_child(self)
@@ -50,20 +47,17 @@ class SGF::Node
 
   alias set_parent parent=
 
-  sig { returns(SGF::Node) }
   def remove_parent
     set_parent(nil)
     self # This shouldn't need to be here, what's sorbet doing?
   end
 
-  sig { params(node: SGF::Node).returns(TrueClass) }
   def remove_child(node)
     children.delete(node)
     delete_observer(node)
     true
   end
 
-  sig { params(new_depth: Integer).returns(T::Boolean) }
   def depth=(new_depth)
     @depth = new_depth
     changed
@@ -84,7 +78,6 @@ class SGF::Node
 
   # Takes a hash {identity => property} and adds those to the current node.
   # If a property already exists, it will append to it.
-  sig { params(hash: Hash).returns(SGF::Node) }
   def add_properties(hash)
     hash.each do |identity, property|
       @properties[flexible identity] ||= property.class.new
@@ -98,47 +91,32 @@ class SGF::Node
   end
 
   # Iterate through and yield each child.
-  sig {
-    params(
-      _block: T.proc.params(arg0: SGF::Node).void
-    ).returns(T::Array[SGF::Node])
-  }
   def each_child(&_block)
     @children.each { |child| yield child }
   end
 
   # Compare to another node.
-  sig { params(other_node: SGF::Node).returns(T::Boolean) }
   def ==(other_node)
     @properties == other_node.properties
   end
 
   # Syntactic sugar for node.properties["XX"]
-  sig { params(identity: T.any(NilClass, Symbol, String)).returns(T.any(String, T::Array, NilClass))}
   def [](identity)
     @properties[flexible(identity)]
   end
 
-  sig {
-    params(
-      identity: T.any(Symbol, String),
-      new_value: T.any(String, T::Array)
-    ).returns(T.any(String, T::Array))
-  }
   def []=(identity, new_value)
     @properties[flexible(identity)] = new_value
   end
 
-  sig { returns(String) }
   def inspect
     out = "#<#{self.class}:#{object_id}, "
     out += (@parent ? 'Has a parent, ' : 'Has no parent, ')
     out += "#{@children.size} Children, "
     out += "#{@properties.keys.size} Properties"
-    out += '>'
+    out + '>'
   end
 
-  sig { params(indent: Integer).returns(String) }
   def to_s(indent = 0)
     properties = []
     @properties.each do |identity, property|
@@ -149,7 +127,6 @@ class SGF::Node
   end
 
   # Observer pattern
-  sig { params(message: Symbol, data: T.untyped).void }
   def update(message, data)
     case message
     when :depth_change then
@@ -159,17 +136,10 @@ class SGF::Node
 
   private
 
-  sig { params(id: T.any(NilClass, String, Symbol)).returns(String) }
   def flexible(id)
     id.to_s.upcase
   end
 
-  sig {
-    params(
-      node: SGF::Node,
-      block: T.proc.params(arg0: SGF::Node).void
-    ).void
-  }
   def preorder(node = self, &block)
     yield node
     node.each_child do |child|
@@ -177,15 +147,10 @@ class SGF::Node
     end
   end
 
-  sig { params(indent: Integer).returns(String) }
   def leading_whitespace(indent)
     ' ' * indent
   end
 
-  sig {
-    params(method_name: Symbol, args: T.any(String, T::Array[String]))
-      .returns(T.any(T.noreturn, String, T::Array[String]))
-  }
   def method_missing(method_name, *args)
     property = flexible(method_name)
     if property[/(.*?)=$/]
@@ -195,7 +160,6 @@ class SGF::Node
     end
   end
 
-  # sig { params(identity: String, property: T.any(String, T::Array))}
   def stringify_identity_and_property(identity, property)
     new_property = property.instance_of?(Array) ? property.join('][') : property
     new_id = flexible identity

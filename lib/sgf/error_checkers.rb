@@ -1,10 +1,6 @@
-# typed: strict
 # frozen_string_literal: true
 
 class SGF::StrictErrorChecker
-  extend T::Sig
-
-  sig { params(string: String).returns(T.any(T.noreturn, TrueClass))}
   def check_for_errors_before_parsing(string)
     if string[/\A\s*\(\s*;/]
       return true
@@ -17,9 +13,6 @@ class SGF::StrictErrorChecker
 end
 
 class SGF::LaxErrorChecker
-  extend T::Sig
-
-  sig { params(_string: String).returns(TrueClass)}
   def check_for_errors_before_parsing(_string)
     # just look the other way
     true

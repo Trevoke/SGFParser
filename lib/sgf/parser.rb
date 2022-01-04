@@ -1,4 +1,3 @@
-# typed: true
 # frozen_string_literal: true
 
 require_relative 'collection_assembler'
@@ -10,7 +9,6 @@ require_relative 'stream'
 # parser = SGF::Parser.new
 # collection = parser.parse sgf_in_string_form
 class SGF::Parser
-  extend ::T::Sig
 
   NEW_NODE = ';'
   BRANCHING = %w[( )].freeze
@@ -26,12 +24,6 @@ class SGF::Parser
   # or a file handler (File).
   # The second argument is optional, in case you don't want this to raise errors.
   # You probably shouldn't use it, but who's gonna stop you?
-  sig {
-    params(
-      sgf: T.any(String, File),
-      strict_parsing: T::Boolean
-    ).returns(SGF::Collection)
-  }
   def parse(sgf, strict_parsing = true)
     error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
     @sgf_stream = SGF::Stream.new(sgf, error_checker)
@@ -51,7 +43,6 @@ class SGF::Parser
 
   private
 
-  sig { void }
   def parse_node_data
     @node_properties = {}
     while still_inside_node?
@@ -67,15 +58,10 @@ class SGF::Parser
     end
   end
 
-  sig { returns(T::Boolean) }
   def still_inside_node?
     !NODE_DELIMITERS.include?(@sgf_stream.peek_skipping_whitespace)
   end
 
-  sig {
-    params(identity: String)
-      .returns(T.any(SGF::CommentToken, SGF::MultiPropertyToken, SGF::GenericPropertyToken))
-  }
   def property_token_type(identity)
     case identity.upcase
     when 'C' then SGF::CommentToken.new

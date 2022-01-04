@@ -1,11 +1,9 @@
-# typed: true
 # frozen_string_literal: true
 
 module SGF
   #  http://www.red-bean.com/sgf/proplist.html
   class Gametree
-    extend ::T::Sig
-    PROPERTIES = T.let({
+    PROPERTIES = {
       annotator: 'AN',
       black_octisquares: 'BO', # Octi
       black_rank: 'BR',
@@ -39,12 +37,11 @@ module SGF
       white_octisquares: 'WO', # Octi
       white_rank: 'WR',
       white_team: 'WT'
-    }.freeze, Hash)
+    }.freeze
   end
 
   class Node
-    extend ::T::Sig
-    PROPERTIES = T.let({
+    PROPERTIES = {
       black_move: 'B',
       black_time_left: 'BL',
       bad_move: 'BM',
@@ -87,6 +84,6 @@ module SGF
       game: 'GM',
       style: 'ST',
       size: 'SZ'
-    }.freeze, Hash)
+    }.freeze
   end
 end

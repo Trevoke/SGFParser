@@ -1,17 +1,8 @@
-# typed: strict
 # frozen_string_literal: true
 
-require 'sorbet-runtime'
-
 module SGF
-  extend T::Sig
-
   class FileDoesNotExistError < StandardError; end
 
-  sig {
-    params(filename: String)
-      .returns(T.any(T.noreturn, SGF::Collection))
-  }
   def self.parse(filename)
     SGF::Parser.new.parse File.read(filename)
   rescue Errno::ENOENT
@@ -25,6 +16,10 @@ require_relative 'sgf/properties'
 require_relative 'sgf/variation'
 require_relative 'sgf/node'
 require_relative 'sgf/collection'
+require_relative 'sgf/collection_assembler'
+require_relative 'sgf/parsing_tokens'
+require_relative 'sgf/error_checkers'
+require_relative 'sgf/stream'
 require_relative 'sgf/parser'
 require_relative 'sgf/gametree'
 require_relative 'sgf/writer'

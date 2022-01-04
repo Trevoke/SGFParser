@@ -11,14 +11,14 @@ RSpec.describe 'End To End' do
     File.delete(new_file) if File.exist?(new_file)
   end
 
-  it 'should modify an object and save the changes' do
+  it 'should modify a loaded game and save the changes back to file' do
     collection = given_a_collection
     game = given_the_first_game_in_the_collection(collection)
     given_black_is_koko(game)
 
     then_black_should_be_koko(game)
     when_we_save_the_collection(collection, new_file)
-    then_black_should_be_koko(collection)
+    then_black_should_be_koko(game)
     then_parsing_the_saved_file_should_show_black_is_koko(new_file)
   end
 
