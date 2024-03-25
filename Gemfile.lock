@@ -23,7 +23,7 @@ GEM
       pry (~> 0.13.0)
     rainbow (3.0.0)
     rake (13.0.6)
-    rdoc (6.3.3)
+    rdoc (6.3.4.1)
     regexp_parser (2.2.0)
     rexml (3.2.5)
     rspec (3.10.0)
