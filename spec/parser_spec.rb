@@ -26,6 +26,21 @@ RSpec.describe SGF::Parser do
       expect(collection).to eq expected
       expect(collection.errors).to include 'Multiple AB identities are present in a single node. A property should only exist once per node.'
     end
+
+    it 'should raise an error when parser reaches EOF with unclosed branches' do
+      invalid_sgf = '(;FF[4](;B[dd]'
+      expect { parser.parse invalid_sgf }.to raise_error SGF::MalformedDataError, /unclosed branches/i
+    end
+
+    it 'should raise an error when parser reaches EOF with multiple unclosed branches' do
+      invalid_sgf = '(;FF[4](;B[dd](;W[cc]'
+      expect { parser.parse invalid_sgf }.to raise_error(SGF::MalformedDataError, /3.*unclosed branches/i)
+    end
+
+    it 'should not raise error when branches are properly closed' do
+      valid_sgf = '(;FF[4](;B[dd]))'
+      expect { parser.parse valid_sgf }.not_to raise_error
+    end
   end
 
   it 'should parse a simple node' do
