@@ -6,8 +6,8 @@ class SGF::Stream
   attr_reader :stream
 
   def initialize(sgf, error_checker)
-    sgf = sgf.read if sgf.instance_of?(File)
-    sgf = File.read(sgf) if File.exist?(sgf)
+    sgf = sgf.read if sgf.respond_to?(:read) && !sgf.is_a?(String)
+    sgf = File.read(sgf) if sgf.is_a?(String) && File.exist?(sgf)
     error_checker.check_for_errors_before_parsing sgf
     @stream = StringIO.new clean(sgf), 'r'
   end

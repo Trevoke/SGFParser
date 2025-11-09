@@ -3,6 +3,7 @@
 
 require_relative '../lib/sgf'
 require 'fileutils'
+require 'stringio'
 require 'pry' if ENV['PRY']
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

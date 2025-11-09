@@ -132,4 +132,30 @@ RSpec.describe SGF::Parser do
     expect(game.root['PW']).to eq 'redrose'
     expect(game.root['PB']).to eq 'tartrate'
   end
+
+  it 'should parse a file if given a StringIO as input' do
+    sgf_content = File.read('spec/data/simple.sgf')
+    string_io = StringIO.new(sgf_content)
+    collection = parser.parse string_io
+    game = collection.gametrees.first
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
+  end
+
+  it 'should parse a file if given any IO-like object with read method' do
+    sgf_content = File.read('spec/data/simple.sgf')
+    io_like = Class.new do
+      def initialize(content)
+        @content = content
+      end
+      def read
+        @content
+      end
+    end.new(sgf_content)
+
+    collection = parser.parse io_like
+    game = collection.gametrees.first
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
+  end
 end
