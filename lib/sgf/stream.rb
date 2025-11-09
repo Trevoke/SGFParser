@@ -3,12 +3,19 @@
 require 'stringio'
 
 class SGF::Stream
-  attr_reader :stream
 
-  def initialize(sgf, error_checker)
-    sgf_content = read_sgf_input(sgf)
-    error_checker.check_for_errors_before_parsing sgf_content
-    @stream = StringIO.new clean(sgf_content), 'r'
+  def initialize(sgf_input, error_checker)
+    @sgf_input = sgf_input
+    @error_checker = error_checker
+    @stream = nil
+  end
+
+  def stream
+    @stream ||= begin
+      sgf_content = read_sgf_input(@sgf_input)
+      @error_checker.check_for_errors_before_parsing sgf_content
+      StringIO.new clean(sgf_content), 'r'
+    end
   end
 
   def eof?
