@@ -6,10 +6,9 @@ class SGF::Stream
   attr_reader :stream
 
   def initialize(sgf, error_checker)
-    sgf = sgf.read if sgf.respond_to?(:read) && !sgf.is_a?(String)
-    sgf = File.read(sgf) if sgf.is_a?(String) && File.exist?(sgf)
-    error_checker.check_for_errors_before_parsing sgf
-    @stream = StringIO.new clean(sgf), 'r'
+    sgf_content = read_sgf_input(sgf)
+    error_checker.check_for_errors_before_parsing sgf_content
+    @stream = StringIO.new clean(sgf_content), 'r'
   end
 
   def eof?
@@ -39,6 +38,12 @@ class SGF::Stream
   end
 
   private
+
+  def read_sgf_input(input)
+    return input.read if input.respond_to?(:read) && !input.is_a?(String)
+    return File.read(input) if input.is_a?(String) && File.exist?(input)
+    input
+  end
 
   def rewind
     stream.pos -= 1
