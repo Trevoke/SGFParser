@@ -47,9 +47,14 @@ class SGF::Stream
   private
 
   def read_sgf_input(input)
-    return input.read if input.respond_to?(:read) && !input.is_a?(String)
-    return File.read(input) if input.is_a?(String) && File.exist?(input)
-    input
+    case
+    when input.respond_to?(:read) && !input.is_a?(String)
+      input.read
+    when input.is_a?(String) && File.exist?(input)
+      File.read(input)
+    else
+      input
+    end
   end
 
   def rewind
