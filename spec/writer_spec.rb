@@ -78,6 +78,36 @@ RSpec.describe SGF::Writer do
     expect(sgf).to eq expected
   end
 
+  it 'should save to a StringIO object' do
+    collection = parser.parse '(;FF[4]PW[Dosaku])'
+    output = StringIO.new
+    SGF::Writer.new.save(collection.root, output)
+    output.rewind
+    saved_content = output.read
+    expect(saved_content).to include 'FF[4]'
+    expect(saved_content).to include 'PW[Dosaku]'
+  end
+
+  it 'should save to any IO-like object with write method' do
+    collection = parser.parse '(;FF[4]PW[Dosaku])'
+    io_like = Class.new do
+      def initialize
+        @content = +'' # unary plus unfreezes the string
+      end
+      def write(data)
+        @content << data
+      end
+      def to_s
+        @content
+      end
+    end.new
+
+    SGF::Writer.new.save(collection.root, io_like)
+    saved_content = io_like.to_s
+    expect(saved_content).to include 'FF[4]'
+    expect(saved_content).to include 'PW[Dosaku]'
+  end
+
   private
 
   def parse_save_load_and_compare_to_saved(string)

@@ -2,11 +2,14 @@
 
 class SGF::Writer
 
-  # Takes a node and a filename as arguments
-  def save(root_node, filename)
-    # TODO: - accept any I/O object?
+  # Takes a node and a filename/IO object as arguments
+  def save(root_node, output)
     stringify_tree_from root_node
-    File.open(filename, 'w') { |f| f << @sgf }
+    if output.respond_to?(:write)
+      output.write @sgf
+    else
+      File.open(output, 'w') { |f| f << @sgf }
+    end
   end
 
   def stringify_tree_from(root_node)

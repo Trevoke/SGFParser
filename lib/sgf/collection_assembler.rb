@@ -13,6 +13,10 @@ class SGF::CollectionAssembler
     @branches = []
   end
 
+  def unclosed_branches_count
+    @branches.size
+  end
+
   def open_branch
     @branches.unshift @current_node
   end

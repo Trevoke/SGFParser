@@ -26,6 +26,21 @@ RSpec.describe SGF::Parser do
       expect(collection).to eq expected
       expect(collection.errors).to include 'Multiple AB identities are present in a single node. A property should only exist once per node.'
     end
+
+    it 'should raise an error when parser reaches EOF with unclosed branches' do
+      invalid_sgf = '(;FF[4](;B[dd]'
+      expect { parser.parse invalid_sgf }.to raise_error SGF::MalformedDataError, /unclosed branches/i
+    end
+
+    it 'should raise an error when parser reaches EOF with multiple unclosed branches' do
+      invalid_sgf = '(;FF[4](;B[dd](;W[cc]'
+      expect { parser.parse invalid_sgf }.to raise_error(SGF::MalformedDataError, /3.*unclosed branches/i)
+    end
+
+    it 'should not raise error when branches are properly closed' do
+      valid_sgf = '(;FF[4](;B[dd]))'
+      expect { parser.parse valid_sgf }.not_to raise_error
+    end
   end
 
   it 'should parse a simple node' do
@@ -116,5 +131,37 @@ RSpec.describe SGF::Parser do
     game = collection.gametrees.first
     expect(game.root['PW']).to eq 'redrose'
     expect(game.root['PB']).to eq 'tartrate'
+  end
+
+  it 'should parse a file if given a StringIO as input' do
+    sgf_content = File.read('spec/data/simple.sgf')
+    string_io = StringIO.new(sgf_content)
+    collection = parser.parse string_io
+    game = collection.gametrees.first
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
+  end
+
+  it 'should parse a file if given any IO-like object with read method' do
+    sgf_content = File.read('spec/data/simple.sgf')
+    io_like = Class.new do
+      def initialize(content)
+        @content = content
+      end
+      def read
+        @content
+      end
+    end.new(sgf_content)
+
+    collection = parser.parse io_like
+    game = collection.gametrees.first
+    expect(game.root['PW']).to eq 'redrose'
+    expect(game.root['PB']).to eq 'tartrate'
+  end
+
+  it 'should raise ArgumentError if given invalid input type' do
+    expect { parser.parse(42) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
+    expect { parser.parse(nil) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
+    expect { parser.parse([]) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
   end
 end

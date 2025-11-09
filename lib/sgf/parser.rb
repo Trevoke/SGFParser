@@ -25,8 +25,8 @@ class SGF::Parser
   # The second argument is optional, in case you don't want this to raise errors.
   # You probably shouldn't use it, but who's gonna stop you?
   def parse(sgf, strict_parsing = true)
-    error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
-    @sgf_stream = SGF::Stream.new(sgf, error_checker)
+    @error_checker = strict_parsing ? SGF::StrictErrorChecker.new : SGF::LaxErrorChecker.new
+    @sgf_stream = SGF::Stream.new(sgf, @error_checker)
     @assembler = SGF::CollectionAssembler.new
     until @sgf_stream.eof?
       case @sgf_stream.next_character
@@ -38,6 +38,7 @@ class SGF::Parser
       else next
       end
     end
+    @error_checker.check_for_errors_after_parsing(@assembler)
     @assembler.collection
   end
 
