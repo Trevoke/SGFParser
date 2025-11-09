@@ -5,6 +5,7 @@ require 'stringio'
 class SGF::Stream
 
   def initialize(sgf_input, error_checker)
+    validate_input(sgf_input)
     @sgf_input = sgf_input
     @error_checker = error_checker
     @stream = nil
@@ -46,15 +47,17 @@ class SGF::Stream
 
   private
 
+  def validate_input(input)
+    return if input.is_a?(String)
+    return if input.respond_to?(:read)
+
+    raise ArgumentError, "SGF input must be a String or respond to :read, got #{input.class}"
+  end
+
   def read_sgf_input(input)
-    case
-    when input.respond_to?(:read) && !input.is_a?(String)
-      input.read
-    when input.is_a?(String) && File.exist?(input)
-      File.read(input)
-    else
-      input
-    end
+    return input.read if input.respond_to?(:read)
+    return File.read(input) if File.exist?(input)
+    input
   end
 
   def rewind

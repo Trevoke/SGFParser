@@ -158,4 +158,10 @@ RSpec.describe SGF::Parser do
     expect(game.root['PW']).to eq 'redrose'
     expect(game.root['PB']).to eq 'tartrate'
   end
+
+  it 'should raise ArgumentError if given invalid input type' do
+    expect { parser.parse(42) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
+    expect { parser.parse(nil) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
+    expect { parser.parse([]) }.to raise_error(ArgumentError, /must be a String or respond to :read/)
+  end
 end
