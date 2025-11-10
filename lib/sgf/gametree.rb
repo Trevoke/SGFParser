@@ -49,5 +49,12 @@ module SGF
       new_root.parent = nil
       SGF::Gametree.new new_root
     end
+
+    # Merges this gametree with another gametree
+    # @param other [Gametree] The gametree to merge with
+    # @return [Gametree] A new merged gametree with variations
+    def merge(other)
+      GameTreeMerger.new.merge(self, other)
+    end
   end
 end

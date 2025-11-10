@@ -291,5 +291,42 @@ RSpec.describe SGF::GameTreeMerger do
         expect(result.root.properties['PB']).to be_nil # No game-info without moves
       end
     end
+
+    context 'convenience method on Gametree' do
+      it 'allows calling merge directly on a gametree instance' do
+        # Game 1: root -> B[aa] -> W[bb]
+        root1 = SGF::Node.new
+        move1 = SGF::Node.new
+        move1.add_properties('B' => 'aa')
+        move2 = SGF::Node.new
+        move2.add_properties('W' => 'bb')
+        root1.add_children(move1)
+        move1.add_children(move2)
+        game1 = SGF::Gametree.new(root1)
+
+        # Game 2: root -> B[aa] -> W[cc]
+        root2 = SGF::Node.new
+        move1_g2 = SGF::Node.new
+        move1_g2.add_properties('B' => 'aa')
+        move2_g2 = SGF::Node.new
+        move2_g2.add_properties('W' => 'cc')
+        root2.add_children(move1_g2)
+        move1_g2.add_children(move2_g2)
+        game2 = SGF::Gametree.new(root2)
+
+        # Merge using convenience method
+        result = game1.merge(game2)
+
+        # Should have shared sequence up to B[aa]
+        expect(result.root.children.size).to eq(1)
+        first_move = result.root.children[0]
+        expect(first_move.properties['B']).to eq('aa')
+
+        # Then branch at W[bb] vs W[cc]
+        expect(first_move.children.size).to eq(2)
+        expect(first_move.children[0].properties['W']).to eq('bb')
+        expect(first_move.children[1].properties['W']).to eq('cc')
+      end
+    end
   end
 end
