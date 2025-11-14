@@ -2,114 +2,240 @@
 
 [<img src="https://secure.travis-ci.org/Trevoke/SGFParser.png" />](http://travis-ci.org/Trevoke/SGFParser) [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Trevoke/SGFParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Maintainability](https://api.codeclimate.com/v1/badges/cf8235d1d5ef230a4cf0/maintainability)](https://codeclimate.com/github/Trevoke/SGFParser/maintainability)
 
+## What is this?
 
+SGFParser is a Ruby library for reading and writing SGF (Smart Game Format) files. SGF is the standard file format for recording board games like Go, Chess, and other strategy games. If you work with Go game records, analyze games, or build tools for board game players, you need to parse SGF files—and this library makes that simple.
 
-# Intro
-I'm hoping that this is and remains the fastest SGF parser in Ruby. On my desktop, loading the SGF library and parsing Kogo's Joseki dictionary takes a little under six seconds. It's a 3MB file and the average SGF is maybe 10k, so on average it's rather snappy.
+**Why SGFParser?** It's fast (parsing a 3MB file takes about 6 seconds), follows the FF4 standard, and provides an intuitive Ruby API for navigating game trees and accessing game data.
 
-Are you using this gem? Is there functionality you wish it had? Is something hard to do? Does the documentation not make sense, and you know how to make it more helpful? Let me know and I'll make it possible, or easier!
+**Should you keep reading?** If you need to:
+- Read game records from SGF files
+- Extract player information, moves, or comments from games
+- Navigate game variations and branches
+- Create or modify SGF files programmatically
 
-# Supported versions
-SGF: FF4 - may support earlier ones as well, but untested.
-Ruby: >=2.1
+Then yes—this library will save you time.
 
+---
 
-# Intro to SGF
-According to the standard, An SGF file holds a `Collection` of one or more `Gametree` objects. Each of those is made of a tree of `Node` objects.
+## Quick Start: Your First Parse
 
-In other words: FILE (1 ↔ 1) Collection (1 ↔ ∞) Gametree (1 ↔ ∞) Node
+Let's get you to a working example in under a minute.
 
-## Bringing in the code
-Simplicity itself:
+**Install the gem:**
+```bash
+gem install sgf
+```
+
+**Parse your first SGF file:**
 ```ruby
 require 'sgf'
+
+# Parse an SGF file
+collection = SGF.parse('path/to/game.sgf')
+
+# Get the first game
+game = collection.gametrees.first
+
+# See who played
+puts "Black: #{game.black_player}"
+puts "White: #{game.white_player}"
 ```
 
-## Basics of our data structure
+**That's it!** You just parsed an SGF file and extracted player information. If this worked, you're ready to learn more.
 
-In this implementation, when you parse a file, you get a `Collection` back. This object has a root `Node` used as the top-level node for all gametrees. The children of that node are the root nodes of the actual games.
+---
 
-Assuming a common SGF file with a single game, you could get to the game by doing this:
+## Learning Path: From Beginner to Expert
+
+Now that you've seen it work, let's build your understanding step by step.
+
+### Understanding SGF Structure
+
+Think of an SGF file like a book. The book (Collection) contains one or more stories (Gametrees). Each story is made up of connected scenes (Nodes) that form a narrative—sometimes with alternate endings (variations).
+
+More technically:
+- **Collection**: The entire SGF file—can contain multiple games
+- **Gametree** (also called `Game`): A single game record
+- **Node**: One moment in the game—usually a move, setup position, or comment
+
+The relationship: `File ↔ Collection ↔ Gametrees ↔ Nodes`
+
+When you parse an SGF file, you get a `Collection` object. This collection has a root node that connects to all the games. For a typical SGF file with one game, you access it like this:
 
 ```ruby
-SGF.parse(filename).gametrees.first # => <SGF::Game:70180384181460>
+collection = SGF.parse('game.sgf')
+game = collection.gametrees.first
 ```
 
-If you have a string, instead, then:
+### Parsing Files and Strings
+
+You've already seen file parsing. But sometimes you have SGF data as a string (maybe from a web API or database):
 
 ```ruby
-SGF::Parser.new.parse sgf_string
+sgf_string = "(;FF[4]GM[1]SZ[19];B[pd];W[dp])"
+collection = SGF::Parser.new.parse(sgf_string)
 ```
 
-## Basics of properties
+Both approaches give you the same `Collection` object to work with.
 
-Some properties belong on the root node of a game only, such as the identity of the players. For convenience, some human-readable methods are defined on the gametree object itself to reach this information, for instance
+### Accessing Game Properties
+
+Game properties hold the data you care about: who played, when, game rules, and more. Some properties live on the game's root node (like player names), and we provide convenient shortcuts:
 
 ```ruby
-gametree.black_player # => "tartrate"
+game.black_player  # => "Honinbo Shusaku"
+game.white_player  # => "Gennan Inseki"
+game.date          # => "1846-07-21"
+game.result        # => "B+2"
 ```
 
-Calling a property that is not defined in the current tree will result in an error. For instance, a property that does not exist in the game of Go:
+These shortcuts save you from digging into the node structure yourself. If you call a property that doesn't exist in the game type (for example, a property specific to Chess when you're parsing a Go game), you'll get a `SGF::NoIdentityError`.
 
+**Why this matters:** The SGF standard defines different properties for different game types. This library helps you avoid mistakes by raising errors when you ask for invalid properties.
+
+### Navigating the Game Tree
+
+Games aren't linear—they're trees. A player might record several possible variations at a crucial point. You need to navigate this tree structure.
+
+**Linear navigation** (following the main line):
 ```ruby
-gametree.black_octisquares # => SGF::NoIdentityError
+game.current_node  # => Root node of the game
+game.next_node     # => Advances to next node and returns it
+game.current_node  # => Now pointing to that next node
 ```
 
-## Basics of navigating
+This is useful when you want to step through a game move by move, maybe displaying it to a user or analyzing the main line.
 
-Since a game is a tree (each node can be the source of many variations), a convenience method is defined to help you traverse the main branch one node at a time.
-
+**Understanding your position** in the tree:
 ```ruby
-gametree.current_node # => starts as root node, e.g. #<SGF::Node:70180384857820, Has a parent, 1 Children, 16 Properties>
-gametree.next_node    # => #<SGF::Node:70180384839420, Has a parent, 1 Children, 4 Properties>
-gametree.current_node # => #<SGF::Node:70180384839420, Has a parent, 1 Children, 4 Properties>
+node.depth  # => How far from the root (0 = root)
 ```
 
-Since it's easy to get lost when you're looking at things one node at a time (or because sometimes you don't want to iterate with an index), we also provide a convenience `depth` method on a given node to tell you how far down the tree you are.
+When you're navigating a complex game with many variations, `depth` helps you know where you are.
 
-And since this is Ruby, all of the objects (`Collection`, `Gametree` and `Node`) provide iteration through `each`. Note that in this example, we are using a gametree, and iteration on a gametree starts from the gametree's root, so the depth is 1. Iteration on a collection starts from the collection's root, and that node's depth would be 0. Iteration on any node starts from that node and goes through all its children.
-
-NOTE: iteration is done as preorder tree traversal. You shouldn't have to care about this, but you might.
-
+**Iterating through all nodes:**
 ```ruby
-gametree.each do |node|
+game.each do |node|
   puts "Node at depth #{node.depth} has #{node.properties.count} properties"
 end
-=begin
-Node at depth 1 has 16 properties
-Node at depth 2 has 4 properties
-Node at depth 3 has 3 properties
-Node at depth 4 has 4 properties
-Node at depth 5 has 3 properties
-Node at depth 6 has 3 properties
-Node at depth 7 has 3 properties
-Node at depth 8 has 4 properties
-... And so on
-=end
 ```
 
-## Basics of saving
-
-There is `SGF::Writer`, which you can use starting from any node. There is also a convenience method on collection:
+This gives you every node in the tree using preorder traversal (parents before children). Both `Collection` and `Node` objects also support `each`, so you can iterate from any starting point:
 
 ```ruby
-collection.save(filename) # => Shiny new text file
-SGF::Writer.new.stringify_tree_from(node) # => Shiny string
-SGF::Writer.new.save(node, filename) # => File with tree starting at node
+collection.each { |node| ... }  # All nodes in all games
+game.each { |node| ... }        # All nodes in one game
+some_node.each { |node| ... }   # All nodes from this point down
 ```
 
-If you need a raw SGF version of your data, you can use `to_s`:
+**Why preorder traversal?** It mirrors how you'd read the game naturally: position first, then explore variations. You usually won't need to think about this, but it helps explain the order you see.
 
+### Saving and Writing SGF Files
+
+Once you've modified game data or created new games, you need to save them:
+
+**Save a collection to a file:**
 ```ruby
-node.to_s
-gametree.to_s
-collection.to_s
+collection.save('output.sgf')
 ```
 
-# SGF Parsing warning (À bon entendeur…)
-WARNING: An implementation requirement is to make sure any closing bracket ']' inside a comment is escaped: '\\]'. If this is not done, you will be one sad panda! This library will do this for you upon saving, but will most likely die horribly when parsing anything which does not follow this rule.
+**Write from any node:**
+```ruby
+# Save just a subtree starting from a specific node
+SGF::Writer.new.save(node, 'variation.sgf')
 
-## Addenda
+# Or get the SGF as a string
+sgf_string = SGF::Writer.new.stringify_tree_from(node)
+```
 
-### Branch name
-The branch used for publishing the gem is the `congruence` branch. We chose this word because it has strong connotations for proper integration. This branch is congruent. It means all changes brought into this branch are congruent.
+**Quick conversion to SGF strings:**
+```ruby
+collection.to_s  # Entire collection
+game.to_s        # Single game
+node.to_s        # Subtree from node
+```
+
+**Important:** When writing SGF files, the library automatically escapes closing brackets (`]`) in comments as `\]`. This is required by the SGF standard. When parsing, the library expects this escaping—files that don't follow this rule will cause parsing errors.
+
+**Why the escaping matters:** In SGF, property values are enclosed in brackets like `C[This is a comment]`. If your comment contains `]`, the parser thinks the value has ended. Escaping prevents this.
+
+---
+
+## Reference
+
+This section is for quick lookups once you understand the system.
+
+### Version Support
+- **SGF Format:** FF4 (may work with earlier versions, untested)
+- **Ruby:** >= 2.1
+
+### Core API
+
+**Parsing:**
+```ruby
+SGF.parse(filename)              # Parse file, returns Collection
+SGF::Parser.new.parse(string)    # Parse string, returns Collection
+```
+
+**Navigation:**
+```ruby
+collection.gametrees             # Array of all games
+game.root                        # Root node of game
+game.current_node                # Current position (starts at root)
+game.next_node                   # Move to next and return it
+node.depth                       # Distance from root
+node.children                    # Child nodes
+node.parent                      # Parent node
+```
+
+**Properties:**
+```ruby
+game.black_player                # Shortcut to root property
+game.white_player                # Shortcut to root property
+game.date                        # Shortcut to root property
+game.result                      # Shortcut to root property
+node.properties                  # Hash of all properties
+```
+
+**Iteration:**
+```ruby
+collection.each { |node| ... }   # All nodes in all games
+game.each { |node| ... }         # All nodes in game
+node.each { |node| ... }         # All nodes from this point
+```
+
+**Writing:**
+```ruby
+collection.save(filename)        # Save to file
+collection.to_s                  # Convert to SGF string
+game.to_s                        # Game as SGF string
+node.to_s                        # Subtree as SGF string
+SGF::Writer.new.save(node, file) # Save subtree to file
+SGF::Writer.new.stringify_tree_from(node)  # Subtree as string
+```
+
+### Critical Warnings
+
+**Bracket escaping:** Any closing bracket `]` inside a property value (especially comments) MUST be escaped as `\]`. The library handles this automatically when saving, but will fail when parsing non-compliant files.
+
+### Performance Note
+
+On a typical desktop, parsing Kogo's Joseki Dictionary (a 3MB file) takes about 6 seconds. Since most SGF files are around 10KB, parsing is typically very fast.
+
+---
+
+## Contributing
+
+Using this gem? Have feedback? We'd love to hear from you:
+- Is there functionality you wish it had?
+- Is something hard to do?
+- Does the documentation need clarification?
+
+Join the conversation on [Gitter](https://gitter.im/Trevoke/SGFParser) or open an issue on GitHub.
+
+---
+
+## Publishing Note
+
+The branch used for publishing the gem is `congruence`—chosen because it has strong connotations for proper integration. All changes brought into this branch are congruent.
